@@ -1,0 +1,29 @@
+{
+  "name": "yoplay",
+  "version": "0.0.0",
+  "dependencies": {
+    "coffeeify": "",
+    "coffee-script": "",
+    "browserify": "",
+    "gulp": "",
+    "gulp-browserify": "",
+    "gulp-shell": "",
+    "gulp-less": "",
+    "gulp-minify-css":"",
+    "gulp-replace": "",
+    "gulp-rename": "",
+    "gulp-concat": "",
+    "gulp-livereload":"",
+    "tiny-lr":"",
+    "vulcanize": "",
+    "express": "",
+    "polymer": "git://github.com/Custom-Elements/polymer",
+    "lodash": "^2.4.1",
+    "marked": "~0.3.2"
+  },
+  "license": "MIT",
+  "scripts": {
+    "postinstall": "gulp build",
+    "test": "gulp watch"
+  }
+}

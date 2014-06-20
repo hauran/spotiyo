@@ -1,0 +1,10 @@
+<polymer-element name='yo-listener'>
+<template>
+	<link rel="stylesheet" type="text/css" href="./listener.css">
+	<div id='container' class='container {{ {active:listening} | tokenList}}'>
+		<div class='message'>{{command}}</div>
+	</div>
+</template>
+
+<script src="./listener.js"></script>
+</polymer-element>
