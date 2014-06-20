@@ -1,4 +1,5 @@
 Polymer 'yo-listener',
+  player:document.querySelector 'yo-player'
   clear: ->
     clearTimeout @clearTO
     _this = @
@@ -17,15 +18,17 @@ Polymer 'yo-listener',
       @listening = true
       toPlay = @cleanCommand cmd, 'play'
       @command = "playing #{toPlay}"
-      debugger;
-      player = document.querySelector 'yo-player'
-      player.toPlay toPlay
+      @player.toPlay toPlay
 
       @clear()
     else if cmd.indexOf("yo") is 0 or cmd.indexOf("Yelp") is 0
       @listening = true
       @command = "what up?"
       @clear()
+
+    else if cmd.indexOf("stop") is 0
+      @player.stop()
+
     return
 
   listen: ->

@@ -18,12 +18,17 @@
     "vulcanize": "",
     "express": "",
     "polymer": "git://github.com/Custom-Elements/polymer",
-    "lodash": "^2.4.1",
-    "marked": "~0.3.2"
+    "lodash": "*",
+    "lodash": "*",
+    "ejs": "0.8.3",
+    "express": "3.x",
+    "request": "2.11.x",
+    "cors":"2.1.1"
   },
   "license": "MIT",
   "scripts": {
     "postinstall": "gulp build",
-    "test": "gulp watch"
+    "test": "gulp watch",
+    "start": "coffee ./server.coffee"
   }
 }
