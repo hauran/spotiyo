@@ -27,8 +27,6 @@
   },
   "license": "MIT",
   "scripts": {
-    "postinstall": "gulp build",
-    "test": "gulp watch",
     "start": "coffee ./server.coffee"
   }
 }
