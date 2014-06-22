@@ -3,13 +3,11 @@ querystring = require 'querystring'
 url = require "url"
 ytSearch = require 'youtube-search'
 
-redirect_uri = 'http://localhost:3000/callback'
+# redirect_uri = 'http://localhost:3000/callback'
+
+redirect_uri = 'http://yoplay-nqitaj4wnb.elasticbeanstalk.com/callback'
 client_id = '5bc5d8c7b3f74d089b4cb08fee835e03'
 client_secret = 'ca041b7ba4ae4905a66cc6fc5b542ac5'
-
-# client_id = '03ffe0cac0a0401aa6673c3cf6d02ced'; 
-# client_secret = 'a57c43efb9644574a96d6623fb8bfbc2';
-# redirect_uri = 'http://localhost:8888/callback';  
 
 exports.setup = (app) ->
   app.get "/login", (req, res) ->
