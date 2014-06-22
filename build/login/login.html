@@ -1,0 +1,9 @@
+<polymer-element name='yo-login' attributes='loggingIn'>
+<template>
+	<link rel="stylesheet" type="text/css" href="./login.css">
+	<div>
+		<a href="/login" on-click="{{loginClick}}" class="{{ {active:active} | tokenList}}" disabled>{{login}}</a>
+	</div>
+</template>
+<script src="./login.js"></script>
+</polymer-element>

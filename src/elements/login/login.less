@@ -1,0 +1,42 @@
+@import "../../less/mixins";
+
+:host {
+  div {
+    text-align: center;
+    margin-top:60px;
+    a {
+      color:white;
+      border:none;
+      font-size:3em;
+      text-decoration:none;
+      background-size: cover;
+      padding:30px;
+      .transition();
+      border-radius: 3px;
+      
+      &.active {
+        background-color: rgba(255,255,255,0.25);
+        .transition();
+
+        &::after {
+          opacity:100;
+          .transition();
+        }
+      }
+
+      &::after {
+        .transition();
+        content: "";
+        background-image:url('/img/road.png');
+        background-size: cover;
+        opacity: 0;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        position: absolute;
+        z-index: -1;
+      }
+    }
+  }
+}

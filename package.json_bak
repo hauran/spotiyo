@@ -1,0 +1,33 @@
+{
+  "name": "yoplay",
+  "version": "0.0.0",
+  "dependencies": {
+    "express": "4.4.4",
+    "request": "~2.34.0",
+    "querystring": "~0.2.0",
+    "gulp": "",
+    "gulp-browserify": "",
+    "gulp-shell": "",
+    "gulp-less": "",
+    "gulp-minify-css":"",
+    "gulp-replace": "",
+    "gulp-rename": "",
+    "gulp-concat": "",
+    "gulp-livereload":"",
+    "vulcanize": "",
+    "polymer": "git://github.com/Custom-Elements/polymer",
+    "lodash": "*",
+    "ejs": "0.8.3",
+    "coffeeify": "",
+    "coffee-script": "",
+    "browserify": "",
+    "tiny-lr":"",
+    "cors":"2.1.1",
+    "youtube-search":"",
+    "body-parser":"1.4.3 "
+  },
+  "license": "MIT",
+  "scripts": {
+    "start": "coffee ./server.coffee"
+  }
+}

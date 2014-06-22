@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="/node_modules/polymer/platform.js"></script>
+    <script src="/node_modules/lodash/lodash.js"></script>
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="/bower_components/jquery-cookie/jquery.cookie.js"></script>
+
+    <link rel="import" href="/node_modules/polymer/polymer.html">
+    <link rel='import' href='/build/app/app.html'>
+    <link rel='import' href='/build/listener/listener.html'>
+    <link rel='import' href='/build/player/player.html'>
+    <link rel='import' href='/build/login/login.html'>
+
+    <link rel="stylesheet" type="text/css" href="build/main.css">
+  </head>
+  <body unresolved>
+    <div class='title'>Spotiyo</div>
+
+    <yo-app></yo-app>
+    <yo-login></yo-login>
+    <yo-listener></yo-listener>
+    <yo-player id="yoPlayer"></yo-player>
+
+
+
+    <button onclick="playIt();">yo play radiohead</button>
+    <button onclick="stop();">stop</button>
+    <script>
+      var redirectURL = 'http%3A%2F%2Flocalhost%3A3000%2Flogin';
+      var clientId = '5bc5d8c7b3f74d089b4cb08fee835e03'
+      var clientSecret = 'ca041b7ba4ae4905a66cc6fc5b542ac5';
+
+      var playIt = function(){
+        var player = document.querySelector('yo-player')
+        player.toPlay('radiohead');
+      }
+
+      var stop = function(){
+        var player = document.querySelector('yo-player')
+        player.stop();
+      }
+    </script>
+  </body>
+</html>
