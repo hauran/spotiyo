@@ -18,7 +18,7 @@
 ## Installion
 
 ```
-npm install --save gulp-minify-css
+npm install --save-dev gulp-minify-css
 ```
 
 ## Usage

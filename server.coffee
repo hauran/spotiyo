@@ -5,43 +5,47 @@ path = require('path')
 fs = require('fs')
 _ = require('lodash')
 cors = require('cors')
+bodyParser = require('body-parser')
+cookieParser = require('cookie-parser')
+
+auth = require('./middleware/auth')
 
 app = express()
 
 app.set('root', process.cwd())
+app.set('port', process.env.PORT || 3000)
 
-app.configure 'development', ->
-	app.set('port', process.argv[2] || 10000)
+app.use bodyParser.urlencoded()
+app.use bodyParser.json()
 
-app.configure 'production', ->
-	app.set('port', process.env.PORT || 3000)
+# app.use express.favicon('public/img/favicon.png')
 
-app.configure () ->
-	# app.use express.favicon('public/img/favicon.png')
-	app.use express.bodyParser()
-	app.use express.methodOverride()
-	app.use express.cookieParser('cookies!')
+app.use express.static(__dirname + "/public")
 
-	app.use '/node_modules', express.static(path.join(app.get('root'), 'node_modules')) 
-	app.use '/bower_components', express.static(path.join(app.get('root'), 'bower_components')) 
-	app.use '/build', express.static(path.join(app.get('root'), 'build'))
+app.use '/img', express.static(path.join(app.get('root'), 'img')) 
+app.use '/node_modules', express.static(path.join(app.get('root'), 'node_modules')) 
+app.use '/bower_components', express.static(path.join(app.get('root'), 'bower_components')) 
+app.use '/build', express.static(path.join(app.get('root'), 'build'))
 
-	app.use cors()
-	app.use app.router
+app.use cookieParser()
+app.use auth()
+app.use cors()
+
+# app.use app.router
 
 app.set 'views', __dirname
 app.engine 'html', require('ejs').renderFile
 app.enable 'trust proxy'
 
-# controllerFiles = fs.readdirSync('controllers')
-# controllerFiles.forEach (controllerFile) ->
-# 	if controllerFile.indexOf('.coffee') is -1
-# 		return
-# 	else
-# 		controllerFile = controllerFile.replace '.coffee', ''
-# 		controller = require './controllers/' + controllerFile
-# 		if(controller.setup)
-# 			controller.setup app
+controllerFiles = fs.readdirSync('controllers')
+controllerFiles.forEach (controllerFile) ->
+	if controllerFile.indexOf('.coffee') is -1
+		return
+	else
+		controllerFile = controllerFile.replace '.coffee', ''
+		controller = require './controllers/' + controllerFile
+		if(controller.setup)
+			controller.setup app
 
 app.get '/', (req, res) ->
 	res.render 'index.html', {}

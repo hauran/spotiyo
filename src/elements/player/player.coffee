@@ -3,21 +3,21 @@ Polymer 'yo-player',
   getToPlay: (toPlay) ->
     console.log('toPlay', toPlay)
     _this = @
-    req = new XMLHttpRequest()
-    req.open 'GET', 'https://api.spotify.com/v1/search?type=track&q=' + encodeURIComponent(toPlay), true
-    req.onreadystatechange = ->
-      if (req.readyState == 4 && req.status == 200)
-        data = JSON.parse(req.responseText)
-        _this.stop()
-        _this.audio = new Audio(data.tracks.items[0].preview_url)
-        _this.audio.play()
-        
-    req.send(null);
+    $.post '/searchTrack', {toPlay:toPlay}, (res) ->
+      code = res.url.split('v=')[1].split('&')[0]
+      _this.active = true
+      _this.url  = "https://www.youtube.com/embed/#{code}?autoplay=1"
 
   stop: ->
     if @audio
       @audio.pause()
 
   ready: ->
+    @url = ''
+    @active = false
+    @playlists = []
     @toPlay = _.debounce(@getToPlay,1000)
+    
+  close:() ->
+    @active = false
   

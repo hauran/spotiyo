@@ -1,8 +1,8 @@
-var es = require('event-stream'),
-  CleanCSS  = require('clean-css'),
-  BufferStreams = require('bufferstreams'),
+var path = require('path'),
   gutil = require('gulp-util'),
-  path = require('path'),
+  CleanCSS  = require('clean-css'),
+  through2 = require('through2'),
+  BufferStreams = require('bufferstreams'),
   cache = require('memory-cache');
 
 function objectIsEqual(a, b) {
@@ -56,14 +56,16 @@ function minifyCSSTransform(opt, file) {
 function minifyCSSGulp(opt){
   if (!opt) opt = {};
 
-  function modifyContents(file, cb){
-    if(file.isNull()) return cb(null, file);
+  function modifyContents(file, enc, done){
+    if(file.isNull()) {
+      done(null, file);
+      return;
+    }
 
     if(file.isStream()) {
-
       file.contents = file.contents.pipe(new BufferStreams(minifyCSSTransform(opt, file)));
-
-      return cb(null, file);
+      done(null, file);
+      return;
     }
 
     var newFile = file.clone();
@@ -78,12 +80,12 @@ function minifyCSSGulp(opt){
 
     // Restore original "relativeTo" value
     opt.relativeTo = relativeToTmp;
-
     newFile.contents = new Buffer(newContents);
-    cb(null, newFile);
+
+    done(null, newFile);
   }
 
-  return es.map(modifyContents);
+  return through2.obj(modifyContents);
 }
 
 // Export the file level transform function for other plugins usage

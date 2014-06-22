@@ -2,21 +2,17 @@
 Polymer('yo-player', {
   audio: null,
   getToPlay: function(toPlay) {
-    var req, _this;
+    var _this;
     console.log('toPlay', toPlay);
     _this = this;
-    req = new XMLHttpRequest();
-    req.open('GET', 'https://api.spotify.com/v1/search?type=track&q=' + encodeURIComponent(toPlay), true);
-    req.onreadystatechange = function() {
-      var data;
-      if (req.readyState === 4 && req.status === 200) {
-        data = JSON.parse(req.responseText);
-        _this.stop();
-        _this.audio = new Audio(data.tracks.items[0].preview_url);
-        return _this.audio.play();
-      }
-    };
-    return req.send(null);
+    return $.post('/searchTrack', {
+      toPlay: toPlay
+    }, function(res) {
+      var code;
+      code = res.url.split('v=')[1].split('&')[0];
+      _this.active = true;
+      return _this.url = "https://www.youtube.com/embed/" + code + "?autoplay=1";
+    });
   },
   stop: function() {
     if (this.audio) {
@@ -24,7 +20,13 @@ Polymer('yo-player', {
     }
   },
   ready: function() {
+    this.url = '';
+    this.active = false;
+    this.playlists = [];
     return this.toPlay = _.debounce(this.getToPlay, 1000);
+  },
+  close: function() {
+    return this.active = false;
   }
 });
 

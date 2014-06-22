@@ -61,10 +61,6 @@ gulp.task 'refresh', ->
 gulp.task 'build', ['vulcanize']
 
 gulp.task 'watch', ->
-  app = express()
-  app.use(express.static(__dirname))
-  app.listen(10000)
-
-  watcher = gulp.watch ['src/**/*.*'], ['elements', 'style','refresh']
+  watcher = gulp.watch ['src/**/*.*'], ['build']
   watcher.on 'change', ->
     console.log 'rebuildling...'
