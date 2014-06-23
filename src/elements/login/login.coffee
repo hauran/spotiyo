@@ -9,14 +9,10 @@ Polymer 'yo-login',
     @url = ''
     @active = false
     @login = 'log in'
-    @player = document.querySelector('yo-player')
+    @playlist = document.querySelector('yo-playlist')
     _this = @
 
     if $.cookie('userId')
       @active = true
       @login = 'hold on'
-
-      $.get '/playlists', (res) ->
-        _this.player.playlists = res.items
-        _this.player.active = true
-    
+      @playlist.getPlayLists()

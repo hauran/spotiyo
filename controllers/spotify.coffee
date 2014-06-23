@@ -3,9 +3,11 @@ querystring = require 'querystring'
 url = require "url"
 ytSearch = require 'youtube-search'
 
-# redirect_uri = 'http://localhost:3000/callback'
-
-redirect_uri = 'http://yoplay-nqitaj4wnb.elasticbeanstalk.com/callback'
+if process.env.NODE_ENV is "production"
+  redirect_uri = 'http://yoplay-nqitaj4wnb.elasticbeanstalk.com/callback'
+else
+  redirect_uri = 'http://localhost:3000/callback'
+  
 client_id = '5bc5d8c7b3f74d089b4cb08fee835e03'
 client_secret = 'ca041b7ba4ae4905a66cc6fc5b542ac5'
 
@@ -35,7 +37,6 @@ exports.setup = (app) ->
 
     request.post authOptions, (error, response, body) ->
       if not error and response.statusCode is 200
-        console.log body
         access_token = body.access_token
         refresh_token = body.refresh_token
         expires_in = body.expires_in
@@ -71,9 +72,18 @@ exports.setup = (app) ->
       json: true
     request.get options, (error, response, body) ->
       res.send body
+
+  app.get "/playlists/:id/tracks", (req,res) ->
+    options =
+      url: req.query.href
+      headers:
+        Authorization: "Bearer #{req.access_token}"
+      json: true
+      
+    request.get options, (error, response, body) ->
+      res.send body
       
   app.post "/searchTrack", (req, res, next) ->
-    console.log req
     q = req.body.toPlay
     request.get "https://api.spotify.com/v1/search?type=track&q=#{q}",  (error, response, body) ->
       track =  JSON.parse(body).tracks.items[0]

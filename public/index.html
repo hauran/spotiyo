@@ -10,37 +10,38 @@
     <link rel="import" href="/node_modules/polymer/polymer.html">
     <link rel='import' href='/build/app/app.html'>
     <link rel='import' href='/build/listener/listener.html'>
+    <link rel='import' href='/build/playlist/playlist.html'>
     <link rel='import' href='/build/player/player.html'>
+    <link rel='import' href='/build/track/track.html'>
     <link rel='import' href='/build/login/login.html'>
 
-    <link rel="stylesheet" type="text/css" href="build/main.css">
+    <link rel="stylesheet" polymer-scope="global" type="text/css" href="build/main.css">
   </head>
   <body unresolved>
-    <div class='title'>Spotiyo</div>
-
-    <yo-app></yo-app>
-    <yo-login></yo-login>
+    <div style="position:fixed; width:100%; height:100%">
+      <div class='title'>Spotiyo</div>
+      <yo-login></yo-login>
+    </div>
     <yo-listener></yo-listener>
-    <yo-player id="yoPlayer"></yo-player>
-
-
-
+    <yo-playlist id="yoplaylist"></yo-playlist>
+    <yo-player id="yoplayer"></yo-player>
+<!-- 
     <button onclick="playIt();">yo play radiohead</button>
-    <button onclick="stop();">stop</button>
+    <button onclick="stop();">stop</button> -->
     <script>
-      var redirectURL = 'http%3A%2F%2Flocalhost%3A3000%2Flogin';
-      var clientId = '5bc5d8c7b3f74d089b4cb08fee835e03'
-      var clientSecret = 'ca041b7ba4ae4905a66cc6fc5b542ac5';
+      // var redirectURL = 'http%3A%2F%2Flocalhost%3A3000%2Flogin';
+      // var clientId = '5bc5d8c7b3f74d089b4cb08fee835e03'
+      // var clientSecret = 'ca041b7ba4ae4905a66cc6fc5b542ac5';
 
-      var playIt = function(){
-        var player = document.querySelector('yo-player')
-        player.toPlay('radiohead');
-      }
+      // var playIt = function(){
+      //   var playlist = document.querySelector('yo-playlist')
+      //   playlist.toPlay('radiohead');
+      // }
 
-      var stop = function(){
-        var player = document.querySelector('yo-player')
-        player.stop();
-      }
+      // var stop = function(){
+      //   var playlist = document.querySelector('yo-playlist')
+      //   playlist.stop();
+      // }
     </script>
   </body>
 </html>

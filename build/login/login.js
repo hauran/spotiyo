@@ -1412,15 +1412,12 @@ Polymer('yo-login', {
     this.url = '';
     this.active = false;
     this.login = 'log in';
-    this.player = document.querySelector('yo-player');
+    this.playlist = document.querySelector('yo-playlist');
     _this = this;
     if ($.cookie('userId')) {
       this.active = true;
       this.login = 'hold on';
-      return $.get('/playlists', function(res) {
-        _this.player.playlists = res.items;
-        return _this.player.active = true;
-      });
+      return this.playlist.getPlayLists();
     }
   }
 });
