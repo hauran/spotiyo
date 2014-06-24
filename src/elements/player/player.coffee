@@ -7,6 +7,7 @@ Polymer 'yo-player',
       _this.url  = "https://www.youtube.com/embed/#{code}?autoplay=1"
 
   ready: ->
+    @playlist = document.querySelector('yo-playlist')
     @title = ''
     @active = false
     @loading = true
@@ -31,4 +32,6 @@ Polymer 'yo-player',
     @play "#{@items[0].track.artists[0].name} - #{@items[0].track.name}"
 
   close:() ->
-    @active = false    
+    @active = false
+    _this = @
+    _this.playlist.open()

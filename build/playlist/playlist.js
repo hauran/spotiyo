@@ -28,6 +28,14 @@ Polymer('yo-playlist', {
       return _this.noHeight = true;
     }, 450);
   },
+  open: function() {
+    var _this;
+    _this = this;
+    this.noHeight = false;
+    return setTimeout(function() {
+      return _this.active = true;
+    }, 350);
+  },
   close: function() {
     return this.active = false;
   }

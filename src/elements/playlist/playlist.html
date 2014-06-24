@@ -2,14 +2,10 @@
 <template>
 	<link rel="stylesheet" type="text/css" href="./playlist.css">
 	<div class='overlay-title {{ {active:active, noHeight:noHeight} | tokenList}}'>
-		<h1>Your Playlists</h1>
+		<i class='fa fa-angle-left back-angle' on-click="{{close}}"></i><h1>Your Playlists</h1>
 	</div>
 	<div id='container' class='overlay container {{ {active:active, noHeight:noHeight} | tokenList}}'>
 		<div class='content'>
-			<!-- <div on-click="{{close}}">X</div> -->
-
-			 <!-- <iframe id="ytplayer" type="text/html" width="640" height="360" src="{{url}}" frameborder="0" allowfullscreen></iframe> -->
-
 			 <ul id='list'>
 				 <template repeat="{{playlist in playlists}}">
 					<li class='item-name' on-click="{{selectPlaylist}}" id="{{playlist.id}}" tracks-href="{{playlist.tracks.href}}">{{playlist.name}}</li>

@@ -13,6 +13,7 @@ Polymer('yo-player', {
     });
   },
   ready: function() {
+    this.playlist = document.querySelector('yo-playlist');
     this.title = '';
     this.active = false;
     this.loading = true;
@@ -42,7 +43,10 @@ Polymer('yo-player', {
     return this.play("" + this.items[0].track.artists[0].name + " - " + this.items[0].track.name);
   },
   close: function() {
-    return this.active = false;
+    var _this;
+    this.active = false;
+    _this = this;
+    return _this.playlist.open();
   }
 });
 

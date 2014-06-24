@@ -24,6 +24,13 @@ Polymer 'yo-playlist',
       _this.noHeight = true
     ,450
 
+  open:() ->
+    _this = @
+    @noHeight = false
+    setTimeout ->
+      _this.active = true
+    ,350
+
   close:() ->
     @active = false
   
