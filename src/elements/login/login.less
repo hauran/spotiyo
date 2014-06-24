@@ -6,37 +6,81 @@
     margin-top:60px;
     a {
       color:white;
-      border:none;
+      // border:none;
+      padding:20px 40px;
       font-size:3em;
-      text-decoration:none;
-      padding:30px;
-      .transition();
-      border-radius: 3px;
-      
-      &.active {
-        background-color: rgba(255,255,255,0.25);
-        .transition();
+      // text-decoration:none;
+      // padding:30px;
+      // .transition();
+      // border-radius: 3px;
 
-        &::after {
-          opacity:100;
-          .transition();
+
+
+      -webkit-transition: color 0.3s;
+      transition: color 0.3s;
+      -webkit-perspective: 600px;
+      perspective: 600px;
+      -webkit-perspective-origin: 50% 100%;
+      perspective-origin: 50% 100%;
+
+      position: relative;
+      display: inline-block;
+      outline: none;
+      vertical-align: bottom;
+      text-decoration: none;
+      white-space: nowrap;
+
+      
+      &::before {
+        background-color: #fff;
+        -webkit-transition: -webkit-transform 0.2s;
+        transition: transform 0.2s;
+        -webkit-transition-timing-function: cubic-bezier(0.7,0,0.3,1);
+        transition-timing-function: cubic-bezier(0.7,0,0.3,1);
+        -webkit-transform: rotateX(90deg);
+        transform: rotateX(90deg);
+        -webkit-transform-origin: 50% 100%;
+        transform-origin: 50% 100%;
+      }
+      &::before, &::after {
+        position: absolute;
+        top: -4px;
+        left: -4px;
+        z-index: -1;
+        box-sizing: content-box;
+        padding: 4px 4px;
+        width: 100%;
+        height: 100%;
+        content: '';
+      }
+
+      &.active {
+        padding:20px 10px;
+        color: #2ecc71;
+        &::before {
+          -webkit-transform: rotateX(0deg);
+          transform: rotateX(0deg);
         }
       }
 
-      &::after {
-        .transition();
-        content: "";
-        background-image:url('/img/road.png');
-        background-size: cover;
-        background-position: center top;
-        opacity: 0;
-        top: 0;
-        left: 0;
-        width:100%;
-        height:100%;
-        position: absolute;
-        z-index: -1;
-      }
+      // &::after {
+      //     opacity:100;
+      //     .transition();
+      //   }
+      // &::after {
+      //   .transition();
+      //   content: "";
+      //   background-image:url('/img/road.png');
+      //   background-size: cover;
+      //   background-position: center top;
+      //   opacity: 0;
+      //   top: 0;
+      //   left: 0;
+      //   width:100%;
+      //   height:100%;
+      //   position: absolute;
+      //   z-index: -1;
+      // }
     }
   }
 }
