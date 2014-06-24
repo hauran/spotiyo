@@ -6,7 +6,7 @@ ytSearch = require 'youtube-search'
 if process.env.NODE_ENV is "production"
   redirect_uri = 'http://yoplay-nqitaj4wnb.elasticbeanstalk.com/callback'
 else
-  redirect_uri = 'http://localhost:3000/callback'
+  redirect_uri = 'http://localhost:8080/callback'
   
 client_id = '5bc5d8c7b3f74d089b4cb08fee835e03'
 client_secret = 'ca041b7ba4ae4905a66cc6fc5b542ac5'

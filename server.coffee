@@ -13,7 +13,7 @@ auth = require('./middleware/auth')
 app = express()
 
 app.set('root', process.cwd())
-app.set('port', process.env.PORT || 3000)
+app.set('port', process.env.PORT || 8080)
 
 app.use bodyParser.urlencoded()
 app.use bodyParser.json()
