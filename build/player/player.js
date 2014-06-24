@@ -16,6 +16,7 @@ Polymer('yo-player', {
     this.playlist = document.querySelector('yo-playlist');
     this.title = '';
     this.active = false;
+    this.noHeight = true;
     this.loading = true;
     this.state = 0;
     this.items = [];
@@ -24,6 +25,7 @@ Polymer('yo-player', {
   getTracks: function(id, href) {
     var _this;
     _this = this;
+    this.noHeight = false;
     setTimeout(function() {
       $(window).scrollTop(0);
       return _this.active = true;

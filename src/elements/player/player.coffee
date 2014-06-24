@@ -10,6 +10,7 @@ Polymer 'yo-player',
     @playlist = document.querySelector('yo-playlist')
     @title = ''
     @active = false
+    @noHeight = true
     @loading = true
     @state = 0
     @items = []
@@ -17,6 +18,7 @@ Polymer 'yo-player',
     
   getTracks: (id,href) ->
     _this = @
+    @noHeight = false
     setTimeout ->
       $(window).scrollTop(0);
       _this.active = true
