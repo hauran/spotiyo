@@ -32,7 +32,8 @@
 
       
       &::before {
-        background-color: #fff;
+        background-color: rgba(255,255,255,0.5);
+        border-radius: 5px;
         -webkit-transition: -webkit-transform 0.2s;
         transition: transform 0.2s;
         -webkit-transition-timing-function: cubic-bezier(0.7,0,0.3,1);
@@ -56,31 +57,11 @@
 
       &.active {
         padding:20px 10px;
-        color: #2ecc71;
         &::before {
           -webkit-transform: rotateX(0deg);
           transform: rotateX(0deg);
         }
       }
-
-      // &::after {
-      //     opacity:100;
-      //     .transition();
-      //   }
-      // &::after {
-      //   .transition();
-      //   content: "";
-      //   background-image:url('/img/road.png');
-      //   background-size: cover;
-      //   background-position: center top;
-      //   opacity: 0;
-      //   top: 0;
-      //   left: 0;
-      //   width:100%;
-      //   height:100%;
-      //   position: absolute;
-      //   z-index: -1;
-      // }
     }
   }
 }
