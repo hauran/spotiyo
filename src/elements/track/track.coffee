@@ -1,9 +1,8 @@
 Polymer 'yo-track', 
-  info:null
+  artist:''
+  name:''
+  imgsrc:''
   ready: ->
-    @artist = @info.track.artists[0].name
-    @name = @info.track.name
-    @imgSrc = @info.track.album.images[2].url
     @player = document.querySelector('yo-player')
     @player.playFirst()
 

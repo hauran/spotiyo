@@ -1,5 +1,3 @@
-url = require "url"
-
 Polymer 'yo-login',
   loginClick: ->
     @active = true

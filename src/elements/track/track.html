@@ -1,8 +1,8 @@
-<polymer-element name='yo-track' attributes='info'>
+<polymer-element name='yo-track' attributes='artist name imgsrc'>
 <template>
 	<link rel="stylesheet" type="text/css" href="./track.css">
 	<div artist="{{artist}}" on-click="{{playTrack}}">
-		<img src='{{imgSrc}}' class='pull-left'></img>
+		<img src='{{imgsrc}}' class='pull-left'></img>
 		<div class='pull-left'>
 			{{name}}
 			<div class='artist'>{{artist}}</div>

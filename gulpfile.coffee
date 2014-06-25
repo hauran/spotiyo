@@ -43,11 +43,21 @@ gulp.task  'elements-static', ->
   gulp.src '*.svg', {cwd: paths.src}
     .pipe gulp.dest paths.dest
 
+# gulp.task 'vulcanize', ['elements','style','refresh'], ->
+  # gulp.src '**/*.html', {cwd: paths.dest}
+  #   .pipe shell([
+  #     "vulcanize --inline --strip -o <%= file.path %> <%= file.path %>"
+  #     ])
+
 gulp.task 'vulcanize', ['elements','style','refresh'], ->
-  gulp.src '**/*.html', {cwd: paths.dest}
-    .pipe shell([
-      "vulcanize --inline --strip -o <%= file.path %> <%= file.path %>"
-      ])
+  return gulp.src(paths.build + 'index.html')
+    .pipe(vulcanize({
+      dest: paths.dest,
+      inline: false, 
+      strip: true
+    }))
+    .pipe(gulp.dest(paths.build))
+
 
 gulp.task 'style', ->
   gulp.src '**/*.less', {cwd: paths.less}

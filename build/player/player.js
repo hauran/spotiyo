@@ -1,15 +1,16 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 Polymer('yo-player', {
   play: function(toPlay) {
-    var atts, params, _this;
+    var _this;
     _this = this;
-    params = {
-      allowScriptAccess: "always"
-    };
-    atts = {
-      id: "myytplayer"
-    };
-    return swfobject.embedSWF("http://www.youtube.com/v/K_yBUfMGvzc?enablejsapi=1&playerapiid=ytplayer&version=3", "ytapiplayer", "425", "356", "8", null, null, params, atts);
+    return $.post('/searchTrack', {
+      toPlay: toPlay
+    }, function(res) {
+      var code;
+      code = res.url.split('v=')[1].split('&')[0];
+      _this.active = true;
+      return _this.url = "https://www.youtube.com/embed/" + code + "?autoplay=1";
+    });
   },
   ready: function() {
     this.playlist = document.querySelector('yo-playlist');

@@ -4,7 +4,7 @@ Polymer 'yo-playlist',
     @noHeight = false
     @playlists = []
     @player = document.querySelector('yo-player')
-    
+
   getPlayLists: ->
     _this = @
     $.get '/playlists', (res) ->

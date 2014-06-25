@@ -1,7 +1,7 @@
 <polymer-element name='yo-playlist'>
 <template>
 	<link rel="stylesheet" type="text/css" href="./playlist.css">
-	<div class='overlay-title {{ {active:active, noHeight:noHeight} | tokenList}}'>
+	<div id="titlebar" class='overlay-title {{ {active:active, noHeight:noHeight} | tokenList}}'>
 		<i class='fa fa-angle-left back-angle' on-click="{{close}}"></i><h1>Your Playlists</h1>
 	</div>
 	<div id='container' class='overlay container {{ {active:active, noHeight:noHeight} | tokenList}}'>

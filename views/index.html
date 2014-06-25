@@ -5,6 +5,7 @@
     <script src="/node_modules/polymer/platform.js"></script>
     <script src="/bower_components/jquery/dist/jquery.min.js"></script>
     <script src="/bower_components/jquery-cookie/jquery.cookie.js"></script>
+    <script src="/bower_components/foggy/foggy.min.js"></script>
 
     <link rel="import" href="/node_modules/polymer/polymer.html">
     <link rel='import' href='/build/app/app.html'>
@@ -18,13 +19,14 @@
     <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1">
   </head>
   <body unresolved>
+
+    <yo-playlist id="yoplaylist"></yo-playlist>
+    <yo-player id="yoplayer"></yo-player>
     <div style="position:fixed; width:100%; height:100%">
       <div class='title'>Spotiyo</div>
       <yo-login></yo-login>
     </div>
     <yo-listener></yo-listener>
-    <yo-playlist id="yoplaylist"></yo-playlist>
-    <yo-player id="yoplayer"></yo-player>
 <!-- 
     <button onclick="playIt();">yo play radiohead</button>
     <button onclick="stop();">stop</button> -->
