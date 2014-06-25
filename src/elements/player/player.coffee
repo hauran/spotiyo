@@ -4,7 +4,8 @@ Polymer 'yo-player',
     $.post '/searchTrack', {toPlay:toPlay}, (res) ->
       code = res.url.split('v=')[1].split('&')[0]
       _this.active = true
-      _this.url  = "https://www.youtube.com/embed/#{code}?autoplay=1"
+      # _this.url  = "https://www.youtube.com/embed/#{code}?autoplay=1"
+      Android.showVideo code
 
   ready: ->
     @playlist = document.querySelector('yo-playlist')
@@ -13,6 +14,7 @@ Polymer 'yo-player',
     @noHeight = true
     @loading = true
     @state = 0
+    # @trackIds = []
     @items = []
     
   getTracks: (id,href) ->
@@ -26,6 +28,8 @@ Polymer 'yo-player',
     $.get "/playlists/#{id}/tracks", {href:href}, (res) ->
       _this.loading = false
       _this.items = res.items
+      # $.each res.items, (item) ->
+      #   _this.trackIds.push item.
 
   playFirst: ->
     return if @state is 1

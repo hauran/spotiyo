@@ -9,7 +9,7 @@ Polymer('yo-player', {
       var code;
       code = res.url.split('v=')[1].split('&')[0];
       _this.active = true;
-      return _this.url = "https://www.youtube.com/embed/" + code + "?autoplay=1";
+      return Android.showVideo(code);
     });
   },
   ready: function() {
