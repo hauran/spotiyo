@@ -90,7 +90,7 @@ exports.setup = (app) ->
         name=item.track.name
 
         promises.push (callback) ->
-          searchTrack "#{artist} - #{name}", (rtsp) ->
+          searchTrack artist, name, (rtsp) ->
             item.rtsp = rtsp
             callback null, rtsp
 
@@ -98,38 +98,27 @@ exports.setup = (app) ->
         res.send body
       
 
-  searchTrack = (q, callback) -> 
-    request.get "https://api.spotify.com/v1/search?type=track&q=#{q}",  (error, response, body) ->
-      try 
-        track =  JSON.parse(body).tracks.items[0]
-      catch
-        console.log "searchTrack error #{q}"
-        return callback ''
-
-      if !track
-        return callback ''
-
-      name = track.name 
-      artist = track.artists[0].name
+  searchTrack = (artist, name, callback) ->
       ytSearch "#{artist} #{name}", {maxResults: 1, startIndex: 1}, (err, results)  ->
         if err 
           console.log 'err', err
           return callback ''
-        
+
         url = results[0].url
         videoId = url.split('v=')[1].split('&')[0]
+
         options =
-          url: "http://gdata.youtube.com/feeds/mobile/videos/#{videoId}?alt=json"
+          url: "http://gdata.youtube.com/feeds/api/videos?q=#{videoId}&format=1&alt=json"
           json: true
 
         request.get options, (error, response, body) ->
-          rtspUrl = _.find body.entry.media$group.media$content, (content) ->
-            return content.isDefault is 'true'
+          try
+            rtspUrl = body.feed.entry[0].media$group.media$content[1]
+          catch
+            console.log 'err', "http://gdata.youtube.com/feeds/api/videos?q=#{videoId}&format=1&alt=json"
 
           if !rtspUrl
             return callback ''
 
           callback rtspUrl.url
-
-        
         # res.send results[0]
