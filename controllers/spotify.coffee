@@ -4,6 +4,7 @@ url = require "url"
 ytSearch = require 'youtube-search'
 _ = require 'lodash'
 async = require 'async'
+moment = require 'moment'
 
 if process.env.NODE_ENV is "production"
   redirect_uri = 'http://yoplay-nqitaj4wnb.elasticbeanstalk.com/callback'
@@ -42,6 +43,7 @@ exports.setup = (app) ->
         access_token = body.access_token
         refresh_token = body.refresh_token
         expires_in = body.expires_in
+        expires_on = moment().add('s', expires_in).unix();
 
         options =
           url: "https://api.spotify.com/v1/me"
@@ -60,65 +62,103 @@ exports.setup = (app) ->
           request.get options, (error, response, body) ->
             res.cookie 'access_token', access_token, {path:'/'}
             res.cookie 'refresh_token', refresh_token, {path:'/'}
-            res.cookie 'expires_in', expires_in, {path:'/'}
+            res.cookie 'expires_on', expires_on, {path:'/'}
             res.cookie 'userId', userId, {path:'/'}
             res.redirect "/"
       return
     return
 
   app.get "/playlists", (req, res) ->
-    options =
-      url: "https://api.spotify.com/v1/users/#{req.userId}/playlists"
-      headers:
-        Authorization: "Bearer #{req.access_token}"
-      json: true
-    request.get options, (error, response, body) ->
-      res.send body
+    if req.cookies.expires_on > moment().unix()
+      getPlaylists req,res
+    else 
+      refreshTokens req, res, () ->
+        getPlaylists req,res
 
   app.get "/playlists/:id/tracks", (req,res) ->
+    if req.cookies.expires_on > moment().unix()
+      getTracks req,res
+    else 
+      refreshTokens req, res, () ->
+        getTracks req,res
+
+getPlaylists = (req,res) ->
+  options =
+    url: "https://api.spotify.com/v1/users/#{req.userId}/playlists"
+    headers:
+      Authorization: "Bearer #{req.access_token}"
+    json: true
+  request.get options, (error, response, body) ->
+    res.send body 
+
+getTracks = (req,res) ->
+  options =
+    url: req.query.href
+    headers:
+      Authorization: "Bearer #{req.access_token}"
+    json: true
+    
+  request.get options, (error, response, body) ->
+    done = 0
+    promises = []
+    _.each body.items, (item) ->
+      artist= item.track.artists[0].name
+      name=item.track.name
+
+      promises.push (callback) ->
+        searchTrack artist, name, (rtsp) ->
+          item.rtsp = rtsp
+          callback null, rtsp
+
+    async.parallel promises, (err, results) ->
+      res.send body
+
+searchTrack = (artist, name, callback) ->
+  ytSearch "#{artist} #{name}", {maxResults: 1, startIndex: 1}, (err, results)  ->
+    if err 
+      console.log 'err', err
+      return callback ''
+
+    url = results[0].url
+    videoId = url.split('v=')[1].split('&')[0]
+
     options =
-      url: req.query.href
-      headers:
-        Authorization: "Bearer #{req.access_token}"
+      url: "http://gdata.youtube.com/feeds/api/videos?q=#{videoId}&format=1&alt=json"
       json: true
-      
+
     request.get options, (error, response, body) ->
-      done = 0
-      promises = []
-      _.each body.items, (item) ->
-        artist= item.track.artists[0].name
-        name=item.track.name
+      try
+        rtspUrl = body.feed.entry[0].media$group.media$content[1]
+      catch
+        console.log 'err', "http://gdata.youtube.com/feeds/api/videos?q=#{videoId}&format=1&alt=json"
 
-        promises.push (callback) ->
-          searchTrack artist, name, (rtsp) ->
-            item.rtsp = rtsp
-            callback null, rtsp
+      if !rtspUrl
+        return callback ''
 
-      async.parallel promises, (err, results) ->
-        res.send body
-      
+      callback rtspUrl.url
 
-  searchTrack = (artist, name, callback) ->
-      ytSearch "#{artist} #{name}", {maxResults: 1, startIndex: 1}, (err, results)  ->
-        if err 
-          console.log 'err', err
-          return callback ''
 
-        url = results[0].url
-        videoId = url.split('v=')[1].split('&')[0]
+refreshTokens = (req,res,callback) ->
+  authOptions = 
+    url: 'https://accounts.spotify.com/api/token'
+    headers:
+      'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+    form: 
+      grant_type: 'refresh_token'
+      refresh_token: req.cookies.refresh_token
+    json: true
 
-        options =
-          url: "http://gdata.youtube.com/feeds/api/videos?q=#{videoId}&format=1&alt=json"
-          json: true
+  request.post authOptions, (error, response, body) ->
+    console.log 'refreshed'
+    if !error and response.statusCode is 200
+      access_token = body.access_token
+      expires_in = body.expires_in
+      expires_on = moment().add('s', expires_in).unix()
+      req.access_token = access_token
 
-        request.get options, (error, response, body) ->
-          try
-            rtspUrl = body.feed.entry[0].media$group.media$content[1]
-          catch
-            console.log 'err', "http://gdata.youtube.com/feeds/api/videos?q=#{videoId}&format=1&alt=json"
+      res.cookie 'access_token', access_token, {path:'/'}
+      res.cookie 'expires_on', expires_on, {path:'/'}
+      callback()
+    else
+      res.send 500
 
-          if !rtspUrl
-            return callback ''
-
-          callback rtspUrl.url
-        # res.send results[0]

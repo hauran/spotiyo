@@ -50,8 +50,5 @@ controllerFiles.forEach (controllerFile) ->
 app.get '/', (req, res) ->
 	res.render 'index.html', {}
 
-app.get '/test', (req, res) ->
-	res.render 'test.html', {}
-
 server = http.createServer(app).listen app.get('port'), '0.0.0.0', () ->
 	console.log 'yoplay server listening on port ' + app.get('port')
