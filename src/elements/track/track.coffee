@@ -2,10 +2,10 @@ Polymer 'yo-track',
   artist:''
   name:''
   imgsrc:''
+  rtsp:''
   ready: ->
     @player = document.querySelector('yo-player')
-    @player.playFirst()
 
   playTrack: ->
-    @player.play "#{@artist} - #{@name}"
+    @player.play @rtsp
 

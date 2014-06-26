@@ -11,7 +11,7 @@ Polymer 'yo-playlist',
       _this.playlists = res.items
       _this.noHeight = false
       _this.active = true
-
+      
   selectPlaylist: (evt) ->
     _this = @
     $pl = $(evt.toElement)

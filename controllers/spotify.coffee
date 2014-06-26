@@ -2,6 +2,8 @@ request = require "request"
 querystring = require 'querystring'
 url = require "url"
 ytSearch = require 'youtube-search'
+_ = require 'lodash'
+async = require 'async'
 
 if process.env.NODE_ENV is "production"
   redirect_uri = 'http://yoplay-nqitaj4wnb.elasticbeanstalk.com/callback'
@@ -81,18 +83,53 @@ exports.setup = (app) ->
       json: true
       
     request.get options, (error, response, body) ->
-      res.send body
+      done = 0
+      promises = []
+      _.each body.items, (item) ->
+        artist= item.track.artists[0].name
+        name=item.track.name
+
+        promises.push (callback) ->
+          searchTrack "#{artist} - #{name}", (rtsp) ->
+            item.rtsp = rtsp
+            callback null, rtsp
+
+      async.parallel promises, (err, results) ->
+        res.send body
       
-  app.post "/searchTrack", (req, res, next) ->
-    q = req.body.toPlay
+
+  searchTrack = (q, callback) -> 
     request.get "https://api.spotify.com/v1/search?type=track&q=#{q}",  (error, response, body) ->
-      track =  JSON.parse(body).tracks.items[0]
+      try 
+        track =  JSON.parse(body).tracks.items[0]
+      catch
+        console.log "searchTrack error #{q}"
+        return callback ''
+
+      if !track
+        return callback ''
+
       name = track.name 
       artist = track.artists[0].name
-
       ytSearch "#{artist} #{name}", {maxResults: 1, startIndex: 1}, (err, results)  ->
         if err 
           console.log 'err', err
-          res.send 500
-          
-        res.send results[0]
+          return callback ''
+        
+        url = results[0].url
+        videoId = url.split('v=')[1].split('&')[0]
+        options =
+          url: "http://gdata.youtube.com/feeds/mobile/videos/#{videoId}?alt=json"
+          json: true
+
+        request.get options, (error, response, body) ->
+          rtspUrl = _.find body.entry.media$group.media$content, (content) ->
+            return content.isDefault is 'true'
+
+          if !rtspUrl
+            return callback ''
+
+          callback rtspUrl.url
+
+        
+        # res.send results[0]
