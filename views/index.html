@@ -7,6 +7,7 @@
     <script src="/bower_components/jquery-cookie/jquery.cookie.js"></script>
     <script src="/bower_components/lodash/dist/lodash.min.js"></script>
     <script src="/bower_components/moment/min/moment.min.js"></script>
+    <script src="/bower_components/hammerjs/hammer.min.js"></script>
 
     <link rel="import" href="/node_modules/polymer/polymer.html">
     <link rel='import' href='/build/app/app.html'>
@@ -32,6 +33,44 @@
     <button onclick="playIt();">yo play radiohead</button>
     <button onclick="stop();">stop</button> -->
     <script>
+      var mc = new Hammer(document.body);
+
+      mc.on("swipedown", function(event) {
+        if(event.gesture.startEvent.center.clientY < 65) {
+          console.log('showMic')
+        }
+      });
+
+      mc.on("swipeleft", function(event) {
+        event.preventDefault();
+        event.stopPropagation()
+        if(event.gesture.velocityX > 1) {
+          console.log('nextsong', event)
+        }
+      });
+
+      mc.on("swiperight", function(event) {
+        event.preventDefault();
+        event.stopPropagation()
+        if(event.gesture.velocityX > 1) {
+          console.log('prevSong', event)
+        }
+      });
+
+      var listener = document.querySelector('yo-listener');
+      function spoken(words){
+        listener.command = words;
+      }
+
+      function listening(){
+        listener.isListening();
+      }
+
+    //   setTimeout(function(){
+    //   listening();
+    //   listener.command = 'play Radiohead';
+    // },1000);
+
       // var redirectURL = 'http%3A%2F%2Flocalhost%3A3000%2Flogin';
       // var clientId = '5bc5d8c7b3f74d089b4cb08fee835e03'
       // var clientSecret = 'ca041b7ba4ae4905a66cc6fc5b542ac5';

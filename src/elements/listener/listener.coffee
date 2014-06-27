@@ -5,61 +5,31 @@ Polymer 'yo-listener',
     _this = @
     @clearTO = setTimeout(->
       _this.listening = false
-      return
+      _this.cancel = false
+      _this.command=''
     , 3000)
     return
 
-  cleanCommand: (cmd, delimit) ->
-    cmd.split(delimit)[1]
+  processCmd: (command) ->
+    @listening = true
+    @command = command
+    @clear()
 
-  processCmd: ->
-    cmd = @transcript.trim().toLowerCase()
-    if (@listening and cmd.indexOf("play") is 0) or cmd.indexOf("yo play") is 0
-      @listening = true
-      toPlay = @cleanCommand cmd, 'play'
-      @command = "playing #{toPlay}"
-      @player.toPlay toPlay
+  isListening: ->
+    @command=''
+    @listening = true
+    @cancel=false
 
-      @clear()
-    else if cmd.indexOf("yo") is 0 or cmd.indexOf("Yelp") is 0
-      @listening = true
-      @command = "what up?"
-      @clear()
-
-    else if cmd.indexOf("stop") is 0
-      @player.stop()
-
-    return
-
-  listen: ->
-    unless "webkitSpeechRecognition" of window
-      alert "Web speech API is not supported in this browser"
-    else
-      recognizer = new webkitSpeechRecognition()
-      recognizer.continuous = true
-      recognizer.interimResults = true
-      recognizer.lang = [
-        "English"
-        [
-          "en-US"
-          "United States"
-        ]
-      ]
-      _this = @
-      recognizer.onresult = (e) ->
-        _this.transcript = ""
-        if e.results.length
-          i = event.resultIndex
-          while i < event.results.length
-            _this.transcript = event.results[i][0].transcript
-            _this.processCmd()
-            i++
-        return
-
-      recognizer.start()
+  cancelClick: ->
+    @cancel = true
+    _this = @
+    setTimeout () ->
+      _this.isListening()
+      Android.speak()
+    ,500
 
   ready: () -> 
-    @transcript = ""
-    @clearTO = undefined
+    @command = ''
+    @cancel = false
     @listening = false
-    @listen()
+    @clearTO = undefined

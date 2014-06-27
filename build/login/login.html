@@ -2,7 +2,7 @@
 <template>
 	<link rel="stylesheet" type="text/css" href="./login.css">
 	<div>
-		<a href="/login" on-click="{{loginClick}}" class="{{ {active:active} | tokenList}}" disabled><i class='fa fa-spotify'></i>{{login}}</a>
+		<a href="/login" on-click="{{loginClick}}" class="fliplink {{ {active:active} | tokenList}}"><i class='fa fa-spotify'></i>{{login}}</a>
 	</div>
 </template>
 <script src="./login.js"></script>

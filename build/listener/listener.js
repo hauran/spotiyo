@@ -7,58 +7,34 @@ Polymer('yo-listener', {
     _this = this;
     this.clearTO = setTimeout(function() {
       _this.listening = false;
+      _this.cancel = false;
+      return _this.command = '';
     }, 3000);
   },
-  cleanCommand: function(cmd, delimit) {
-    return cmd.split(delimit)[1];
+  processCmd: function(command) {
+    this.listening = true;
+    this.command = command;
+    return this.clear();
   },
-  processCmd: function() {
-    var cmd, toPlay;
-    cmd = this.transcript.trim().toLowerCase();
-    if ((this.listening && cmd.indexOf("play") === 0) || cmd.indexOf("yo play") === 0) {
-      this.listening = true;
-      toPlay = this.cleanCommand(cmd, 'play');
-      this.command = "playing " + toPlay;
-      this.player.toPlay(toPlay);
-      this.clear();
-    } else if (cmd.indexOf("yo") === 0 || cmd.indexOf("Yelp") === 0) {
-      this.listening = true;
-      this.command = "what up?";
-      this.clear();
-    } else if (cmd.indexOf("stop") === 0) {
-      this.player.stop();
-    }
+  isListening: function() {
+    this.command = '';
+    this.listening = true;
+    return this.cancel = false;
   },
-  listen: function() {
-    var recognizer, _this;
-    if (!("webkitSpeechRecognition" in window)) {
-      return alert("Web speech API is not supported in this browser");
-    } else {
-      recognizer = new webkitSpeechRecognition();
-      recognizer.continuous = true;
-      recognizer.interimResults = true;
-      recognizer.lang = ["English", ["en-US", "United States"]];
-      _this = this;
-      recognizer.onresult = function(e) {
-        var i;
-        _this.transcript = "";
-        if (e.results.length) {
-          i = event.resultIndex;
-          while (i < event.results.length) {
-            _this.transcript = event.results[i][0].transcript;
-            _this.processCmd();
-            i++;
-          }
-        }
-      };
-      return recognizer.start();
-    }
+  cancelClick: function() {
+    var _this;
+    this.cancel = true;
+    _this = this;
+    return setTimeout(function() {
+      _this.isListening();
+      return Android.speak();
+    }, 500);
   },
   ready: function() {
-    this.transcript = "";
-    this.clearTO = void 0;
+    this.command = '';
+    this.cancel = false;
     this.listening = false;
-    return this.listen();
+    return this.clearTO = void 0;
   }
 });
 
