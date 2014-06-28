@@ -6,10 +6,7 @@ Polymer 'yo-login',
   showPlaylist: ->
     _this = @
     @activePlaylists = true
-    setTimeout ->
-        _this.playlist.open()
-    , 250
-
+    _this.playlist.open()
     setTimeout ->
       _this.activePlaylists = false
     , 1000

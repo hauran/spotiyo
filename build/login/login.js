@@ -8,9 +8,7 @@ Polymer('yo-login', {
     var _this;
     _this = this;
     this.activePlaylists = true;
-    setTimeout(function() {
-      return _this.playlist.open();
-    }, 250);
+    _this.playlist.open();
     return setTimeout(function() {
       return _this.activePlaylists = false;
     }, 1000);
