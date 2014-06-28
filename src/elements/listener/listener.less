@@ -12,7 +12,7 @@
   left:0;
   padding:2px;
   font-size:1.2em;
-  .transition(0.1, ease-out);
+  .transition();
 
   a.fliplink {
     font-size: 2em;
@@ -22,7 +22,7 @@
   }
 
   &.active {
-    .transition(0.5, ease-out);
+    .transition();
     top:0;
   }
 
@@ -32,6 +32,9 @@
 
   .message {
     padding:30px;
+    & > div {
+      text-align: center;
+    }
   }
 
   i.fa {

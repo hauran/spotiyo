@@ -8,6 +8,7 @@ Polymer('yo-listener', {
     this.clearTO = setTimeout(function() {
       _this.listening = false;
       _this.cancel = false;
+      _this.tryAgain = false;
       return _this.command = '';
     }, 3000);
   },
@@ -16,23 +17,43 @@ Polymer('yo-listener', {
     this.command = command;
     return this.clear();
   },
+  stopListening: function() {
+    this.command = '';
+    this.listening = false;
+    this.cancel = false;
+    return this.tryAgain = false;
+  },
   isListening: function() {
     this.command = '';
     this.listening = true;
-    return this.cancel = false;
+    this.cancel = false;
+    return this.tryAgain = false;
   },
-  cancelClick: function() {
+  tryAgainListening: function() {
     var _this;
-    this.cancel = true;
+    this.tryAgain = true;
     _this = this;
     return setTimeout(function() {
       _this.isListening();
       return Android.speak();
     }, 500);
   },
+  cancelListening: function() {
+    var _this;
+    this.cancel = true;
+    _this = this;
+    return setTimeout(function() {
+      _this.listening = false;
+      return _this.clearTO = void 0;
+    }, 500);
+  },
+  refresh: function() {
+    return window.location.reload();
+  },
   ready: function() {
     this.command = '';
     this.cancel = false;
+    this.tryAgain = false;
     this.listening = false;
     return this.clearTO = void 0;
   }

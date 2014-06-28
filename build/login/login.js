@@ -4,11 +4,24 @@ Polymer('yo-login', {
     this.active = true;
     return this.login = 'hold on';
   },
+  showPlaylist: function() {
+    var _this;
+    _this = this;
+    this.activePlaylists = true;
+    setTimeout(function() {
+      return _this.playlist.open();
+    }, 250);
+    return setTimeout(function() {
+      return _this.activePlaylists = false;
+    }, 1000);
+  },
   ready: function() {
     var _this;
     this.url = '';
     this.active = false;
+    this.activePlaylists = false;
     this.login = 'log in';
+    this.loggedIn = false;
     this.playlist = document.querySelector('yo-playlist');
     _this = this;
     if ($.cookie('userId')) {

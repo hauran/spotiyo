@@ -38,3 +38,6 @@ Polymer 'yo-player',
     Android.hideVideo
     _this = @
     _this.playlist.open()
+    setTimeout ->
+      _this.noHeight = true
+    ,450

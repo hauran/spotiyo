@@ -4,6 +4,7 @@ Polymer 'yo-playlist',
     @noHeight = false
     @playlists = []
     @player = document.querySelector('yo-player')
+    @home = document.querySelector('yo-login')
 
   getPlayLists: ->
     _this = @
@@ -11,6 +12,9 @@ Polymer 'yo-playlist',
       _this.playlists = res.items
       _this.noHeight = false
       _this.active = true
+      setTimeout ->
+        _this.home.loggedIn = true
+      ,500
       
   selectPlaylist: (evt) ->
     _this = @
@@ -24,7 +28,7 @@ Polymer 'yo-playlist',
       _this.noHeight = true
     ,450
 
-  open:() ->
+  open: ->
     _this = @
     @noHeight = false
     setTimeout ->

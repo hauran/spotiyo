@@ -4,7 +4,8 @@ Polymer('yo-playlist', {
     this.active = false;
     this.noHeight = false;
     this.playlists = [];
-    return this.player = document.querySelector('yo-player');
+    this.player = document.querySelector('yo-player');
+    return this.home = document.querySelector('yo-login');
   },
   getPlayLists: function() {
     var _this;
@@ -12,7 +13,10 @@ Polymer('yo-playlist', {
     return $.get('/playlists', function(res) {
       _this.playlists = res.items;
       _this.noHeight = false;
-      return _this.active = true;
+      _this.active = true;
+      return setTimeout(function() {
+        return _this.home.loggedIn = true;
+      }, 500);
     });
   },
   selectPlaylist: function(evt) {

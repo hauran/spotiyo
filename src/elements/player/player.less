@@ -7,17 +7,13 @@
 
   .container, .overlay-title {
     visibility: hidden;
-    -webkit-transform: translateX(100%);
-    transform: translateX(100%);
-    -webkit-transition: -webkit-transform 0.4s ease-in-out, visibility 0s 0.4s;
-    transition: transform 0.4s ease-in-out, visibility 0s 0.4s;
+    left:100%;
+    .transition();
 
     &.active {
       visibility: visible;
-      -webkit-transform: translateX(0%);
-      transform: translateX(0%);
-      -webkit-transition: -webkit-transform 0.4s ease-in-out;
-      transition: transform 0.4s ease-in-out;
+      left:0;
+      .transition();
     }
   }
 

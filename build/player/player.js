@@ -42,7 +42,10 @@ Polymer('yo-player', {
     this.active = false;
     Android.hideVideo;
     _this = this;
-    return _this.playlist.open();
+    _this.playlist.open();
+    return setTimeout(function() {
+      return _this.noHeight = true;
+    }, 450);
   }
 });
 

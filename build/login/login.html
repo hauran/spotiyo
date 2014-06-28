@@ -1,8 +1,12 @@
 <polymer-element name='yo-login' attributes='loggingIn'>
 <template>
 	<link rel="stylesheet" type="text/css" href="./login.css">
-	<div>
+	<div class="{{ {noHeight:loggedIn} | tokenList}}">
 		<a href="/login" on-click="{{loginClick}}" class="fliplink {{ {active:active} | tokenList}}"><i class='fa fa-spotify'></i>{{login}}</a>
+	</div>
+
+	<div class="menu {{ {noHeight:!loggedIn} | tokenList}}">
+		<a on-click="{{showPlaylist}}" class="fliplink {{ {active:activePlaylists} | tokenList}}"><i class='fa fa-music'></i>Playlists</a>
 	</div>
 </template>
 <script src="./login.js"></script>
