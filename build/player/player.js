@@ -11,15 +11,16 @@ Polymer('yo-player', {
     this.loading = true;
     return this.items = [];
   },
-  loadPlaylist: function() {
-    var rtsps;
-    rtsps = [];
-    _.each(this.items, function(item) {
-      return rtsps.push(item.rtsp);
-    });
-    return Android.loadPlaylist(rtsps.join());
+  play: function(uri) {
+    var err;
+    try {
+      return Android.play(uri);
+    } catch (_error) {
+      err = _error;
+      return console.log(err);
+    }
   },
-  getTracks: function(id, href) {
+  getTracks: function(id, href, uri) {
     var _this;
     _this = this;
     this.noHeight = false;
@@ -34,13 +35,12 @@ Polymer('yo-player', {
     }, function(res) {
       _this.loading = false;
       _this.items = res.items;
-      return _this.loadPlaylist();
+      return _this.play(uri);
     });
   },
   close: function() {
     var _this;
     this.active = false;
-    Android.hideVideo;
     _this = this;
     _this.playlist.open();
     return setTimeout(function() {

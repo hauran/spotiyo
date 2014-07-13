@@ -3,12 +3,13 @@ Polymer('yo-track', {
   artist: '',
   name: '',
   imgsrc: '',
-  rtsp: '',
+  uri: '',
   ready: function() {
     return this.player = document.querySelector('yo-player');
   },
   playTrack: function() {
-    return this.player.play(this.rtsp);
+    console.log(this.uri);
+    return this.player.play(this.uri);
   }
 });
 

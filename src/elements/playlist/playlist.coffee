@@ -15,15 +15,18 @@ Polymer 'yo-playlist',
       setTimeout ->
         _this.home.loggedIn = true
       ,500
-      
+
   selectPlaylist: (evt) ->
     _this = @
     $pl = $(evt.toElement)
     id = $pl.attr 'id'
     href = $pl.attr 'tracks-href'
+    uri = $pl.attr 'uri'
     @active = false
     @player.title = $pl.html()
-    @player.getTracks id,href
+
+    @player.getTracks id,href,uri
+
     setTimeout ->
       _this.noHeight = true
     ,450
@@ -37,4 +40,3 @@ Polymer 'yo-playlist',
 
   close:() ->
     @active = false
-  

@@ -11,18 +11,18 @@ Polymer 'yo-player',
     # @trackIds = []
     @items = []
 
-  loadPlaylist: ->
-    rtsps = []
-    _.each @items, (item) ->
-      rtsps.push item.rtsp
+  play: (uri) ->
+    try
+      Android.play uri
+    catch err
+      console.log err
 
-    Android.loadPlaylist rtsps.join()
-    
-  getTracks: (id,href) ->
+  getTracks: (id,href,uri) ->
     _this = @
     @noHeight = false
     @items = []
     @loading = true
+
     setTimeout ->
       $(window).scrollTop(0);
       _this.active = true
@@ -31,11 +31,10 @@ Polymer 'yo-player',
     $.get "/playlists/#{id}/tracks", {href:href}, (res) ->
       _this.loading = false
       _this.items = res.items
-      _this.loadPlaylist()
+      _this.play uri
 
   close:() ->
     @active = false
-    Android.hideVideo
     _this = @
     _this.playlist.open()
     setTimeout ->

@@ -20,14 +20,15 @@ Polymer('yo-playlist', {
     });
   },
   selectPlaylist: function(evt) {
-    var $pl, href, id, _this;
+    var $pl, href, id, uri, _this;
     _this = this;
     $pl = $(evt.toElement);
     id = $pl.attr('id');
     href = $pl.attr('tracks-href');
+    uri = $pl.attr('uri');
     this.active = false;
     this.player.title = $pl.html();
-    this.player.getTracks(id, href);
+    this.player.getTracks(id, href, uri);
     return setTimeout(function() {
       return _this.noHeight = true;
     }, 450);

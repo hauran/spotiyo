@@ -1,11 +1,11 @@
-Polymer 'yo-track', 
+Polymer 'yo-track',
   artist:''
   name:''
   imgsrc:''
-  rtsp:''
+  uri:''
   ready: ->
     @player = document.querySelector('yo-player')
 
   playTrack: ->
-    @player.play @rtsp
-
+    console.log @uri
+    @player.play @uri
