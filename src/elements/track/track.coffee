@@ -13,10 +13,10 @@ Polymer 'yo-track',
   playTrack: ->
     currentPlaying = document.querySelector('yo-tracks').shadowRoot.querySelector('[playing=true]')
     if currentPlaying
-      currentPlaying.shadowRoot.querySelector('.item-name').classList.remove('playing')
+      currentPlaying.shadowRoot.querySelector('.item-name').classList.remove('selected')
       currentPlaying.removeAttribute 'playing'
 
     this.setAttribute "playing", "true"
-    this.shadowRoot.querySelector('.item-name').classList.add('playing')
+    this.shadowRoot.querySelector('.item-name').classList.add('selected')
     @classList.add 'playing'
     @tracks.play @uri

@@ -7,10 +7,11 @@
 	height: 100%;
 }
 .overlay-title {
+  background-color: rgba(44, 62, 80, 0.8);
 	color:white;
-	padding:10px;
+	padding:5px;
 	position: fixed;
-    width:100%;
+  width:100%;
 	z-index: 2;
 	h1 {
 	    margin:0;
@@ -20,7 +21,7 @@
 }
 .container {
 	.content {
-		margin-top:65px;
+		margin-top:57px;
 	}
 }
 
@@ -30,11 +31,23 @@ ul {
 	list-style: none;
 }
 
+
 .item-name {
 	padding:15px 10px;
 	border-bottom:1px solid rgba(44, 62, 80, 0.8);
 	font-size: 1.5em;
 	color: white;
+  background: #34495e;
+  border-top: 1px solid rgba(44,62,80,0.8);
+  border-bottom: 1px solid rgba(44,62,80,.8);
+
+  &.selected{
+    background-color:#2c3e50;
+    color:#2ecc71;
+    border-top:1px solid rgba(255, 255, 255,0.8);
+    border-bottom:1px solid rgba(255, 255, 255,0.8);
+    .transition();
+  }
 }
 
 .loading {
