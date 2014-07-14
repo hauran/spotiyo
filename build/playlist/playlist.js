@@ -5,7 +5,7 @@ Polymer('yo-playlist', {
     this.noHeight = false;
     this.playlists = [];
     this.selected = null;
-    this.player = document.querySelector('yo-player');
+    this.tracks = document.querySelector('yo-tracks');
     return this.home = document.querySelector('yo-login');
   },
   getPlayLists: function() {
@@ -29,8 +29,8 @@ Polymer('yo-playlist', {
     href = $pl.attr('tracks-href');
     uri = $pl.attr('uri');
     this.active = false;
-    this.player.title = $pl.html();
-    this.player.getTracks(id, href, uri);
+    this.tracks.title = $pl.html();
+    this.tracks.getTracks(id, href, uri);
     return setTimeout(function() {
       return _this.noHeight = true;
     }, 450);

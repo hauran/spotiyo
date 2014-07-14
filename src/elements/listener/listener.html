@@ -5,6 +5,10 @@
 		<div class='message {{ {noHeight:command!=""} | tokenList}}'>
 			<h2>What should I play?</h2>
 			<button on-click="{{refresh}}">refresh</button>
+
+			<button on-click="{{toggle}}">toggle</button>
+
+			<button on-click="{{next}}">next</button>
 		</div>
 
 		<div class='message {{ {noHeight:command==""} | tokenList}}'>

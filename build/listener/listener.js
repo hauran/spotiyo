@@ -50,6 +50,12 @@ Polymer('yo-listener', {
   refresh: function() {
     return window.location.reload();
   },
+  toggle: function() {
+    return Android.togglePlay();
+  },
+  next: function() {
+    return Android.next();
+  },
   ready: function() {
     this.command = '';
     this.cancel = false;

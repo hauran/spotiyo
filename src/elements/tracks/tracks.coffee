@@ -1,4 +1,4 @@
-Polymer 'yo-player',
+Polymer 'yo-tracks',
   play: (rtsp) ->
     Android.loadVideo rtsp
 
@@ -33,7 +33,7 @@ Polymer 'yo-player',
       _this.loading = false
       _this.items = res.items
       _this.play uri
-      
+
 
   close:() ->
     @active = false

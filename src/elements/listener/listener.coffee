@@ -47,7 +47,13 @@ Polymer 'yo-listener',
   refresh: ->
     window.location.reload()
 
-  ready: () -> 
+  toggle: ->
+    Android.togglePlay()
+
+  next: ->
+    Android.next()
+
+  ready: () ->
     @command = ''
     @cancel = false
     @tryAgain = false

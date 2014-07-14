@@ -4,7 +4,7 @@ Polymer 'yo-playlist',
     @noHeight = false
     @playlists = []
     @selected = null
-    @player = document.querySelector('yo-player')
+    @tracks = document.querySelector('yo-tracks')
     @home = document.querySelector('yo-login')
 
   getPlayLists: ->
@@ -25,9 +25,9 @@ Polymer 'yo-playlist',
     href = $pl.attr 'tracks-href'
     uri = $pl.attr 'uri'
     @active = false
-    @player.title = $pl.html()
+    @tracks.title = $pl.html()
 
-    @player.getTracks id,href,uri
+    @tracks.getTracks id,href,uri
 
     setTimeout ->
       _this.noHeight = true
