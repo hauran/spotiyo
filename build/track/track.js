@@ -5,11 +5,16 @@ Polymer('yo-track', {
   imgsrc: '',
   uri: '',
   ready: function() {
-    return this.player = document.querySelector('yo-player');
+    return this.tracks = document.querySelector('yo-tracks');
+  },
+  domReady: function() {
+    if (this.number === 0) {
+      return this.setAttribute("playing", "true");
+    }
   },
   playTrack: function() {
     var currentPlaying;
-    currentPlaying = document.querySelector('yo-player').shadowRoot.querySelector('[playing=true]');
+    currentPlaying = document.querySelector('yo-tracks').shadowRoot.querySelector('[playing=true]');
     if (currentPlaying) {
       currentPlaying.shadowRoot.querySelector('.item-name').classList.remove('playing');
       currentPlaying.removeAttribute('playing');
@@ -17,7 +22,7 @@ Polymer('yo-track', {
     this.setAttribute("playing", "true");
     this.shadowRoot.querySelector('.item-name').classList.add('playing');
     this.classList.add('playing');
-    return this.player.play(this.uri);
+    return this.tracks.play(this.uri);
   }
 });
 

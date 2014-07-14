@@ -14,6 +14,10 @@ Polymer('yo-tracks', {
   },
   play: function(uri) {
     var err;
+    console.log(document.querySelector('yo-player'));
+    setTimeout(function() {
+      return document.querySelector('yo-player').shadowRoot.querySelector('.controls').classList.add('showControls');
+    }, 350);
     try {
       return Android.play(uri);
     } catch (_error) {

@@ -10,7 +10,7 @@
 			<!-- <iframe id="ytplayer" type="text/html" width="100%" height="100%" src="{{url}}" frameborder="0" allowfullscreen></iframe> -->
 			<div class='tracks'>
 				<template repeat="{{item, i in items }}">
-				 	<yo-track number="{{i}}" playing="{{true:i==0}}" artist='{{item.track.artists[0].name}}' name='{{item.track.name}}' imgsrc='{{item.track.album.images[2].url}}' uri='{{item.track.uri}}'></yo-track>
+				 	<yo-track number="{{i}}" artist='{{item.track.artists[0].name}}' name='{{item.track.name}}' imgsrc='{{item.track.album.images[2].url}}' uri='{{item.track.uri}}'></yo-track>
 				</template>
 			</div>
 		</div>

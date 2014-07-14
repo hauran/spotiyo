@@ -13,6 +13,10 @@ Polymer 'yo-tracks',
     @items = []
 
   play: (uri) ->
+    console.log document.querySelector('yo-player')
+    setTimeout ->
+      document.querySelector('yo-player').shadowRoot.querySelector('.controls').classList.add('showControls')
+    ,350
     try
       Android.play uri
     catch err
@@ -33,7 +37,6 @@ Polymer 'yo-tracks',
       _this.loading = false
       _this.items = res.items
       _this.play uri
-
 
   close:() ->
     @active = false
