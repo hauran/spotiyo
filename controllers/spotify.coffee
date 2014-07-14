@@ -97,8 +97,6 @@ getTracks = (req,res) ->
       Authorization: "Bearer #{req.access_token}"
     json: true
 
-  console.log options
-
   request.get options, (error, response, body) ->
     # console.log 'error', error
     # console.log 'response', response

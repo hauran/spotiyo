@@ -8,7 +8,15 @@ Polymer('yo-track', {
     return this.player = document.querySelector('yo-player');
   },
   playTrack: function() {
-    console.log(this.uri);
+    var currentPlaying;
+    currentPlaying = document.querySelector('yo-player').shadowRoot.querySelector('[playing=true]');
+    if (currentPlaying) {
+      currentPlaying.shadowRoot.querySelector('.item-name').classList.remove('playing');
+      currentPlaying.removeAttribute('playing');
+    }
+    this.setAttribute("playing", "true");
+    this.shadowRoot.querySelector('.item-name').classList.add('playing');
+    this.classList.add('playing');
     return this.player.play(this.uri);
   }
 });

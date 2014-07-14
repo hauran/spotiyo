@@ -16,7 +16,7 @@ handle = (stream)->
     util.log.apply this, arguments
     stream.end()
 
-paths = 
+paths =
   src:'./src/elements'
   less:'./src/less'
   dest:'build/'
@@ -53,7 +53,7 @@ gulp.task 'vulcanize', ['elements','style','refresh'], ->
   return gulp.src(paths.build + 'index.html')
     .pipe(vulcanize({
       dest: paths.dest,
-      inline: false, 
+      inline: false,
       strip: true
     }))
     .pipe(gulp.dest(paths.build))

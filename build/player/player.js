@@ -9,6 +9,7 @@ Polymer('yo-player', {
     this.active = false;
     this.noHeight = true;
     this.loading = true;
+    this.playing = null;
     return this.items = [];
   },
   play: function(uri) {

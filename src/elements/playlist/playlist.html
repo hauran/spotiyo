@@ -8,7 +8,7 @@
 		<div class='content'>
 			 <ul id='list'>
 				 <template repeat="{{playlist in playlists}}">
-					<li class='item-name' on-click="{{selectPlaylist}}" id="{{playlist.id}}" uri="{{playlist.uri}}" tracks-href="{{playlist.tracks.href}}">{{playlist.name}}</li>
+					<li class='item-name {{ {selected:selected==playlist.id} | tokenList}}' on-click="{{selectPlaylist}}" id="{{playlist.id}}" uri="{{playlist.uri}}" tracks-href="{{playlist.tracks.href}}">{{playlist.name}}</li>
 				</template>
 			</ul>
 		</div>

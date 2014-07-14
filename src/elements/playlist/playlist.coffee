@@ -3,6 +3,7 @@ Polymer 'yo-playlist',
     @active = false
     @noHeight = false
     @playlists = []
+    @selected = null
     @player = document.querySelector('yo-player')
     @home = document.querySelector('yo-login')
 
@@ -20,6 +21,7 @@ Polymer 'yo-playlist',
     _this = @
     $pl = $(evt.toElement)
     id = $pl.attr 'id'
+    @selected = id
     href = $pl.attr 'tracks-href'
     uri = $pl.attr 'uri'
     @active = false

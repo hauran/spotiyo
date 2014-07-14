@@ -8,6 +8,7 @@ Polymer 'yo-player',
     @active = false
     @noHeight = true
     @loading = true
+    @playing = null
     # @trackIds = []
     @items = []
 
@@ -32,6 +33,7 @@ Polymer 'yo-player',
       _this.loading = false
       _this.items = res.items
       _this.play uri
+      
 
   close:() ->
     @active = false

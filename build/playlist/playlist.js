@@ -4,6 +4,7 @@ Polymer('yo-playlist', {
     this.active = false;
     this.noHeight = false;
     this.playlists = [];
+    this.selected = null;
     this.player = document.querySelector('yo-player');
     return this.home = document.querySelector('yo-login');
   },
@@ -24,6 +25,7 @@ Polymer('yo-playlist', {
     _this = this;
     $pl = $(evt.toElement);
     id = $pl.attr('id');
+    this.selected = id;
     href = $pl.attr('tracks-href');
     uri = $pl.attr('uri');
     this.active = false;
