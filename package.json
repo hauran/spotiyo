@@ -11,7 +11,11 @@
     "coffee-script": "",
     "browserify": "",
     "cors":"2.1.1",
-    "body-parser":"1.4.3 "
+    "body-parser":"1.4.3 ",
+    "cookie-parser":"*",
+    "moment":"*",
+    "async":"*",
+    "polymer": "git://github.com/Custom-Elements/polymer"
   },
   "license": "MIT",
   "scripts": {
