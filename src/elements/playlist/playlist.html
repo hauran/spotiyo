@@ -1,6 +1,6 @@
 <polymer-element name='yo-playlist'>
 <template>
-	<link rel="stylesheet" type="text/css" href="./playlist.css">
+	<link rel="stylesheet" type="text/css" href="./playlist.less">
 	<div id="titlebar" class='overlay-title {{ {active:active, noHeight:noHeight} | tokenList}}'>
 		<i class='fa fa-angle-left back-angle' on-click="{{close}}"></i><h1>Your Playlists</h1>
 	</div>
@@ -15,5 +15,5 @@
 	</div>
 </template>
 
-<script src="./playlist.js"></script>
+<script src="./playlist.coffee"></script>
 </polymer-element>

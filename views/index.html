@@ -2,22 +2,11 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <script src="/node_modules/polymer/platform.js"></script>
-    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="/bower_components/jquery-cookie/jquery.cookie.js"></script>
-    <script src="/bower_components/lodash/dist/lodash.min.js"></script>
-    <script src="/bower_components/moment/min/moment.min.js"></script>
-
+    <script src="/lib/vendor.js"></script>
     <link rel="import" href="/node_modules/polymer/polymer.html">
-    <link rel='import' href='/build/app/app.html'>
-    <link rel='import' href='/build/listener/listener.html'>
-    <link rel='import' href='/build/playlist/playlist.html'>
-    <link rel='import' href='/build/tracks/tracks.html'>
-    <link rel='import' href='/build/track/track.html'>
-    <link rel='import' href='/build/player/player.html'>
-    <link rel='import' href='/build/login/login.html'>
-
-    <link rel="stylesheet" polymer-scope="global" type="text/css" href="build/main.css">
+    <link rel='import' href='/elements/elements.html'>
+    
+    <link rel="stylesheet" polymer-scope="global" type="text/css" href="style/main.css">
     <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1">
   </head>
   <body unresolved>
@@ -28,12 +17,11 @@
       <div class='title'>Spotiyo</div>
       <yo-login></yo-login>
     </div>
-
     <yo-player></yo-player>
     <yo-listener></yo-listener>
-<!--
-    <button onclick="playIt();">yo play radiohead</button>
-    <button onclick="stop();">stop</button> -->
+
+
+
     <script>
       var listener = document.querySelector('yo-listener');
       function spoken(words){
@@ -47,16 +35,6 @@
       function cancelListening() {
         listener.stopListening();
       }
-
-      // var playIt = function(){
-      //   var playlist = document.querySelector('yo-playlist')
-      //   playlist.toPlay('radiohead');
-      // }
-
-      // var stop = function(){
-      //   var playlist = document.querySelector('yo-playlist')
-      //   playlist.stop();
-      // }
     </script>
   </body>
 </html>

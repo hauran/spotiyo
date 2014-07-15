@@ -1,8 +1,55 @@
-<polymer-element name='yo-listener'>
+<polymer-element name="yo-listener">
 <template>
-	<link rel="stylesheet" type="text/css" href="./listener.css">
-	<div id='container' class='container {{ {active:listening} | tokenList}}'>
-		<div class='message {{ {noHeight:command!=""} | tokenList}}'>
+	<style>:host > .container {
+  text-align: center;
+  z-index: 100;
+  width: 100%;
+  height: 100%;
+  background-color: #2ecc71;
+  color: white;
+  position: fixed;
+  top: -100%;
+  left: 0;
+  padding: 2px;
+  font-size: 1.2em;
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+:host > .container a.fliplink {
+  font-size: 2em;
+  margin-top: 50px;
+  padding: 20px 15px 20px 0;
+  font-weight: bold;
+}
+:host > .container.active {
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+  top: 0;
+}
+:host > .container h1 {
+  display: inline;
+}
+:host > .container .message {
+  padding: 30px;
+}
+:host > .container .message > div {
+  text-align: center;
+}
+:host > .container i.fa {
+  margin-left: 15px;
+}
+:host > .container .fa-quote-left,
+:host > .container .fa-quote-right {
+  position: relative;
+  top: -15px;
+}
+</style>
+	<div id="container" class="container {{ {active:listening} | tokenList}}">
+		<div class="message {{ {noHeight:command!=&quot;&quot;} | tokenList}}">
 			<h2>What should I play?</h2>
 			<button on-click="{{refresh}}">refresh</button>
 
@@ -11,24 +58,114 @@
 			<button on-click="{{next}}">next</button>
 		</div>
 
-		<div class='message {{ {noHeight:command==""} | tokenList}}'>
-			<i class='fa fa-quote-left'></i><h1>{{command}}</h1><i class='fa fa-quote-right'></i>
+		<div class="message {{ {noHeight:command==&quot;&quot;} | tokenList}}">
+			<i class="fa fa-quote-left"></i><h1>{{command}}</h1><i class="fa fa-quote-right"></i>
 			<div>
 				<a href="javascript:void(0)" on-click="{{tryAgainListening}}" class="fliplink {{ {active:tryAgain} | tokenList}}">
-					<i class='fa fa-undo'></i>Try Again
+					<i class="fa fa-undo"></i>Try Again
 				</a>
 			</div>
 		</div>
 
-		<div class='message'>
+		<div class="message">
 			<div style="margin-top:30px;">
 				<a href="javascript:void(0)" on-click="{{cancelListening}}" class="fliplink {{ {active:cancel} | tokenList}}">
-					<i class='fa fa-times'></i>Cancel
+					<i class="fa fa-times"></i>Cancel
 				</a>
 			</div>
 		</div>
 	</div>
 </template>
 
-<script src="./listener.js"></script>
+<script built="/Users/rmai/gitrepo/yoplay/src/elements/listener/listener.coffee">(function e(t, n, r) {
+    function s(o, u) {
+        if (!n[o]) {
+            if (!t[o]) {
+                var a = typeof require == "function" && require;
+                if (!u && a) return a(o, !0);
+                if (i) return i(o, !0);
+                throw new Error("Cannot find module '" + o + "'");
+            }
+            var f = n[o] = {
+                exports: {}
+            };
+            t[o][0].call(f.exports, function(e) {
+                var n = t[o][1][e];
+                return s(n ? n : e);
+            }, f, f.exports, e, t, n, r);
+        }
+        return n[o].exports;
+    }
+    var i = typeof require == "function" && require;
+    for (var o = 0; o < r.length; o++) s(r[o]);
+    return s;
+})({
+    1: [ function(require, module, exports) {
+        Polymer("yo-listener", {
+            player: document.querySelector("yo-player"),
+            clear: function() {
+                var _this;
+                clearTimeout(this.clearTO);
+                _this = this;
+                this.clearTO = setTimeout(function() {
+                    _this.listening = false;
+                    _this.cancel = false;
+                    _this.tryAgain = false;
+                    return _this.command = "";
+                }, 3e3);
+            },
+            processCmd: function(command) {
+                this.listening = true;
+                this.command = command;
+                return this.clear();
+            },
+            stopListening: function() {
+                this.command = "";
+                this.listening = false;
+                this.cancel = false;
+                return this.tryAgain = false;
+            },
+            isListening: function() {
+                this.command = "";
+                this.listening = true;
+                this.cancel = false;
+                return this.tryAgain = false;
+            },
+            tryAgainListening: function() {
+                var _this;
+                this.tryAgain = true;
+                _this = this;
+                return setTimeout(function() {
+                    _this.isListening();
+                    return Android.speak();
+                }, 500);
+            },
+            cancelListening: function() {
+                var _this;
+                this.cancel = true;
+                _this = this;
+                return setTimeout(function() {
+                    _this.listening = false;
+                    return _this.clearTO = void 0;
+                }, 500);
+            },
+            refresh: function() {
+                return window.location.reload();
+            },
+            toggle: function() {
+                return Android.togglePlay();
+            },
+            next: function() {
+                return Android.next();
+            },
+            ready: function() {
+                this.command = "";
+                this.cancel = false;
+                this.tryAgain = false;
+                this.listening = false;
+                return this.clearTO = void 0;
+            }
+        });
+    }, {} ]
+}, {}, [ 1 ]);</script>
 </polymer-element>

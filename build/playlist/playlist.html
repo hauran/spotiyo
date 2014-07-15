@@ -1,19 +1,117 @@
-<polymer-element name='yo-playlist'>
+<polymer-element name="yo-playlist">
 <template>
-	<link rel="stylesheet" type="text/css" href="./playlist.css">
-	<div id="titlebar" class='overlay-title {{ {active:active, noHeight:noHeight} | tokenList}}'>
-		<i class='fa fa-angle-left back-angle' on-click="{{close}}"></i><h1>Your Playlists</h1>
+	<style>:host .container,
+:host .overlay-title {
+  visibility: hidden;
+  left: 100%;
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+:host .container.active,
+:host .overlay-title.active {
+  visibility: visible;
+  left: 0;
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+:host .container {
+  z-index: 1;
+  background: #34495e;
+}
+:host .container .content ul {
+  overflow: visible;
+}
+</style>
+	<div id="titlebar" class="overlay-title {{ {active:active, noHeight:noHeight} | tokenList}}">
+		<i class="fa fa-angle-left back-angle" on-click="{{close}}"></i><h1>Your Playlists</h1>
 	</div>
-	<div id='container' class='overlay container {{ {active:active, noHeight:noHeight} | tokenList}}'>
-		<div class='content'>
-			 <ul id='list'>
+	<div id="container" class="overlay container {{ {active:active, noHeight:noHeight} | tokenList}}">
+		<div class="content">
+			 <ul id="list">
 				 <template repeat="{{playlist in playlists}}">
-					<li class='item-name {{ {selected:selected==playlist.id} | tokenList}}' on-click="{{selectPlaylist}}" id="{{playlist.id}}" uri="{{playlist.uri}}" tracks-href="{{playlist.tracks.href}}">{{playlist.name}}</li>
+					<li class="item-name {{ {selected:selected==playlist.id} | tokenList}}" on-click="{{selectPlaylist}}" id="{{playlist.id}}" uri="{{playlist.uri}}" tracks-href="{{playlist.tracks.href}}">{{playlist.name}}</li>
 				</template>
 			</ul>
 		</div>
 	</div>
 </template>
 
-<script src="./playlist.js"></script>
+<script built="/Users/rmai/gitrepo/yoplay/src/elements/playlist/playlist.coffee">(function e(t, n, r) {
+    function s(o, u) {
+        if (!n[o]) {
+            if (!t[o]) {
+                var a = typeof require == "function" && require;
+                if (!u && a) return a(o, !0);
+                if (i) return i(o, !0);
+                throw new Error("Cannot find module '" + o + "'");
+            }
+            var f = n[o] = {
+                exports: {}
+            };
+            t[o][0].call(f.exports, function(e) {
+                var n = t[o][1][e];
+                return s(n ? n : e);
+            }, f, f.exports, e, t, n, r);
+        }
+        return n[o].exports;
+    }
+    var i = typeof require == "function" && require;
+    for (var o = 0; o < r.length; o++) s(r[o]);
+    return s;
+})({
+    1: [ function(require, module, exports) {
+        Polymer("yo-playlist", {
+            ready: function() {
+                this.active = false;
+                this.noHeight = false;
+                this.playlists = [];
+                this.selected = null;
+                this.tracks = document.querySelector("yo-tracks");
+                return this.home = document.querySelector("yo-login");
+            },
+            getPlayLists: function() {
+                var _this;
+                _this = this;
+                return $.get("/playlists", function(res) {
+                    _this.playlists = res.items;
+                    _this.noHeight = false;
+                    _this.active = true;
+                    return setTimeout(function() {
+                        return _this.home.loggedIn = true;
+                    }, 500);
+                });
+            },
+            selectPlaylist: function(evt) {
+                var $pl, href, id, uri, _this;
+                _this = this;
+                $pl = $(evt.toElement);
+                id = $pl.attr("id");
+                this.selected = id;
+                href = $pl.attr("tracks-href");
+                uri = $pl.attr("uri");
+                this.active = false;
+                this.tracks.title = $pl.html();
+                this.tracks.getTracks(id, href, uri);
+                return setTimeout(function() {
+                    return _this.noHeight = true;
+                }, 450);
+            },
+            open: function() {
+                var _this;
+                _this = this;
+                this.noHeight = false;
+                return setTimeout(function() {
+                    return _this.active = true;
+                }, 350);
+            },
+            close: function() {
+                return this.active = false;
+            }
+        });
+    }, {} ]
+}, {}, [ 1 ]);</script>
 </polymer-element>

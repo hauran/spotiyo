@@ -22,11 +22,12 @@ app.use bodyParser.json()
 
 app.use express.static(__dirname + "/public")
 
-app.use '/img', express.static(path.join(app.get('root'), 'img')) 
-app.use '/fonts', express.static(path.join(app.get('root'), 'fonts'))
 app.use '/node_modules', express.static(path.join(app.get('root'), 'node_modules')) 
-app.use '/bower_components', express.static(path.join(app.get('root'), 'bower_components')) 
-app.use '/build', express.static(path.join(app.get('root'), 'build'))
+app.use '/elements', express.static(path.join(app.get('root'), 'public','elements'))
+app.use '/lib', express.static(path.join(app.get('root'), 'public','lib'))
+app.use '/style', express.static(path.join(app.get('root'), 'public','style'))
+app.use '/img', express.static(path.join(app.get('root'), 'public','img')) 
+app.use '/fonts', express.static(path.join(app.get('root'), 'public','fonts'))
 
 app.use cookieParser()
 app.use auth()

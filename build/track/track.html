@@ -1,14 +1,83 @@
-<polymer-element name='yo-track' attributes='artist name imgsrc uri number'>
+<polymer-element name="yo-track" attributes="artist name imgsrc uri number">
 <template>
-	<link rel="stylesheet" type="text/css" href="./track.css">
-	<div class='item-name {{ {playing:number==0} | tokenList}}' track="{{number}}" artist="{{artist}}" on-click="{{playTrack}}">
-		<img src='{{imgsrc}}' class='pull-left'></img>
-		<div class='track-name'>
+	<style>:host {
+  display: block;
+  clear: both;
+  overflow: hidden;
+  background: #34495e;
+}
+:host .item-name {
+  overflow: auto;
+}
+:host .item-name .artist {
+  font-size: 0.6em;
+}
+:host .item-name .track-name {
+  overflow: hidden;
+}
+:host .item-name img {
+  margin-right: 5px;
+}
+</style>
+	<div class="item-name {{ {playing:number==0} | tokenList}}" track="{{number}}" artist="{{artist}}" on-click="{{playTrack}}">
+		<img src="{{imgsrc}}" class="pull-left">
+		<div class="track-name">
 			{{name}}
-			<div class='artist'>{{artist}}</div>
+			<div class="artist">{{artist}}</div>
 		</div>
 	</div>
 </template>
 
-<script src="./track.js"></script>
+<script built="/Users/rmai/gitrepo/yoplay/src/elements/track/track.coffee">(function e(t, n, r) {
+    function s(o, u) {
+        if (!n[o]) {
+            if (!t[o]) {
+                var a = typeof require == "function" && require;
+                if (!u && a) return a(o, !0);
+                if (i) return i(o, !0);
+                throw new Error("Cannot find module '" + o + "'");
+            }
+            var f = n[o] = {
+                exports: {}
+            };
+            t[o][0].call(f.exports, function(e) {
+                var n = t[o][1][e];
+                return s(n ? n : e);
+            }, f, f.exports, e, t, n, r);
+        }
+        return n[o].exports;
+    }
+    var i = typeof require == "function" && require;
+    for (var o = 0; o < r.length; o++) s(r[o]);
+    return s;
+})({
+    1: [ function(require, module, exports) {
+        Polymer("yo-track", {
+            artist: "",
+            name: "",
+            imgsrc: "",
+            uri: "",
+            ready: function() {
+                return this.tracks = document.querySelector("yo-tracks");
+            },
+            domReady: function() {
+                if (this.number === 0) {
+                    return this.setAttribute("playing", "true");
+                }
+            },
+            playTrack: function() {
+                var currentPlaying;
+                currentPlaying = document.querySelector("yo-tracks").shadowRoot.querySelector("[playing=true]");
+                if (currentPlaying) {
+                    currentPlaying.shadowRoot.querySelector(".item-name").classList.remove("selected");
+                    currentPlaying.removeAttribute("playing");
+                }
+                this.setAttribute("playing", "true");
+                this.shadowRoot.querySelector(".item-name").classList.add("selected");
+                this.classList.add("playing");
+                return this.tracks.play(this.uri);
+            }
+        });
+    }, {} ]
+}, {}, [ 1 ]);</script>
 </polymer-element>

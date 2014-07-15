@@ -1,6 +1,6 @@
 <polymer-element name='yo-listener'>
 <template>
-	<link rel="stylesheet" type="text/css" href="./listener.css">
+	<link rel="stylesheet" type="text/css" href="./listener.less">
 	<div id='container' class='container {{ {active:listening} | tokenList}}'>
 		<div class='message {{ {noHeight:command!=""} | tokenList}}'>
 			<h2>What should I play?</h2>
@@ -30,5 +30,5 @@
 	</div>
 </template>
 
-<script src="./listener.js"></script>
+<script src="./listener.coffee"></script>
 </polymer-element>

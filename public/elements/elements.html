@@ -1,0 +1,686 @@
+<polymer-element name="yo-listener">
+<template>
+	<style>:host > .container {
+  text-align: center;
+  z-index: 100;
+  width: 100%;
+  height: 100%;
+  background-color: #2ecc71;
+  color: white;
+  position: fixed;
+  top: -100%;
+  left: 0;
+  padding: 2px;
+  font-size: 1.2em;
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+:host > .container a.fliplink {
+  font-size: 2em;
+  margin-top: 50px;
+  padding: 20px 15px 20px 0;
+  font-weight: bold;
+}
+:host > .container.active {
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+  top: 0;
+}
+:host > .container h1 {
+  display: inline;
+}
+:host > .container .message {
+  padding: 30px;
+}
+:host > .container .message > div {
+  text-align: center;
+}
+:host > .container i.fa {
+  margin-left: 15px;
+}
+:host > .container .fa-quote-left,
+:host > .container .fa-quote-right {
+  position: relative;
+  top: -15px;
+}
+</style>
+	<div id="container" class="container {{ {active:listening} | tokenList}}">
+		<div class="message {{ {noHeight:command!=&quot;&quot;} | tokenList}}">
+			<h2>What should I play?</h2>
+			<button on-click="{{refresh}}">refresh</button>
+
+			<button on-click="{{toggle}}">toggle</button>
+
+			<button on-click="{{next}}">next</button>
+		</div>
+
+		<div class="message {{ {noHeight:command==&quot;&quot;} | tokenList}}">
+			<i class="fa fa-quote-left"></i><h1>{{command}}</h1><i class="fa fa-quote-right"></i>
+			<div>
+				<a href="javascript:void(0)" on-click="{{tryAgainListening}}" class="fliplink {{ {active:tryAgain} | tokenList}}">
+					<i class="fa fa-undo"></i>Try Again
+				</a>
+			</div>
+		</div>
+
+		<div class="message">
+			<div style="margin-top:30px;">
+				<a href="javascript:void(0)" on-click="{{cancelListening}}" class="fliplink {{ {active:cancel} | tokenList}}">
+					<i class="fa fa-times"></i>Cancel
+				</a>
+			</div>
+		</div>
+	</div>
+</template>
+
+<script built="/Users/rmai/gitrepo/yoplay/src/elements/listener/listener.coffee">(function e(t, n, r) {
+    function s(o, u) {
+        if (!n[o]) {
+            if (!t[o]) {
+                var a = typeof require == "function" && require;
+                if (!u && a) return a(o, !0);
+                if (i) return i(o, !0);
+                throw new Error("Cannot find module '" + o + "'");
+            }
+            var f = n[o] = {
+                exports: {}
+            };
+            t[o][0].call(f.exports, function(e) {
+                var n = t[o][1][e];
+                return s(n ? n : e);
+            }, f, f.exports, e, t, n, r);
+        }
+        return n[o].exports;
+    }
+    var i = typeof require == "function" && require;
+    for (var o = 0; o < r.length; o++) s(r[o]);
+    return s;
+})({
+    1: [ function(require, module, exports) {
+        Polymer("yo-listener", {
+            player: document.querySelector("yo-player"),
+            clear: function() {
+                var _this;
+                clearTimeout(this.clearTO);
+                _this = this;
+                this.clearTO = setTimeout(function() {
+                    _this.listening = false;
+                    _this.cancel = false;
+                    _this.tryAgain = false;
+                    return _this.command = "";
+                }, 3e3);
+            },
+            processCmd: function(command) {
+                this.listening = true;
+                this.command = command;
+                return this.clear();
+            },
+            stopListening: function() {
+                this.command = "";
+                this.listening = false;
+                this.cancel = false;
+                return this.tryAgain = false;
+            },
+            isListening: function() {
+                this.command = "";
+                this.listening = true;
+                this.cancel = false;
+                return this.tryAgain = false;
+            },
+            tryAgainListening: function() {
+                var _this;
+                this.tryAgain = true;
+                _this = this;
+                return setTimeout(function() {
+                    _this.isListening();
+                    return Android.speak();
+                }, 500);
+            },
+            cancelListening: function() {
+                var _this;
+                this.cancel = true;
+                _this = this;
+                return setTimeout(function() {
+                    _this.listening = false;
+                    return _this.clearTO = void 0;
+                }, 500);
+            },
+            refresh: function() {
+                return window.location.reload();
+            },
+            toggle: function() {
+                return Android.togglePlay();
+            },
+            next: function() {
+                return Android.next();
+            },
+            ready: function() {
+                this.command = "";
+                this.cancel = false;
+                this.tryAgain = false;
+                this.listening = false;
+                return this.clearTO = void 0;
+            }
+        });
+    }, {} ]
+}, {}, [ 1 ]);</script>
+</polymer-element>
+
+<polymer-element name="yo-player">
+<template>
+  <style>:host .controls {
+  width: 100%;
+  height: 40px;
+  position: fixed;
+  bottom: -70px;
+  background-color: #2c3e50;
+  color: white;
+  z-index: 1;
+  padding: 15px;
+  border-top: 1px solid #2ecc71;
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+:host .controls.showControls {
+  bottom: 0;
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+:host .controls .buttons {
+  float: right;
+  padding-right: 20px;
+}
+:host .controls .buttons i {
+  font-size: 2em;
+  margin-left: 20px;
+}
+</style>
+  <div class="controls">
+  	<div class="buttons">
+    	<i class="fa fa-play {{ {hide:state==&quot;play&quot;} | tokenList}}" on-click="{{play}}"></i> <i class="fa fa-pause {{ {hide:state==&quot;pause&quot;} | tokenList}}" on-click="{{pause}}"></i>  <i class="fa fa-fast-forward" on-click="{{next}}"></i>
+    </div>
+  </div>
+</template>
+
+<script built="/Users/rmai/gitrepo/yoplay/src/elements/player/player.coffee">(function e(t, n, r) {
+    function s(o, u) {
+        if (!n[o]) {
+            if (!t[o]) {
+                var a = typeof require == "function" && require;
+                if (!u && a) return a(o, !0);
+                if (i) return i(o, !0);
+                throw new Error("Cannot find module '" + o + "'");
+            }
+            var f = n[o] = {
+                exports: {}
+            };
+            t[o][0].call(f.exports, function(e) {
+                var n = t[o][1][e];
+                return s(n ? n : e);
+            }, f, f.exports, e, t, n, r);
+        }
+        return n[o].exports;
+    }
+    var i = typeof require == "function" && require;
+    for (var o = 0; o < r.length; o++) s(r[o]);
+    return s;
+})({
+    1: [ function(require, module, exports) {
+        Polymer("yo-player", {
+            ready: function() {
+                return this.state = "play";
+            },
+            play: function() {
+                var err;
+                this.state = "play";
+                try {
+                    return Android.playerPlay();
+                } catch (_error) {
+                    err = _error;
+                    return console.log(err);
+                }
+            },
+            pause: function() {
+                var err;
+                this.state = "pause";
+                try {
+                    return Android.playerPause();
+                } catch (_error) {
+                    err = _error;
+                    return console.log(err);
+                }
+            },
+            next: function() {
+                var err;
+                this.state = "play";
+                try {
+                    return Android.playerNext();
+                } catch (_error) {
+                    err = _error;
+                    return console.log(err);
+                }
+            }
+        });
+    }, {} ]
+}, {}, [ 1 ]);</script>
+</polymer-element>
+
+<polymer-element name="yo-playlist">
+<template>
+	<style>:host .container,
+:host .overlay-title {
+  visibility: hidden;
+  left: 100%;
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+:host .container.active,
+:host .overlay-title.active {
+  visibility: visible;
+  left: 0;
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+:host .container {
+  z-index: 1;
+  background: #34495e;
+}
+:host .container .content ul {
+  overflow: visible;
+}
+</style>
+	<div id="titlebar" class="overlay-title {{ {active:active, noHeight:noHeight} | tokenList}}">
+		<i class="fa fa-angle-left back-angle" on-click="{{close}}"></i><h1>Your Playlists</h1>
+	</div>
+	<div id="container" class="overlay container {{ {active:active, noHeight:noHeight} | tokenList}}">
+		<div class="content">
+			 <ul id="list">
+				 <template repeat="{{playlist in playlists}}">
+					<li class="item-name {{ {selected:selected==playlist.id} | tokenList}}" on-click="{{selectPlaylist}}" id="{{playlist.id}}" uri="{{playlist.uri}}" tracks-href="{{playlist.tracks.href}}">{{playlist.name}}</li>
+				</template>
+			</ul>
+		</div>
+	</div>
+</template>
+
+<script built="/Users/rmai/gitrepo/yoplay/src/elements/playlist/playlist.coffee">(function e(t, n, r) {
+    function s(o, u) {
+        if (!n[o]) {
+            if (!t[o]) {
+                var a = typeof require == "function" && require;
+                if (!u && a) return a(o, !0);
+                if (i) return i(o, !0);
+                throw new Error("Cannot find module '" + o + "'");
+            }
+            var f = n[o] = {
+                exports: {}
+            };
+            t[o][0].call(f.exports, function(e) {
+                var n = t[o][1][e];
+                return s(n ? n : e);
+            }, f, f.exports, e, t, n, r);
+        }
+        return n[o].exports;
+    }
+    var i = typeof require == "function" && require;
+    for (var o = 0; o < r.length; o++) s(r[o]);
+    return s;
+})({
+    1: [ function(require, module, exports) {
+        Polymer("yo-playlist", {
+            ready: function() {
+                this.active = false;
+                this.noHeight = false;
+                this.playlists = [];
+                this.selected = null;
+                this.tracks = document.querySelector("yo-tracks");
+                return this.home = document.querySelector("yo-login");
+            },
+            getPlayLists: function() {
+                var _this;
+                _this = this;
+                return $.get("/playlists", function(res) {
+                    _this.playlists = res.items;
+                    _this.noHeight = false;
+                    _this.active = true;
+                    return setTimeout(function() {
+                        return _this.home.loggedIn = true;
+                    }, 500);
+                });
+            },
+            selectPlaylist: function(evt) {
+                var $pl, href, id, uri, _this;
+                _this = this;
+                $pl = $(evt.toElement);
+                id = $pl.attr("id");
+                this.selected = id;
+                href = $pl.attr("tracks-href");
+                uri = $pl.attr("uri");
+                this.active = false;
+                this.tracks.title = $pl.html();
+                this.tracks.getTracks(id, href, uri);
+                return setTimeout(function() {
+                    return _this.noHeight = true;
+                }, 450);
+            },
+            open: function() {
+                var _this;
+                _this = this;
+                this.noHeight = false;
+                return setTimeout(function() {
+                    return _this.active = true;
+                }, 350);
+            },
+            close: function() {
+                return this.active = false;
+            }
+        });
+    }, {} ]
+}, {}, [ 1 ]);</script>
+</polymer-element>
+
+<polymer-element name="yo-track" attributes="artist name imgsrc uri number">
+<template>
+	<style>:host {
+  display: block;
+  clear: both;
+  overflow: hidden;
+  background: #34495e;
+}
+:host .item-name {
+  overflow: auto;
+}
+:host .item-name .artist {
+  font-size: 0.6em;
+}
+:host .item-name .track-name {
+  overflow: hidden;
+}
+:host .item-name img {
+  margin-right: 5px;
+}
+</style>
+	<div class="item-name {{ {playing:number==0} | tokenList}}" track="{{number}}" artist="{{artist}}" on-click="{{playTrack}}">
+		<img src="{{imgsrc}}" class="pull-left">
+		<div class="track-name">
+			{{name}}
+			<div class="artist">{{artist}}</div>
+		</div>
+	</div>
+</template>
+
+<script built="/Users/rmai/gitrepo/yoplay/src/elements/track/track.coffee">(function e(t, n, r) {
+    function s(o, u) {
+        if (!n[o]) {
+            if (!t[o]) {
+                var a = typeof require == "function" && require;
+                if (!u && a) return a(o, !0);
+                if (i) return i(o, !0);
+                throw new Error("Cannot find module '" + o + "'");
+            }
+            var f = n[o] = {
+                exports: {}
+            };
+            t[o][0].call(f.exports, function(e) {
+                var n = t[o][1][e];
+                return s(n ? n : e);
+            }, f, f.exports, e, t, n, r);
+        }
+        return n[o].exports;
+    }
+    var i = typeof require == "function" && require;
+    for (var o = 0; o < r.length; o++) s(r[o]);
+    return s;
+})({
+    1: [ function(require, module, exports) {
+        Polymer("yo-track", {
+            artist: "",
+            name: "",
+            imgsrc: "",
+            uri: "",
+            ready: function() {
+                return this.tracks = document.querySelector("yo-tracks");
+            },
+            domReady: function() {
+                if (this.number === 0) {
+                    return this.setAttribute("playing", "true");
+                }
+            },
+            playTrack: function() {
+                var currentPlaying;
+                currentPlaying = document.querySelector("yo-tracks").shadowRoot.querySelector("[playing=true]");
+                if (currentPlaying) {
+                    currentPlaying.shadowRoot.querySelector(".item-name").classList.remove("selected");
+                    currentPlaying.removeAttribute("playing");
+                }
+                this.setAttribute("playing", "true");
+                this.shadowRoot.querySelector(".item-name").classList.add("selected");
+                this.classList.add("playing");
+                return this.tracks.play(this.uri);
+            }
+        });
+    }, {} ]
+}, {}, [ 1 ]);</script>
+</polymer-element>
+
+<polymer-element name="yo-tracks">
+<template>
+	<style>:host .overlay-title .back-angle {
+  margin-top: 6px;
+}
+:host .overlay-title h1 {
+  font-size: 1.3em;
+  position: relative;
+  top: 10px;
+}
+:host .container,
+:host .overlay-title {
+  visibility: hidden;
+  left: 100%;
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+:host .container.active,
+:host .overlay-title.active {
+  visibility: visible;
+  left: 0;
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+:host .container {
+  z-index: 1;
+  background: #34495e;
+}
+:host .container .tracks {
+  margin-bottom: 70px;
+}
+</style>
+	<div class="overlay-title {{ {active:active, noHeight:noHeight} | tokenList}}">
+		<i class="fa fa-angle-left back-angle" on-click="{{close}}"></i><h1>{{title}}</h1>
+	</div>
+	<div id="container" class="overlay container {{ {active:active, noHeight:noHeight} | tokenList}}">
+		<div class="content">
+			<div class="loading {{ {hide:!loading} | tokenList}}">loading...</div>
+			<!-- <iframe id="ytplayer" type="text/html" width="100%" height="100%" src="{{url}}" frameborder="0" allowfullscreen></iframe> -->
+			<div class="tracks">
+				<template repeat="{{item, i in items }}">
+				 	<yo-track number="{{i}}" artist="{{item.track.artists[0].name}}" name="{{item.track.name}}" imgsrc="{{item.track.album.images[2].url}}" uri="{{item.track.uri}}"></yo-track>
+				</template>
+			</div>
+		</div>
+	</div>
+</template>
+
+<script built="/Users/rmai/gitrepo/yoplay/src/elements/tracks/tracks.coffee">(function e(t, n, r) {
+    function s(o, u) {
+        if (!n[o]) {
+            if (!t[o]) {
+                var a = typeof require == "function" && require;
+                if (!u && a) return a(o, !0);
+                if (i) return i(o, !0);
+                throw new Error("Cannot find module '" + o + "'");
+            }
+            var f = n[o] = {
+                exports: {}
+            };
+            t[o][0].call(f.exports, function(e) {
+                var n = t[o][1][e];
+                return s(n ? n : e);
+            }, f, f.exports, e, t, n, r);
+        }
+        return n[o].exports;
+    }
+    var i = typeof require == "function" && require;
+    for (var o = 0; o < r.length; o++) s(r[o]);
+    return s;
+})({
+    1: [ function(require, module, exports) {
+        Polymer("yo-tracks", {
+            play: function(rtsp) {
+                return Android.loadVideo(rtsp);
+            },
+            ready: function() {
+                this.playlist = document.querySelector("yo-playlist");
+                this.title = "";
+                this.active = false;
+                this.noHeight = true;
+                this.loading = true;
+                this.playing = null;
+                return this.items = [];
+            },
+            play: function(uri) {
+                var err;
+                console.log(document.querySelector("yo-player"));
+                setTimeout(function() {
+                    return document.querySelector("yo-player").shadowRoot.querySelector(".controls").classList.add("showControls");
+                }, 350);
+                try {
+                    return Android.play(uri);
+                } catch (_error) {
+                    err = _error;
+                    return console.log(err);
+                }
+            },
+            getTracks: function(id, href, uri) {
+                var _this;
+                _this = this;
+                this.noHeight = false;
+                this.items = [];
+                this.loading = true;
+                setTimeout(function() {
+                    $(window).scrollTop(0);
+                    return _this.active = true;
+                }, 350);
+                return $.get("/playlists/" + id + "/tracks", {
+                    href: href
+                }, function(res) {
+                    _this.loading = false;
+                    _this.items = res.items;
+                    return _this.play(uri);
+                });
+            },
+            close: function() {
+                var _this;
+                this.active = false;
+                _this = this;
+                _this.playlist.open();
+                return setTimeout(function() {
+                    return _this.noHeight = true;
+                }, 450);
+            }
+        });
+    }, {} ]
+}, {}, [ 1 ]);</script>
+</polymer-element>
+
+<polymer-element name="yo-login" attributes="loggingIn">
+<template>
+	<style>:host div {
+  text-align: center;
+  margin-top: 60px;
+}
+:host .menu a.fliplink.active {
+  padding: 20px 40px;
+}
+</style>
+	<div class="{{ {noHeight:loggedIn} | tokenList}}">
+		<a href="/login" on-click="{{loginClick}}" class="fliplink {{ {active:active} | tokenList}}"><i class="fa fa-spotify"></i>{{login}}</a>
+	</div>
+
+	<div class="menu {{ {noHeight:!loggedIn} | tokenList}}">
+		<a on-click="{{showPlaylist}}" class="fliplink {{ {active:activePlaylists} | tokenList}}"><i class="fa fa-music"></i>Playlists</a>
+	</div>
+</template>
+<script built="/Users/rmai/gitrepo/yoplay/src/elements/login/login.coffee">(function e(t, n, r) {
+    function s(o, u) {
+        if (!n[o]) {
+            if (!t[o]) {
+                var a = typeof require == "function" && require;
+                if (!u && a) return a(o, !0);
+                if (i) return i(o, !0);
+                throw new Error("Cannot find module '" + o + "'");
+            }
+            var f = n[o] = {
+                exports: {}
+            };
+            t[o][0].call(f.exports, function(e) {
+                var n = t[o][1][e];
+                return s(n ? n : e);
+            }, f, f.exports, e, t, n, r);
+        }
+        return n[o].exports;
+    }
+    var i = typeof require == "function" && require;
+    for (var o = 0; o < r.length; o++) s(r[o]);
+    return s;
+})({
+    1: [ function(require, module, exports) {
+        Polymer("yo-login", {
+            loginClick: function() {
+                this.active = true;
+                return this.login = "hold on";
+            },
+            showPlaylist: function() {
+                var _this;
+                _this = this;
+                this.activePlaylists = true;
+                _this.playlist.open();
+                return setTimeout(function() {
+                    return _this.activePlaylists = false;
+                }, 1e3);
+            },
+            ready: function() {
+                var _this;
+                this.url = "";
+                this.active = false;
+                this.activePlaylists = false;
+                this.login = "log in";
+                this.loggedIn = false;
+                this.playlist = document.querySelector("yo-playlist");
+                _this = this;
+                if ($.cookie("userId")) {
+                    this.active = true;
+                    this.login = "hold on";
+                    return this.playlist.getPlayLists();
+                }
+            }
+        });
+    }, {} ]
+}, {}, [ 1 ]);</script>
+</polymer-element>

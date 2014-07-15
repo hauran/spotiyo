@@ -1,6 +1,6 @@
 <polymer-element name='yo-tracks'>
 <template>
-	<link rel="stylesheet" type="text/css" href="./tracks.css">
+	<link rel="stylesheet" type="text/css" href="./tracks.less">
 	<div class='overlay-title {{ {active:active, noHeight:noHeight} | tokenList}}'>
 		<i class='fa fa-angle-left back-angle' on-click="{{close}}"></i><h1>{{title}}</h1>
 	</div>
@@ -17,5 +17,5 @@
 	</div>
 </template>
 
-<script src="./tracks.js"></script>
+<script src="./tracks.coffee"></script>
 </polymer-element>

@@ -1,13 +1,75 @@
-<polymer-element name='yo-login' attributes='loggingIn'>
+<polymer-element name="yo-login" attributes="loggingIn">
 <template>
-	<link rel="stylesheet" type="text/css" href="./login.css">
+	<style>:host div {
+  text-align: center;
+  margin-top: 60px;
+}
+:host .menu a.fliplink.active {
+  padding: 20px 40px;
+}
+</style>
 	<div class="{{ {noHeight:loggedIn} | tokenList}}">
-		<a href="/login" on-click="{{loginClick}}" class="fliplink {{ {active:active} | tokenList}}"><i class='fa fa-spotify'></i>{{login}}</a>
+		<a href="/login" on-click="{{loginClick}}" class="fliplink {{ {active:active} | tokenList}}"><i class="fa fa-spotify"></i>{{login}}</a>
 	</div>
 
 	<div class="menu {{ {noHeight:!loggedIn} | tokenList}}">
-		<a on-click="{{showPlaylist}}" class="fliplink {{ {active:activePlaylists} | tokenList}}"><i class='fa fa-music'></i>Playlists</a>
+		<a on-click="{{showPlaylist}}" class="fliplink {{ {active:activePlaylists} | tokenList}}"><i class="fa fa-music"></i>Playlists</a>
 	</div>
 </template>
-<script src="./login.js"></script>
+<script built="/Users/rmai/gitrepo/yoplay/src/elements/login/login.coffee">(function e(t, n, r) {
+    function s(o, u) {
+        if (!n[o]) {
+            if (!t[o]) {
+                var a = typeof require == "function" && require;
+                if (!u && a) return a(o, !0);
+                if (i) return i(o, !0);
+                throw new Error("Cannot find module '" + o + "'");
+            }
+            var f = n[o] = {
+                exports: {}
+            };
+            t[o][0].call(f.exports, function(e) {
+                var n = t[o][1][e];
+                return s(n ? n : e);
+            }, f, f.exports, e, t, n, r);
+        }
+        return n[o].exports;
+    }
+    var i = typeof require == "function" && require;
+    for (var o = 0; o < r.length; o++) s(r[o]);
+    return s;
+})({
+    1: [ function(require, module, exports) {
+        Polymer("yo-login", {
+            loginClick: function() {
+                this.active = true;
+                return this.login = "hold on";
+            },
+            showPlaylist: function() {
+                var _this;
+                _this = this;
+                this.activePlaylists = true;
+                _this.playlist.open();
+                return setTimeout(function() {
+                    return _this.activePlaylists = false;
+                }, 1e3);
+            },
+            ready: function() {
+                var _this;
+                this.url = "";
+                this.active = false;
+                this.activePlaylists = false;
+                this.login = "log in";
+                this.loggedIn = false;
+                this.playlist = document.querySelector("yo-playlist");
+                _this = this;
+                if ($.cookie("userId")) {
+                    this.active = true;
+                    this.login = "hold on";
+                    return this.playlist.getPlayLists();
+                }
+            }
+        });
+    }, {} ]
+}, {}, [ 1 ]);</script>
 </polymer-element>
