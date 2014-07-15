@@ -18,8 +18,6 @@ app.set('port', process.env.PORT || 8080)
 app.use bodyParser.urlencoded()
 app.use bodyParser.json()
 
-# app.use express.favicon('public/img/favicon.png')
-
 app.use express.static(__dirname + "/public")
 
 app.use '/node_modules', express.static(path.join(app.get('root'), 'node_modules')) 
@@ -32,8 +30,6 @@ app.use '/fonts', express.static(path.join(app.get('root'), 'public','fonts'))
 app.use cookieParser()
 app.use auth()
 app.use cors()
-
-# app.use app.router
 
 app.engine 'html', require('ejs').renderFile
 app.enable 'trust proxy'
