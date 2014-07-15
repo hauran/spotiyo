@@ -5,6 +5,6 @@
   },
   "license": "MIT",
   "scripts": {
-    "start": "node_modules/.bin/coffee ./server.coffee"
+    "start": "coffee ./server.coffee"
   }
 }
