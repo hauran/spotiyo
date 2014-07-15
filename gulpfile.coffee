@@ -47,9 +47,9 @@ gulp.task 'buildElements', ['elements'], ->
 gulp.task 'less', ->
   gulp.src('src/less/main.less')
     .pipe(less())
-    # .pipe(minifyCSS({
-    #   keepSpecialComments: 0
-    # }))
+    .pipe(minifyCSS({
+      keepSpecialComments: 0
+    }))
     .pipe(gulp.dest('./public/style'))
 
 gulp.task 'watch', ['buildElements','less'], ->
