@@ -6,7 +6,7 @@ async = require 'async'
 moment = require 'moment'
 
 if process.env.NODE_ENV is "production"
-  redirect_uri = 'http://yoplay-nqitaj4wnb.elasticbeanstalk.com/callback'
+  redirect_uri = 'http://spotiyo-mgbzunisyp.elasticbeanstalk.com/callback'
 else
   redirect_uri = 'http://localhost:8080/callback'
 
