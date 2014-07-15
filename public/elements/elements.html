@@ -277,25 +277,11 @@
 <template>
 	<style>:host .container,
 :host .overlay-title {
-  visibility: hidden;
-  left: 100%;
-  -webkit-transition: all 0.2s ease-out;
-  -moz-transition: all 0.2s ease-out;
-  -o-transition: all 0.2s ease-out;
-  transition: all 0.2s ease-out;
+  display: none;
 }
 :host .container.active,
 :host .overlay-title.active {
-  visibility: visible;
-  left: 0;
-  -webkit-transition: all 0.2s ease-out;
-  -moz-transition: all 0.2s ease-out;
-  -o-transition: all 0.2s ease-out;
-  transition: all 0.2s ease-out;
-}
-:host .container {
-  z-index: 1;
-  background: #34495e;
+  display: inline;
 }
 :host .container .content ul {
   overflow: visible;
@@ -342,7 +328,6 @@
         Polymer("yo-playlist", {
             ready: function() {
                 this.active = false;
-                this.noHeight = false;
                 this.playlists = [];
                 this.selected = null;
                 this.tracks = document.querySelector("yo-tracks");
@@ -353,7 +338,6 @@
                 _this = this;
                 return $.get("/playlists", function(res) {
                     _this.playlists = res.items;
-                    _this.noHeight = false;
                     _this.active = true;
                     return setTimeout(function() {
                         return _this.home.loggedIn = true;
@@ -370,18 +354,10 @@
                 uri = $pl.attr("uri");
                 this.active = false;
                 this.tracks.title = $pl.html();
-                this.tracks.getTracks(id, href, uri);
-                return setTimeout(function() {
-                    return _this.noHeight = true;
-                }, 450);
+                return this.tracks.getTracks(id, href, uri);
             },
             open: function() {
-                var _this;
-                _this = this;
-                this.noHeight = false;
-                return setTimeout(function() {
-                    return _this.active = true;
-                }, 350);
+                return this.active = true;
             },
             close: function() {
                 return this.active = false;
@@ -487,25 +463,11 @@
 }
 :host .container,
 :host .overlay-title {
-  visibility: hidden;
-  left: 100%;
-  -webkit-transition: all 0.2s ease-out;
-  -moz-transition: all 0.2s ease-out;
-  -o-transition: all 0.2s ease-out;
-  transition: all 0.2s ease-out;
+  display: none;
 }
 :host .container.active,
 :host .overlay-title.active {
-  visibility: visible;
-  left: 0;
-  -webkit-transition: all 0.2s ease-out;
-  -moz-transition: all 0.2s ease-out;
-  -o-transition: all 0.2s ease-out;
-  transition: all 0.2s ease-out;
-}
-:host .container {
-  z-index: 1;
-  background: #34495e;
+  display: inline;
 }
 :host .container .tracks {
   margin-bottom: 70px;
@@ -552,21 +514,16 @@
 })({
     1: [ function(require, module, exports) {
         Polymer("yo-tracks", {
-            play: function(rtsp) {
-                return Android.loadVideo(rtsp);
-            },
             ready: function() {
                 this.playlist = document.querySelector("yo-playlist");
                 this.title = "";
                 this.active = false;
-                this.noHeight = true;
                 this.loading = true;
                 this.playing = null;
                 return this.items = [];
             },
             play: function(uri) {
                 var err;
-                console.log(document.querySelector("yo-player"));
                 setTimeout(function() {
                     return document.querySelector("yo-player").shadowRoot.querySelector(".controls").classList.add("showControls");
                 }, 350);
@@ -580,13 +537,10 @@
             getTracks: function(id, href, uri) {
                 var _this;
                 _this = this;
-                this.noHeight = false;
                 this.items = [];
                 this.loading = true;
-                setTimeout(function() {
-                    $(window).scrollTop(0);
-                    return _this.active = true;
-                }, 350);
+                this.active = true;
+                $(window).scrollTop(0);
                 return $.get("/playlists/" + id + "/tracks", {
                     href: href
                 }, function(res) {
@@ -599,10 +553,7 @@
                 var _this;
                 this.active = false;
                 _this = this;
-                _this.playlist.open();
-                return setTimeout(function() {
-                    return _this.noHeight = true;
-                }, 450);
+                return _this.playlist.open();
             }
         });
     }, {} ]
@@ -660,7 +611,9 @@
                 var _this;
                 _this = this;
                 this.activePlaylists = true;
-                _this.playlist.open();
+                setTimeout(function() {
+                    return _this.playlist.open();
+                }, 350);
                 return setTimeout(function() {
                     return _this.activePlaylists = false;
                 }, 1e3);

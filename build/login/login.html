@@ -49,7 +49,9 @@
                 var _this;
                 _this = this;
                 this.activePlaylists = true;
-                _this.playlist.open();
+                setTimeout(function() {
+                    return _this.playlist.open();
+                }, 350);
                 return setTimeout(function() {
                     return _this.activePlaylists = false;
                 }, 1e3);

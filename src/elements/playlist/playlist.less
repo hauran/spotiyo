@@ -2,22 +2,14 @@
 
 :host{
   .container, .overlay-title {
-    visibility: hidden;
-    left:100%;
-    .transition();
-
-
+    display: none;
     &.active {
-      visibility: visible;
-      left:0;
-      .transition();
+      display: inline;
     }
   }
 
 
   .container {
-    z-index: 1;
-    background: #34495e;
     .content {
       ul {
         overflow:visible;

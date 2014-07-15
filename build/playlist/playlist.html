@@ -2,25 +2,11 @@
 <template>
 	<style>:host .container,
 :host .overlay-title {
-  visibility: hidden;
-  left: 100%;
-  -webkit-transition: all 0.2s ease-out;
-  -moz-transition: all 0.2s ease-out;
-  -o-transition: all 0.2s ease-out;
-  transition: all 0.2s ease-out;
+  display: none;
 }
 :host .container.active,
 :host .overlay-title.active {
-  visibility: visible;
-  left: 0;
-  -webkit-transition: all 0.2s ease-out;
-  -moz-transition: all 0.2s ease-out;
-  -o-transition: all 0.2s ease-out;
-  transition: all 0.2s ease-out;
-}
-:host .container {
-  z-index: 1;
-  background: #34495e;
+  display: inline;
 }
 :host .container .content ul {
   overflow: visible;
@@ -67,7 +53,6 @@
         Polymer("yo-playlist", {
             ready: function() {
                 this.active = false;
-                this.noHeight = false;
                 this.playlists = [];
                 this.selected = null;
                 this.tracks = document.querySelector("yo-tracks");
@@ -78,7 +63,6 @@
                 _this = this;
                 return $.get("/playlists", function(res) {
                     _this.playlists = res.items;
-                    _this.noHeight = false;
                     _this.active = true;
                     return setTimeout(function() {
                         return _this.home.loggedIn = true;
@@ -95,18 +79,10 @@
                 uri = $pl.attr("uri");
                 this.active = false;
                 this.tracks.title = $pl.html();
-                this.tracks.getTracks(id, href, uri);
-                return setTimeout(function() {
-                    return _this.noHeight = true;
-                }, 450);
+                return this.tracks.getTracks(id, href, uri);
             },
             open: function() {
-                var _this;
-                _this = this;
-                this.noHeight = false;
-                return setTimeout(function() {
-                    return _this.active = true;
-                }, 350);
+                return this.active = true;
             },
             close: function() {
                 return this.active = false;

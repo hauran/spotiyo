@@ -1,19 +1,13 @@
 Polymer 'yo-tracks',
-  play: (rtsp) ->
-    Android.loadVideo rtsp
-
   ready: ->
     @playlist = document.querySelector('yo-playlist')
     @title = ''
     @active = false
-    @noHeight = true
     @loading = true
     @playing = null
-    # @trackIds = []
     @items = []
 
   play: (uri) ->
-    console.log document.querySelector('yo-player')
     setTimeout ->
       document.querySelector('yo-player').shadowRoot.querySelector('.controls').classList.add('showControls')
     ,350
@@ -24,14 +18,10 @@ Polymer 'yo-tracks',
 
   getTracks: (id,href,uri) ->
     _this = @
-    @noHeight = false
     @items = []
     @loading = true
-
-    setTimeout ->
-      $(window).scrollTop(0);
-      _this.active = true
-    ,350
+    @active = true
+    $(window).scrollTop(0)
 
     $.get "/playlists/#{id}/tracks", {href:href}, (res) ->
       _this.loading = false
@@ -42,6 +32,3 @@ Polymer 'yo-tracks',
     @active = false
     _this = @
     _this.playlist.open()
-    setTimeout ->
-      _this.noHeight = true
-    ,450
