@@ -63,6 +63,7 @@
         Polymer("yo-tracks", {
             ready: function() {
                 this.playlist = document.querySelector("yo-playlist");
+                this.player = document.querySelector("yo-player");
                 this.title = "";
                 this.active = false;
                 this.loading = true;
@@ -71,6 +72,7 @@
             },
             play: function(uri) {
                 var err;
+                this.resetCurrentPlaying();
                 setTimeout(function() {
                     return document.querySelector("yo-player").shadowRoot.querySelector(".controls").classList.add("showControls");
                 }, 350);
@@ -80,6 +82,38 @@
                     err = _error;
                     return console.log(err);
                 }
+            },
+            resetCurrentPlaying: function() {
+                var currentPlaying;
+                currentPlaying = this.currentPlaying();
+                if (currentPlaying) {
+                    currentPlaying.shadowRoot.querySelector(".item-name").classList.remove("selected");
+                    return currentPlaying.removeAttribute("playing");
+                }
+            },
+            setPlaying: function() {
+                var currentPlaying, first;
+                currentPlaying = this.currentPlaying();
+                if (!currentPlaying) {
+                    first = document.querySelector("yo-tracks").shadowRoot.querySelector("yo-track");
+                    first.setAttribute("playing", "true");
+                    first.shadowRoot.querySelector(".item-name").classList.add("selected");
+                    return this.player.track(first.name, first.artist);
+                }
+            },
+            skipNext: function() {
+                var currentTrack, next;
+                currentTrack = this.currentPlaying();
+                this.resetCurrentPlaying();
+                next = document.querySelector("yo-tracks").shadowRoot.querySelectorAll("yo-track")[currentTrack.number + 1];
+                next.setAttribute("playing", "true");
+                next.shadowRoot.querySelector(".item-name").classList.add("selected");
+                return this.player.track(next.name, next.artist);
+            },
+            currentPlaying: function() {
+                var currentPlaying;
+                currentPlaying = document.querySelector("yo-tracks").shadowRoot.querySelector("[playing=true]");
+                return currentPlaying;
             },
             getTracks: function(id, href, uri) {
                 var _this;

@@ -58,24 +58,25 @@
             imgsrc: "",
             uri: "",
             ready: function() {
-                return this.tracks = document.querySelector("yo-tracks");
-            },
-            domReady: function() {
-                if (this.number === 0) {
-                    return this.setAttribute("playing", "true");
-                }
+                this.tracks = document.querySelector("yo-tracks");
+                return this.player = document.querySelector("yo-player");
             },
             playTrack: function() {
-                var currentPlaying;
-                currentPlaying = document.querySelector("yo-tracks").shadowRoot.querySelector("[playing=true]");
-                if (currentPlaying) {
-                    currentPlaying.shadowRoot.querySelector(".item-name").classList.remove("selected");
-                    currentPlaying.removeAttribute("playing");
+                var current, err, number, skip;
+                current = this.tracks.currentPlaying().number;
+                number = this.number;
+                skip = Math.abs(number - current);
+                this.player.track(this.name, this.artist);
+                try {
+                    if (number > current) {
+                        return Android.skipForward(skip);
+                    } else {
+                        return Android.skipBack(skip);
+                    }
+                } catch (_error) {
+                    err = _error;
+                    return console.log(err);
                 }
-                this.setAttribute("playing", "true");
-                this.shadowRoot.querySelector(".item-name").classList.add("selected");
-                this.classList.add("playing");
-                return this.tracks.play(this.uri);
             }
         });
     }, {} ]

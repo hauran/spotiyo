@@ -5,18 +5,19 @@ Polymer 'yo-track',
   uri:''
   ready: ->
     @tracks = document.querySelector('yo-tracks')
+    @player = document.querySelector('yo-player')
     
-  domReady : ->
-    if @number==0
-      @setAttribute "playing", "true"
 
   playTrack: ->
-    currentPlaying = document.querySelector('yo-tracks').shadowRoot.querySelector('[playing=true]')
-    if currentPlaying
-      currentPlaying.shadowRoot.querySelector('.item-name').classList.remove('selected')
-      currentPlaying.removeAttribute 'playing'
-
-    this.setAttribute "playing", "true"
-    this.shadowRoot.querySelector('.item-name').classList.add('selected')
-    @classList.add 'playing'
-    @tracks.play @uri
+    current = @tracks.currentPlaying().number
+    number = @number
+    skip = Math.abs(number - current)
+    @player.track @name, @artist
+    try
+        if number > current
+          Android.skipForward skip
+        else
+          Android.skipBack skip
+    catch err
+      console.log err
+    

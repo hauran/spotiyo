@@ -22,9 +22,18 @@
   -o-transition: all 0.2s ease-out;
   transition: all 0.2s ease-out;
 }
+:host .controls .trackDetails {
+  overflow: hidden;
+}
+:host .controls .trackDetails .artist {
+  font-size: 0.7em;
+}
 :host .controls .buttons {
-  float: right;
-  padding-right: 20px;
+  position: absolute;
+  right: 30px;
+  top: 18px;
+  padding-left: 5px;
+  background-color: #2c3e50;
 }
 :host .controls .buttons i {
   font-size: 2em;
@@ -32,6 +41,13 @@
 }
 </style>
   <div class="controls">
+  	<div class="trackDetails">
+		<div class="track-name">
+			{{name}}
+			<div class="artist">{{artist}}</div>
+		</div>
+	</div>
+
   	<div class="buttons">
     	<i class="fa fa-play {{ {hide:state==&quot;play&quot;} | tokenList}}" on-click="{{play}}"></i> <i class="fa fa-pause {{ {hide:state==&quot;pause&quot;} | tokenList}}" on-click="{{pause}}"></i>  <i class="fa fa-fast-forward" on-click="{{next}}"></i>
     </div>
@@ -95,6 +111,10 @@
                     err = _error;
                     return console.log(err);
                 }
+            },
+            track: function(name, artist) {
+                this.name = name;
+                return this.artist = artist;
             }
         });
     }, {} ]

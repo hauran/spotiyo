@@ -23,3 +23,8 @@ Polymer 'yo-player',
     catch err
       console.log err
 
+  track: (name, artist) ->
+    @name = name
+    @artist = artist
+
+
