@@ -10,8 +10,10 @@ Polymer 'yo-tracks',
 
   play: (uri) ->
     @resetCurrentPlaying()
+    _this = @
     setTimeout ->
       document.querySelector('yo-player').shadowRoot.querySelector('.controls').classList.add('showControls')
+      _this.playlist.playerShow = true
     ,350
     try
       Android.play uri

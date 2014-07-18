@@ -2,6 +2,7 @@ Polymer 'yo-playlist',
   ready: ->
     @active = false
     @playlists = []
+    @playerShow = false
     @selected = null
     @tracks = document.querySelector('yo-tracks')
     @home = document.querySelector('yo-login')

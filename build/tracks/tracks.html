@@ -18,6 +18,7 @@
 }
 :host .container .tracks {
   margin-bottom: 70px;
+  padding-bottom: 71px;
 }
 </style>
 	<div class="overlay-title {{ {active:active, noHeight:noHeight} | tokenList}}">
@@ -71,10 +72,12 @@
                 return this.items = [];
             },
             play: function(uri) {
-                var err;
+                var err, _this;
                 this.resetCurrentPlaying();
+                _this = this;
                 setTimeout(function() {
-                    return document.querySelector("yo-player").shadowRoot.querySelector(".controls").classList.add("showControls");
+                    document.querySelector("yo-player").shadowRoot.querySelector(".controls").classList.add("showControls");
+                    return _this.playlist.playerShow = true;
                 }, 350);
                 try {
                     return Android.play(uri);
