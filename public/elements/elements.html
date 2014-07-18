@@ -104,15 +104,15 @@
         Polymer("yo-listener", {
             player: document.querySelector("yo-player"),
             clear: function() {
-                var _this;
                 clearTimeout(this.clearTO);
-                _this = this;
-                this.clearTO = setTimeout(function() {
-                    _this.listening = false;
-                    _this.cancel = false;
-                    _this.tryAgain = false;
-                    return _this.command = "";
-                }, 3e3);
+                this.clearTO = setTimeout(function(_this) {
+                    return function() {
+                        _this.listening = false;
+                        _this.cancel = false;
+                        _this.tryAgain = false;
+                        return _this.command = "";
+                    };
+                }(this), 300);
             },
             processCmd: function(command) {
                 this.listening = true;
@@ -132,22 +132,22 @@
                 return this.tryAgain = false;
             },
             tryAgainListening: function() {
-                var _this;
                 this.tryAgain = true;
-                _this = this;
-                return setTimeout(function() {
-                    _this.isListening();
-                    return Android.speak();
-                }, 500);
+                return setTimeout(function(_this) {
+                    return function() {
+                        _this.isListening();
+                        return Android.speak();
+                    };
+                }(this), 500);
             },
             cancelListening: function() {
-                var _this;
                 this.cancel = true;
-                _this = this;
-                return setTimeout(function() {
-                    _this.listening = false;
-                    return _this.clearTO = void 0;
-                }, 500);
+                return setTimeout(function(_this) {
+                    return function() {
+                        _this.listening = false;
+                        return _this.clearTO = void 0;
+                    };
+                }(this), 500);
             },
             refresh: function() {
                 return window.location.reload();
@@ -358,19 +358,18 @@
                 return this.home = document.querySelector("yo-login");
             },
             getPlayLists: function() {
-                var _this;
-                _this = this;
-                return $.get("/playlists", function(res) {
-                    _this.playlists = res.items;
-                    _this.active = true;
-                    return setTimeout(function() {
-                        return _this.home.loggedIn = true;
-                    }, 500);
-                });
+                return $.get("/playlists", function(_this) {
+                    return function(res) {
+                        _this.playlists = res.items;
+                        _this.active = true;
+                        return setTimeout(function() {
+                            return _this.home.loggedIn = true;
+                        }, 500);
+                    };
+                }(this));
             },
             selectPlaylist: function(evt) {
-                var $pl, href, id, uri, _this;
-                _this = this;
+                var $pl, href, id, uri;
                 $pl = $(evt.toElement);
                 id = $pl.attr("id");
                 this.selected = id;
@@ -550,13 +549,14 @@
                 return this.items = [];
             },
             play: function(uri) {
-                var err, _this;
+                var err;
                 this.resetCurrentPlaying();
-                _this = this;
-                setTimeout(function() {
-                    document.querySelector("yo-player").shadowRoot.querySelector(".controls").classList.add("showControls");
-                    return _this.playlist.playerShow = true;
-                }, 350);
+                setTimeout(function(_this) {
+                    return function() {
+                        document.querySelector("yo-player").shadowRoot.querySelector(".controls").classList.add("showControls");
+                        return _this.playlist.playerShow = true;
+                    };
+                }(this), 350);
                 try {
                     return Android.play(uri);
                 } catch (_error) {
@@ -597,25 +597,23 @@
                 return currentPlaying;
             },
             getTracks: function(id, href, uri) {
-                var _this;
-                _this = this;
                 this.items = [];
                 this.loading = true;
                 this.active = true;
                 $(window).scrollTop(0);
                 return $.get("/playlists/" + id + "/tracks", {
                     href: href
-                }, function(res) {
-                    _this.loading = false;
-                    _this.items = res.items;
-                    return _this.play(uri);
-                });
+                }, function(_this) {
+                    return function(res) {
+                        _this.loading = false;
+                        _this.items = res.items;
+                        return _this.play(uri);
+                    };
+                }(this));
             },
             close: function() {
-                var _this;
                 this.active = false;
-                _this = this;
-                return _this.playlist.open();
+                return this.playlist.open();
             }
         });
     }, {} ]
@@ -670,25 +668,25 @@
                 return this.login = "hold on";
             },
             showPlaylist: function() {
-                var _this;
-                _this = this;
                 this.activePlaylists = true;
-                setTimeout(function() {
-                    return _this.playlist.open();
-                }, 350);
-                return setTimeout(function() {
-                    return _this.activePlaylists = false;
-                }, 1e3);
+                setTimeout(function(_this) {
+                    return function() {
+                        return _this.playlist.open();
+                    };
+                }(this), 350);
+                return setTimeout(function(_this) {
+                    return function() {
+                        return _this.activePlaylists = false;
+                    };
+                }(this), 1e3);
             },
             ready: function() {
-                var _this;
                 this.url = "";
                 this.active = false;
                 this.activePlaylists = false;
                 this.login = "log in";
                 this.loggedIn = false;
                 this.playlist = document.querySelector("yo-playlist");
-                _this = this;
                 if ($.cookie("userId")) {
                     this.active = true;
                     this.login = "hold on";

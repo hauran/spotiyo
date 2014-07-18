@@ -46,25 +46,25 @@
                 return this.login = "hold on";
             },
             showPlaylist: function() {
-                var _this;
-                _this = this;
                 this.activePlaylists = true;
-                setTimeout(function() {
-                    return _this.playlist.open();
-                }, 350);
-                return setTimeout(function() {
-                    return _this.activePlaylists = false;
-                }, 1e3);
+                setTimeout(function(_this) {
+                    return function() {
+                        return _this.playlist.open();
+                    };
+                }(this), 350);
+                return setTimeout(function(_this) {
+                    return function() {
+                        return _this.activePlaylists = false;
+                    };
+                }(this), 1e3);
             },
             ready: function() {
-                var _this;
                 this.url = "";
                 this.active = false;
                 this.activePlaylists = false;
                 this.login = "log in";
                 this.loggedIn = false;
                 this.playlist = document.querySelector("yo-playlist");
-                _this = this;
                 if ($.cookie("userId")) {
                     this.active = true;
                     this.login = "hold on";

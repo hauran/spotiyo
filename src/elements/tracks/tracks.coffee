@@ -10,10 +10,9 @@ Polymer 'yo-tracks',
 
   play: (uri) ->
     @resetCurrentPlaying()
-    _this = @
-    setTimeout ->
+    setTimeout =>
       document.querySelector('yo-player').shadowRoot.querySelector('.controls').classList.add('showControls')
-      _this.playlist.playerShow = true
+      @playlist.playerShow = true
     ,350
     try
       Android.play uri
@@ -48,18 +47,16 @@ Polymer 'yo-tracks',
 
 
   getTracks: (id,href,uri) ->
-    _this = @
     @items = []
     @loading = true
     @active = true
     $(window).scrollTop(0)
 
-    $.get "/playlists/#{id}/tracks", {href:href}, (res) ->
-      _this.loading = false
-      _this.items = res.items
-      _this.play uri
+    $.get "/playlists/#{id}/tracks", {href:href}, (res) =>
+      @loading = false
+      @items = res.items
+      @play uri
 
   close:() ->
     @active = false
-    _this = @
-    _this.playlist.open()
+    @playlist.open()

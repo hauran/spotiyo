@@ -104,15 +104,15 @@
         Polymer("yo-listener", {
             player: document.querySelector("yo-player"),
             clear: function() {
-                var _this;
                 clearTimeout(this.clearTO);
-                _this = this;
-                this.clearTO = setTimeout(function() {
-                    _this.listening = false;
-                    _this.cancel = false;
-                    _this.tryAgain = false;
-                    return _this.command = "";
-                }, 3e3);
+                this.clearTO = setTimeout(function(_this) {
+                    return function() {
+                        _this.listening = false;
+                        _this.cancel = false;
+                        _this.tryAgain = false;
+                        return _this.command = "";
+                    };
+                }(this), 300);
             },
             processCmd: function(command) {
                 this.listening = true;
@@ -132,22 +132,22 @@
                 return this.tryAgain = false;
             },
             tryAgainListening: function() {
-                var _this;
                 this.tryAgain = true;
-                _this = this;
-                return setTimeout(function() {
-                    _this.isListening();
-                    return Android.speak();
-                }, 500);
+                return setTimeout(function(_this) {
+                    return function() {
+                        _this.isListening();
+                        return Android.speak();
+                    };
+                }(this), 500);
             },
             cancelListening: function() {
-                var _this;
                 this.cancel = true;
-                _this = this;
-                return setTimeout(function() {
-                    _this.listening = false;
-                    return _this.clearTO = void 0;
-                }, 500);
+                return setTimeout(function(_this) {
+                    return function() {
+                        _this.listening = false;
+                        return _this.clearTO = void 0;
+                    };
+                }(this), 500);
             },
             refresh: function() {
                 return window.location.reload();

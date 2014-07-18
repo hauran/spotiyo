@@ -8,16 +8,14 @@ Polymer 'yo-playlist',
     @home = document.querySelector('yo-login')
 
   getPlayLists: ->
-    _this = @
-    $.get '/playlists', (res) ->
-      _this.playlists = res.items
-      _this.active = true
-      setTimeout ->
-        _this.home.loggedIn = true
+    $.get '/playlists', (res) =>
+      @playlists = res.items
+      @active = true
+      setTimeout =>
+        @home.loggedIn = true
       ,500
 
   selectPlaylist: (evt) ->
-    _this = @
     $pl = $(evt.toElement)
     id = $pl.attr 'id'
     @selected = id

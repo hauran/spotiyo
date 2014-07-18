@@ -72,13 +72,14 @@
                 return this.items = [];
             },
             play: function(uri) {
-                var err, _this;
+                var err;
                 this.resetCurrentPlaying();
-                _this = this;
-                setTimeout(function() {
-                    document.querySelector("yo-player").shadowRoot.querySelector(".controls").classList.add("showControls");
-                    return _this.playlist.playerShow = true;
-                }, 350);
+                setTimeout(function(_this) {
+                    return function() {
+                        document.querySelector("yo-player").shadowRoot.querySelector(".controls").classList.add("showControls");
+                        return _this.playlist.playerShow = true;
+                    };
+                }(this), 350);
                 try {
                     return Android.play(uri);
                 } catch (_error) {
@@ -119,25 +120,23 @@
                 return currentPlaying;
             },
             getTracks: function(id, href, uri) {
-                var _this;
-                _this = this;
                 this.items = [];
                 this.loading = true;
                 this.active = true;
                 $(window).scrollTop(0);
                 return $.get("/playlists/" + id + "/tracks", {
                     href: href
-                }, function(res) {
-                    _this.loading = false;
-                    _this.items = res.items;
-                    return _this.play(uri);
-                });
+                }, function(_this) {
+                    return function(res) {
+                        _this.loading = false;
+                        _this.items = res.items;
+                        return _this.play(uri);
+                    };
+                }(this));
             },
             close: function() {
-                var _this;
                 this.active = false;
-                _this = this;
-                return _this.playlist.open();
+                return this.playlist.open();
             }
         });
     }, {} ]

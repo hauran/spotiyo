@@ -63,19 +63,18 @@
                 return this.home = document.querySelector("yo-login");
             },
             getPlayLists: function() {
-                var _this;
-                _this = this;
-                return $.get("/playlists", function(res) {
-                    _this.playlists = res.items;
-                    _this.active = true;
-                    return setTimeout(function() {
-                        return _this.home.loggedIn = true;
-                    }, 500);
-                });
+                return $.get("/playlists", function(_this) {
+                    return function(res) {
+                        _this.playlists = res.items;
+                        _this.active = true;
+                        return setTimeout(function() {
+                            return _this.home.loggedIn = true;
+                        }, 500);
+                    };
+                }(this));
             },
             selectPlaylist: function(evt) {
-                var $pl, href, id, uri, _this;
-                _this = this;
+                var $pl, href, id, uri;
                 $pl = $(evt.toElement);
                 id = $pl.attr("id");
                 this.selected = id;

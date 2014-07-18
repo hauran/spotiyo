@@ -4,13 +4,12 @@ Polymer 'yo-login',
     @login = 'hold on'
 
   showPlaylist: ->
-    _this = @
     @activePlaylists = true
-    setTimeout ->
-      _this.playlist.open()
+    setTimeout =>
+      @playlist.open()
     ,350
-    setTimeout ->
-      _this.activePlaylists = false
+    setTimeout =>
+      @activePlaylists = false
     , 1000
 
 
@@ -21,10 +20,7 @@ Polymer 'yo-login',
     @login = 'log in'
     @loggedIn = false
     @playlist = document.querySelector('yo-playlist')
-    _this = @
-
     if $.cookie('userId')
       @active = true
       @login = 'hold on'
       @playlist.getPlayLists()
-        

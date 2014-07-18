@@ -2,13 +2,12 @@ Polymer 'yo-listener',
   player:document.querySelector 'yo-player'
   clear: ->
     clearTimeout @clearTO
-    _this = @
-    @clearTO = setTimeout(->
-      _this.listening = false
-      _this.cancel = false
-      _this.tryAgain = false
-      _this.command=''
-    , 3000)
+    @clearTO = setTimeout( =>
+      @listening = false
+      @cancel = false
+      @tryAgain = false
+      @command=''
+    , 300)
     return
 
   processCmd: (command) ->
@@ -30,18 +29,16 @@ Polymer 'yo-listener',
 
   tryAgainListening: ->
     @tryAgain = true
-    _this = @
-    setTimeout () ->
-      _this.isListening()
+    setTimeout =>
+      @isListening()
       Android.speak()
     ,500
 
   cancelListening: ->
     @cancel = true
-    _this = @
-    setTimeout () ->
-      _this.listening = false
-      _this.clearTO = undefined
+    setTimeout =>
+      @listening = false
+      @clearTO = undefined
     ,500
 
   refresh: ->
