@@ -1,17 +1,14 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <script src="/lib/vendor.js"></script>
     <link rel="import" href="/node_modules/polymer/polymer.html">
     <link rel='import' href='/elements/elements.html'>
-    
     <link rel="stylesheet" polymer-scope="global" type="text/css" href="style/main.css" shim-shadowdom>
     <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1">
   </head>
   <body unresolved>
-
-    <yo-playlist id="yoplaylist"></yo-playlist>
+    <yo-playlist></yo-playlist>
     <yo-tracks></yo-tracks>
     <div style="position:fixed; width:100%; height:100%">
       <div class='title'>Spotiyo</div>
@@ -19,31 +16,5 @@
     </div>
     <yo-player></yo-player>
     <yo-listener></yo-listener>
-
-
-
-    <script>
-      var listener = document.querySelector('yo-listener');
-      var tracks = document.querySelector('yo-tracks');
-      function spoken(words){
-        listener.command = words;
-      }
-
-      function listening(){
-        listener.isListening();
-      }
-
-      function cancelListening() {
-        listener.stopListening();
-      }
-
-      function setPlaying() {
-        tracks.setPlaying();
-      }
-
-      function skipNext() {
-        tracks.skipNext();
-      }
-    </script>
   </body>
 </html>
