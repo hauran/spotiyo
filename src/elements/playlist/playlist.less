@@ -1,6 +1,12 @@
 @import "../../less/mixins";
 
 :host{
+  .overlay-title {
+    h1 {
+      height:47px;
+    }
+  }
+
   .container, .overlay-title {
     display: none;
     &.active {
@@ -10,6 +16,8 @@
 
 
   .container {
+    background: #34495e;
+    z-index:1;
     .content {
       ul {
         overflow:visible;

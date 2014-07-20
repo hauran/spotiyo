@@ -26,5 +26,3 @@ Polymer 'yo-player',
   track: (name, artist) ->
     @name = name
     @artist = artist
-
-

@@ -1,12 +1,19 @@
 <polymer-element name="yo-playlist">
 <template>
-	<style>:host .container,
+	<style>:host .overlay-title h1 {
+  height: 47px;
+}
+:host .container,
 :host .overlay-title {
   display: none;
 }
 :host .container.active,
 :host .overlay-title.active {
   display: inline;
+}
+:host .container {
+  background: #34495e;
+  z-index: 1;
 }
 :host .container .content ul {
   overflow: visible;

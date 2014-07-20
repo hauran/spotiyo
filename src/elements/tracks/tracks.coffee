@@ -47,6 +47,8 @@ Polymer 'yo-tracks',
 
 
   getTracks: (id,href,uri) ->
+    @player.pause()
+    @resetCurrentPlaying()
     @items = []
     @loading = true
     @active = true
@@ -56,6 +58,7 @@ Polymer 'yo-tracks',
       @loading = false
       @items = res.items
       @play uri
+      @player.play()
 
   close:() ->
     @active = false
