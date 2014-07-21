@@ -1,7 +1,7 @@
 <script>var back, cancelListening, listener, listening, playlist, setPlaying, skipNext, spoken, tracks;
 
 spoken = function(words) {
-  listener.command = words;
+  listener.processCmd(words);
 };
 
 listening = function() {

@@ -103,6 +103,8 @@
     1: [ function(require, module, exports) {
         Polymer("yo-listener", {
             player: document.querySelector("yo-player"),
+            playlist: document.querySelector("yo-playlist"),
+            tracks: document.querySelector("yo-tracks"),
             clear: function() {
                 clearTimeout(this.clearTO);
                 this.clearTO = setTimeout(function(_this) {
@@ -114,10 +116,49 @@
                     };
                 }(this), 300);
             },
-            processCmd: function(command) {
+            processCmd: function(cmd) {
+                var action, command, orignal, words;
                 this.listening = true;
-                this.command = command;
-                return this.clear();
+                this.command = cmd;
+                orignal = words = cmd.toLowerCase().split(" ");
+                if (words[1] === "playlist") {
+                    if (words[0] === "new") {
+                        words[0] = "new playlist";
+                        words.splice(1, 1);
+                    } else if (words[0] === "play") {
+                        words[0] = "play playlist";
+                        words.splice(1, 1);
+                    }
+                }
+                command = words.splice(0, 1)[0];
+                action = words.join(" ");
+                switch (command) {
+                  case "new playlist":
+                    return this.newPlaylist(action);
+
+                  case "play":
+                    break;
+
+                  case "add":
+                    return go(relax);
+
+                  case "playlist":
+                    return go(iceFishing);
+
+                  default:
+                    return this.command = "Huh?";
+                }
+            },
+            newPlaylist: function(name) {
+                return $.post("/playlists", {
+                    name: name
+                }, function(_this) {
+                    return function(res) {
+                        console.log(res);
+                        _this.playlist.getPlayLists();
+                        return _this.tracks.close();
+                    };
+                }(this));
             },
             stopListening: function() {
                 this.command = "";

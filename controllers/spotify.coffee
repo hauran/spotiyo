@@ -11,12 +11,12 @@ else
   redirect_uri = 'http://localhost:8080/callback'
 
 client_id = '5bc5d8c7b3f74d089b4cb08fee835e03'
-client_secret = 'ca041b7ba4ae4905a66cc6fc5b542ac5'
+client_secret = '4e7d3cea5c43431e8413fe298041c63d'
 
 exports.setup = (app) ->
   app.get "/login", (req, res) ->
     # your application requests authorization
-    scope = "user-read-private user-read-email playlist-read-private"
+    scope = "user-read-private user-read-email playlist-read-private playlist-modify playlist-modify-private"
     res.redirect "https://accounts.spotify.com/authorize?" + querystring.stringify(
       response_type: "code"
       client_id: client_id
@@ -74,6 +74,13 @@ exports.setup = (app) ->
       refreshTokens req, res, () ->
         getPlaylists req,res
 
+  app.post "/playlists", (req, res) ->
+    if req.cookies.expires_on > moment().unix()
+      newPlaylist req,res
+    else
+      refreshTokens req, res, () ->
+        newPlaylist req,res
+
   app.get "/playlists/:id/tracks", (req,res) ->
     if req.cookies.expires_on > moment().unix()
       getTracks req,res
@@ -89,6 +96,20 @@ getPlaylists = (req,res) ->
     json: true
   request.get options, (error, response, body) ->
     res.send body
+
+newPlaylist = (req,res) ->
+  options =
+    url: "https://api.spotify.com/v1/users/#{req.userId}/playlists"
+    headers:
+      Authorization: "Bearer #{req.access_token}"
+    body:
+      name: req.body.name
+      public: "true"
+    json: true
+
+  request.post options, (error, response, body) ->
+    res.send body
+
 
 getTracks = (req,res) ->
   options =

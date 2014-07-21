@@ -1,5 +1,5 @@
 spoken = (words) ->
-  listener.command = words
+  listener.processCmd words
   return
 listening = ->
   listener.isListening()
