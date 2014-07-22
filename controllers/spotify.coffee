@@ -12,6 +12,7 @@ else
 
 client_id = '5bc5d8c7b3f74d089b4cb08fee835e03'
 client_secret = '4e7d3cea5c43431e8413fe298041c63d'
+echo_nest_key = 'N7LTFGGV7RXYPBW1T'
 
 exports.setup = (app) ->
   app.get "/login", (req, res) ->
@@ -87,6 +88,36 @@ exports.setup = (app) ->
     else
       refreshTokens req, res, () ->
         getTracks req,res
+
+  app.get "/search/albumByArtist", (req,res) ->
+    console.log "search albumByArtist #{req.query.q}"
+    res.send 200
+
+  app.get "/search/:type", (req,res) ->
+    type = req.params.type
+    q = req.query.q
+
+    switch type
+      when 'artist'
+        options =
+          url: "http://developer.echonest.com/api/v4/song/search?api_key=#{echo_nest_key}&format=json&results=25&artist=#{q}&bucket=id:spotify&bucket=tracks&limit=true"
+          json: true
+        request.get options, (error, response, body) ->
+          i = _.random 0,body.response.songs.length
+          console.log body.response.songs[i]
+          res.send {song:body.response.songs[i]}
+
+
+
+
+
+
+  app.get "/search", (req,res) ->
+    console.log "search ", req
+    url = "https://api.spotify.com/v1/search?q=#{req.query.q}&type=artist,album,track"
+    request.get url, (error, response, body) ->
+      res.send body
+
 
 getPlaylists = (req,res) ->
   options =

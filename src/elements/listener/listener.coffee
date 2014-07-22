@@ -15,25 +15,57 @@ Polymer 'yo-listener',
   processCmd: (cmd) ->
     @listening = true
     @command = cmd
-    orignal = words = cmd.toLowerCase().split(' ')
-    if words[1] is 'playlist'
-      if words[0] is 'new'
-        words[0] = 'new playlist'
-        words.splice(1,1)
-      else if words[0] is 'play'
-        words[0] = 'play playlist'
-        words.splice(1,1)
+    words = cmd.toLowerCase().split(' ')
+    original = _.clone words
+
     command = words.splice(0,1)[0]
-    action = words.join(' ')
+    action = words.join(' ').trim()
+    words.splice(0,1)
+    action2 = words.join(' ').trim()
 
     switch command
-      when "new playlist" then @newPlaylist action
-      when "play" then
+      when "play"
+        switch original[1]
+          when "artist" then @searchArtist action2
+          when "album"
+            if original[2] is "by"
+              @searchAlbumByArtist action2
+            else
+              @searchAlbum action2
+          when "track" then @searchTrack action2
+          when "playlist" then @searchPlaylist action2
+          else @search action
+      when "new"
+        if original[1] is "playlist"
+          @newPlaylist action2
       when "add" then go relax
-      when "playlist" then go iceFishing
+      when "playlist" then @searchPlaylist action
       else @command = "Huh?"
 
-    # @clear()
+  searchArtist:(q) ->
+    $.get "/search/artist?q=#{q}", (res) =>
+      @tracks.play res.song.tracks[0].foreign_id
+      @player.track res.song.title, res.song.artist_name
+
+  searchAlbumByArtist:(q) ->
+    $.get "/search/albumByArtist?q=#{q}", (res) =>
+      console.log res
+
+  searchTrack:(q) ->
+    $.get "/search/track?q=#{q}", (res) =>
+      console.log res
+
+  searchAlbum:(q) ->
+    $.get "/search/album?q=#{q}", (res) =>
+      console.log res
+
+  searchPlaylist:(q) ->
+    $.get "/search/playlist?q=#{q}", (res) =>
+      console.log res
+
+  search:(q) ->
+    $.get "/search?q=#{q}", (res) =>
+      console.log res
 
   newPlaylist:(name) ->
     $.post '/playlists', {name:name}, (res) =>
@@ -70,11 +102,18 @@ Polymer 'yo-listener',
   refresh: ->
     window.location.reload()
 
-  toggle: ->
-    Android.togglePlay()
 
-  next: ->
-    Android.next()
+  playArtist: ->
+    @searchArtist "radiohead"
+
+  playAlbum: ->
+    @searchAlbum "Blank Sands"
+
+  playTrack: ->
+    @searchTrack "Poke"
+
+  play: ->
+    @search "Elephant Gun"
 
   ready: () ->
     @command = ''

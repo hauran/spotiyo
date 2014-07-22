@@ -53,9 +53,13 @@
 			<h2>What should I play?</h2>
 			<button on-click="{{refresh}}">refresh</button>
 
-			<button on-click="{{toggle}}">toggle</button>
+			<button on-click="{{playArtist}}">PLAY artist radiohead</button>
 
-			<button on-click="{{next}}">next</button>
+			<button on-click="{{playAlbum}}">PLAY album Blank Sands</button>
+
+			<button on-click="{{playTrack}}">PLAY Poke</button>
+
+			<button on-click="{{play}}">PLAY Elephant Gun</button>
 		</div>
 
 		<div class="message {{ {noHeight:command==&quot;&quot;} | tokenList}}">
@@ -117,37 +121,98 @@
                 }(this), 300);
             },
             processCmd: function(cmd) {
-                var action, command, orignal, words;
+                var action, action2, command, original, words;
                 this.listening = true;
                 this.command = cmd;
-                orignal = words = cmd.toLowerCase().split(" ");
-                if (words[1] === "playlist") {
-                    if (words[0] === "new") {
-                        words[0] = "new playlist";
-                        words.splice(1, 1);
-                    } else if (words[0] === "play") {
-                        words[0] = "play playlist";
-                        words.splice(1, 1);
-                    }
-                }
+                words = cmd.toLowerCase().split(" ");
+                original = _.clone(words);
                 command = words.splice(0, 1)[0];
-                action = words.join(" ");
+                action = words.join(" ").trim();
+                words.splice(0, 1);
+                action2 = words.join(" ").trim();
                 switch (command) {
-                  case "new playlist":
-                    return this.newPlaylist(action);
-
                   case "play":
+                    switch (original[1]) {
+                      case "artist":
+                        return this.searchArtist(action2);
+
+                      case "album":
+                        if (original[2] === "by") {
+                            return this.searchAlbumByArtist(action2);
+                        } else {
+                            return this.searchAlbum(action2);
+                        }
+                        break;
+
+                      case "track":
+                        return this.searchTrack(action2);
+
+                      case "playlist":
+                        return this.searchPlaylist(action2);
+
+                      default:
+                        return this.search(action);
+                    }
+                    break;
+
+                  case "new":
+                    if (original[1] === "playlist") {
+                        return this.newPlaylist(action2);
+                    }
                     break;
 
                   case "add":
                     return go(relax);
 
                   case "playlist":
-                    return go(iceFishing);
+                    return this.searchPlaylist(action);
 
                   default:
                     return this.command = "Huh?";
                 }
+            },
+            searchArtist: function(q) {
+                return $.get("/search/artist?q=" + q, function(_this) {
+                    return function(res) {
+                        _this.tracks.play(res.song.tracks[0].foreign_id);
+                        return _this.player.track(res.song.title, res.song.artist_name);
+                    };
+                }(this));
+            },
+            searchAlbumByArtist: function(q) {
+                return $.get("/search/albumByArtist?q=" + q, function(_this) {
+                    return function(res) {
+                        return console.log(res);
+                    };
+                }(this));
+            },
+            searchTrack: function(q) {
+                return $.get("/search/track?q=" + q, function(_this) {
+                    return function(res) {
+                        return console.log(res);
+                    };
+                }(this));
+            },
+            searchAlbum: function(q) {
+                return $.get("/search/album?q=" + q, function(_this) {
+                    return function(res) {
+                        return console.log(res);
+                    };
+                }(this));
+            },
+            searchPlaylist: function(q) {
+                return $.get("/search/playlist?q=" + q, function(_this) {
+                    return function(res) {
+                        return console.log(res);
+                    };
+                }(this));
+            },
+            search: function(q) {
+                return $.get("/search?q=" + q, function(_this) {
+                    return function(res) {
+                        return console.log(res);
+                    };
+                }(this));
             },
             newPlaylist: function(name) {
                 return $.post("/playlists", {
@@ -193,11 +258,17 @@
             refresh: function() {
                 return window.location.reload();
             },
-            toggle: function() {
-                return Android.togglePlay();
+            playArtist: function() {
+                return this.searchArtist("radiohead");
             },
-            next: function() {
-                return Android.next();
+            playAlbum: function() {
+                return this.searchAlbum("Blank Sands");
+            },
+            playTrack: function() {
+                return this.searchTrack("Poke");
+            },
+            play: function() {
+                return this.search("Elephant Gun");
             },
             ready: function() {
                 this.command = "";

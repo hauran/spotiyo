@@ -6,9 +6,13 @@
 			<h2>What should I play?</h2>
 			<button on-click="{{refresh}}">refresh</button>
 
-			<button on-click="{{toggle}}">toggle</button>
+			<button on-click="{{playArtist}}">PLAY artist radiohead</button>
 
-			<button on-click="{{next}}">next</button>
+			<button on-click="{{playAlbum}}">PLAY album Blank Sands</button>
+
+			<button on-click="{{playTrack}}">PLAY Poke</button>
+
+			<button on-click="{{play}}">PLAY Elephant Gun</button>
 		</div>
 
 		<div class='message {{ {noHeight:command==""} | tokenList}}'>

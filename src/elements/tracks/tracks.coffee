@@ -14,6 +14,7 @@ Polymer 'yo-tracks',
       document.querySelector('yo-player').shadowRoot.querySelector('.controls').classList.add('showControls')
       @playlist.playerShow = true
     ,350
+    console.log "playing: ",uri
     try
       Android.play uri
     catch err
@@ -28,10 +29,13 @@ Polymer 'yo-tracks',
   setPlaying: ->
     currentPlaying = @currentPlaying()
     if !currentPlaying
-      first = document.querySelector('yo-tracks').shadowRoot.querySelector('yo-track')
-      first.setAttribute "playing", "true"
-      first.shadowRoot.querySelector('.item-name').classList.add 'selected'
-      @player.track first.name, first.artist
+      try
+        first = document.querySelector('yo-tracks').shadowRoot.querySelector('yo-track')
+        first.setAttribute "playing", "true"
+        first.shadowRoot.querySelector('.item-name').classList.add 'selected'
+        @player.track first.name, first.artist
+      catch err
+        console.log err
 
   skipNext: ->
     currentTrack = @currentPlaying()

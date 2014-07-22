@@ -85,6 +85,7 @@
                         return _this.playlist.playerShow = true;
                     };
                 }(this), 350);
+                console.log("playing: ", uri);
                 try {
                     return Android.play(uri);
                 } catch (_error) {
@@ -101,13 +102,18 @@
                 }
             },
             setPlaying: function() {
-                var currentPlaying, first;
+                var currentPlaying, err, first;
                 currentPlaying = this.currentPlaying();
                 if (!currentPlaying) {
-                    first = document.querySelector("yo-tracks").shadowRoot.querySelector("yo-track");
-                    first.setAttribute("playing", "true");
-                    first.shadowRoot.querySelector(".item-name").classList.add("selected");
-                    return this.player.track(first.name, first.artist);
+                    try {
+                        first = document.querySelector("yo-tracks").shadowRoot.querySelector("yo-track");
+                        first.setAttribute("playing", "true");
+                        first.shadowRoot.querySelector(".item-name").classList.add("selected");
+                        return this.player.track(first.name, first.artist);
+                    } catch (_error) {
+                        err = _error;
+                        return console.log(err);
+                    }
                 }
             },
             skipNext: function() {
