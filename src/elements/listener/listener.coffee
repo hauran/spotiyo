@@ -44,8 +44,11 @@ Polymer 'yo-listener',
 
   searchArtist:(q) ->
     $.get "/search/artist?q=#{q}", (res) =>
-      @tracks.play res.song.tracks[0].foreign_id
-      @player.track res.song.title, res.song.artist_name
+      @tracks.play res.song.tracks[0].foreign_id, true
+      @tracks.addTrack res.song.title, res.song.artist_name, res.song.tracks[0].foreign_id
+      @playlist.close()
+      @tracks.open()
+      @listening = false
 
   searchAlbumByArtist:(q) ->
     $.get "/search/albumByArtist?q=#{q}", (res) =>
@@ -104,7 +107,7 @@ Polymer 'yo-listener',
 
 
   playArtist: ->
-    @searchArtist "radiohead"
+    @searchArtist "Frightened Rabbit"
 
   playAlbum: ->
     @searchAlbum "Blank Sands"

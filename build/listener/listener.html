@@ -174,8 +174,11 @@
             searchArtist: function(q) {
                 return $.get("/search/artist?q=" + q, function(_this) {
                     return function(res) {
-                        _this.tracks.play(res.song.tracks[0].foreign_id);
-                        return _this.player.track(res.song.title, res.song.artist_name);
+                        _this.tracks.play(res.song.tracks[0].foreign_id, true);
+                        _this.tracks.addTrack(res.song.title, res.song.artist_name, res.song.tracks[0].foreign_id);
+                        _this.playlist.close();
+                        _this.tracks.open();
+                        return _this.listening = false;
                     };
                 }(this));
             },
@@ -259,7 +262,7 @@
                 return window.location.reload();
             },
             playArtist: function() {
-                return this.searchArtist("radiohead");
+                return this.searchArtist("Frightened Rabbit");
             },
             playAlbum: function() {
                 return this.searchAlbum("Blank Sands");

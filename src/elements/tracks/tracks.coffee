@@ -8,7 +8,7 @@ Polymer 'yo-tracks',
     @playing = null
     @items = []
 
-  play: (uri) ->
+  play: (uri, queue) ->
     @resetCurrentPlaying()
     setTimeout =>
       document.querySelector('yo-player').shadowRoot.querySelector('.controls').classList.add('showControls')
@@ -16,7 +16,12 @@ Polymer 'yo-tracks',
     ,350
     console.log "playing: ",uri
     try
-      Android.play uri
+      if queue
+        console.log 'add', uri
+        Android.add uri
+      else
+        console.log 'play', uri
+        Android.play uri
     catch err
       console.log err
 
@@ -38,6 +43,7 @@ Polymer 'yo-tracks',
         console.log err
 
   skipNext: ->
+    debugger
     currentTrack = @currentPlaying()
     @resetCurrentPlaying()
     next = document.querySelector('yo-tracks').shadowRoot.querySelectorAll('yo-track')[currentTrack.number+1]
@@ -48,7 +54,6 @@ Polymer 'yo-tracks',
   currentPlaying: ->
     currentPlaying = document.querySelector('yo-tracks').shadowRoot.querySelector('[playing=true]')
     currentPlaying
-
 
   getTracks: (id,href,uri) ->
     @player.pause()
@@ -64,6 +69,29 @@ Polymer 'yo-tracks',
       @play uri
       @player.play()
 
+  addTrack: (name, artist, uri) ->
+    @loading = false
+    number = @items.length
+    item =
+      number: number
+      track: {
+        artists:[
+          {name:artist}
+        ]
+        name:name
+        uri:uri
+        album: {
+          images:[]
+        }
+      }
+    @items.push item
+    @setPlaying()
+
   close:() ->
     @active = false
     @playlist.open()
+
+  open: ->
+    @active = true
+    if @title is ''
+      @title = "Spotiyo"

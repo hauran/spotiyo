@@ -6,7 +6,6 @@ Polymer 'yo-track',
   ready: ->
     @tracks = document.querySelector('yo-tracks')
     @player = document.querySelector('yo-player')
-    
 
   playTrack: ->
     current = @tracks.currentPlaying().number
@@ -20,4 +19,3 @@ Polymer 'yo-track',
           Android.skipBack skip
     catch err
       console.log err
-    

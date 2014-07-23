@@ -76,7 +76,7 @@
                 this.playing = null;
                 return this.items = [];
             },
-            play: function(uri) {
+            play: function(uri, queue) {
                 var err;
                 this.resetCurrentPlaying();
                 setTimeout(function(_this) {
@@ -87,7 +87,13 @@
                 }(this), 350);
                 console.log("playing: ", uri);
                 try {
-                    return Android.play(uri);
+                    if (queue) {
+                        console.log("add", uri);
+                        return Android.add(uri);
+                    } else {
+                        console.log("play", uri);
+                        return Android.play(uri);
+                    }
                 } catch (_error) {
                     err = _error;
                     return console.log(err);
@@ -117,6 +123,7 @@
                 }
             },
             skipNext: function() {
+                debugger;
                 var currentTrack, next;
                 currentTrack = this.currentPlaying();
                 this.resetCurrentPlaying();
@@ -148,9 +155,35 @@
                     };
                 }(this));
             },
+            addTrack: function(name, artist, uri) {
+                var item, number;
+                this.loading = false;
+                number = this.items.length;
+                item = {
+                    number: number,
+                    track: {
+                        artists: [ {
+                            name: artist
+                        } ],
+                        name: name,
+                        uri: uri,
+                        album: {
+                            images: []
+                        }
+                    }
+                };
+                this.items.push(item);
+                return this.setPlaying();
+            },
             close: function() {
                 this.active = false;
                 return this.playlist.open();
+            },
+            open: function() {
+                this.active = true;
+                if (this.title === "") {
+                    return this.title = "Spotiyo";
+                }
             }
         });
     }, {} ]
