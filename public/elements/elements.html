@@ -53,9 +53,7 @@
 			<h2>What should I play?</h2>
 			<button on-click="{{refresh}}">refresh</button>
 
-			<button on-click="{{playArtist}}">PLAY artist radiohead</button>
-
-			<button on-click="{{playAlbum}}">PLAY album Blank Sands</button>
+			<button on-click="{{playArtist}}">PLAY artist</button>
 
 			<button on-click="{{playTrack}}">PLAY Poke</button>
 
@@ -136,6 +134,9 @@
                       case "artist":
                         return this.searchArtist(action2);
 
+                      case "artists":
+                        return this.searchArtist(action2);
+
                       case "album":
                         if (original[2] === "by") {
                             return this.searchAlbumByArtist(action2);
@@ -172,9 +173,12 @@
                 }
             },
             searchArtist: function(q) {
+                if (q.trim() === "") {
+                    return;
+                }
                 return $.get("/search/artist?q=" + q, function(_this) {
                     return function(res) {
-                        _this.tracks.play(res.song.tracks[0].foreign_id, true);
+                        _this.tracks.queue(res.song.tracks[0].foreign_id);
                         _this.tracks.addTrack(res.song.title, res.song.artist_name, res.song.tracks[0].foreign_id);
                         _this.playlist.close();
                         _this.tracks.open();
@@ -262,7 +266,10 @@
                 return window.location.reload();
             },
             playArtist: function() {
-                return this.searchArtist("Frightened Rabbit");
+                var artists;
+                artists = [ "Frightened Rabbit", "radiohead", "kishi bashi", "air", "tycho" ];
+                this.searchArtist(artists[this.test]);
+                return this.test++;
             },
             playAlbum: function() {
                 return this.searchAlbum("Blank Sands");
@@ -274,6 +281,7 @@
                 return this.search("Elephant Gun");
             },
             ready: function() {
+                this.test = 0;
                 this.command = "";
                 this.cancel = false;
                 this.tryAgain = false;
@@ -586,15 +594,37 @@
                 skip = Math.abs(number - current);
                 this.player.track(this.name, this.artist);
                 try {
-                    if (number > current) {
-                        return Android.skipForward(skip);
+                    if (this.tracks.isPlaylist) {
+                        if (number > current) {
+                            return Android.skipForward(skip);
+                        } else {
+                            return Android.skipBack(skip);
+                        }
                     } else {
-                        return Android.skipBack(skip);
+                        Android.play(this.uri);
+                        return this.queueNext();
                     }
                 } catch (_error) {
                     err = _error;
                     return console.log(err);
                 }
+            },
+            queueNext: function() {
+                var allTracks, found, i, _results;
+                found = false;
+                allTracks = document.querySelector("yo-tracks").shadowRoot.querySelectorAll("yo-track");
+                i = 0;
+                _results = [];
+                while (i < allTracks.length) {
+                    if (found) {
+                        this.tracks.queue(allTracks[i].uri);
+                    }
+                    if (allTracks[i].uri === this.uri) {
+                        found = true;
+                    }
+                    _results.push(i++);
+                }
+                return _results;
             }
         });
     }, {} ]
@@ -677,9 +707,10 @@
                 this.active = false;
                 this.loading = true;
                 this.playing = null;
-                return this.items = [];
+                this.items = [];
+                return this.isPlaylist = true;
             },
-            play: function(uri, queue) {
+            play: function(uri) {
                 var err;
                 this.resetCurrentPlaying();
                 setTimeout(function(_this) {
@@ -688,14 +719,27 @@
                         return _this.playlist.playerShow = true;
                     };
                 }(this), 350);
-                console.log("playing: ", uri);
                 try {
-                    if (queue) {
-                        console.log("add", uri);
-                        return Android.add(uri);
-                    } else {
-                        console.log("play", uri);
+                    return Android.play(uri);
+                } catch (_error) {
+                    err = _error;
+                    return console.log(err);
+                }
+            },
+            queue: function(uri) {
+                var err;
+                setTimeout(function(_this) {
+                    return function() {
+                        document.querySelector("yo-player").shadowRoot.querySelector(".controls").classList.add("showControls");
+                        return _this.playlist.playerShow = true;
+                    };
+                }(this), 350);
+                try {
+                    console.log("add", uri);
+                    if (this.items.length === 0) {
                         return Android.play(uri);
+                    } else {
+                        return Android.add(uri);
                     }
                 } catch (_error) {
                     err = _error;
@@ -721,12 +765,10 @@
                         return this.player.track(first.name, first.artist);
                     } catch (_error) {
                         err = _error;
-                        return console.log(err);
                     }
                 }
             },
             skipNext: function() {
-                debugger;
                 var currentTrack, next;
                 currentTrack = this.currentPlaying();
                 this.resetCurrentPlaying();
@@ -776,7 +818,12 @@
                     }
                 };
                 this.items.push(item);
-                return this.setPlaying();
+                this.isPlaylist = false;
+                return setTimeout(function(_this) {
+                    return function() {
+                        return _this.setPlaying();
+                    };
+                }(this), 500);
             },
             close: function() {
                 this.active = false;
@@ -814,6 +861,7 @@
 	<div class="menu {{ {noHeight:!loggedIn} | tokenList}}">
 		<a on-click="{{showPlaylist}}" class="fliplink {{ {active:activePlaylists} | tokenList}}"><i class="fa fa-music"></i>Playlists</a>
 	</div>
+
 </template>
 <script built="/Users/rmai/gitrepo/yoplay/src/elements/login/login.coffee">(function e(t, n, r) {
     function s(o, u) {

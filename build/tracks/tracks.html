@@ -74,9 +74,10 @@
                 this.active = false;
                 this.loading = true;
                 this.playing = null;
-                return this.items = [];
+                this.items = [];
+                return this.isPlaylist = true;
             },
-            play: function(uri, queue) {
+            play: function(uri) {
                 var err;
                 this.resetCurrentPlaying();
                 setTimeout(function(_this) {
@@ -85,14 +86,27 @@
                         return _this.playlist.playerShow = true;
                     };
                 }(this), 350);
-                console.log("playing: ", uri);
                 try {
-                    if (queue) {
-                        console.log("add", uri);
-                        return Android.add(uri);
-                    } else {
-                        console.log("play", uri);
+                    return Android.play(uri);
+                } catch (_error) {
+                    err = _error;
+                    return console.log(err);
+                }
+            },
+            queue: function(uri) {
+                var err;
+                setTimeout(function(_this) {
+                    return function() {
+                        document.querySelector("yo-player").shadowRoot.querySelector(".controls").classList.add("showControls");
+                        return _this.playlist.playerShow = true;
+                    };
+                }(this), 350);
+                try {
+                    console.log("add", uri);
+                    if (this.items.length === 0) {
                         return Android.play(uri);
+                    } else {
+                        return Android.add(uri);
                     }
                 } catch (_error) {
                     err = _error;
@@ -118,12 +132,10 @@
                         return this.player.track(first.name, first.artist);
                     } catch (_error) {
                         err = _error;
-                        return console.log(err);
                     }
                 }
             },
             skipNext: function() {
-                debugger;
                 var currentTrack, next;
                 currentTrack = this.currentPlaying();
                 this.resetCurrentPlaying();
@@ -173,7 +185,12 @@
                     }
                 };
                 this.items.push(item);
-                return this.setPlaying();
+                this.isPlaylist = false;
+                return setTimeout(function(_this) {
+                    return function() {
+                        return _this.setPlaying();
+                    };
+                }(this), 500);
             },
             close: function() {
                 this.active = false;

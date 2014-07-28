@@ -7,21 +7,30 @@ Polymer 'yo-tracks',
     @loading = true
     @playing = null
     @items = []
+    @isPlaylist = true
 
-  play: (uri, queue) ->
+  play: (uri) ->
     @resetCurrentPlaying()
     setTimeout =>
       document.querySelector('yo-player').shadowRoot.querySelector('.controls').classList.add('showControls')
       @playlist.playerShow = true
     ,350
-    console.log "playing: ",uri
     try
-      if queue
-        console.log 'add', uri
-        Android.add uri
-      else
-        console.log 'play', uri
+      Android.play uri
+    catch err
+      console.log err
+
+  queue: (uri) ->
+    setTimeout =>
+      document.querySelector('yo-player').shadowRoot.querySelector('.controls').classList.add('showControls')
+      @playlist.playerShow = true
+    ,350
+    try
+      console.log 'add', uri
+      if @items.length is 0
         Android.play uri
+      else
+        Android.add uri
     catch err
       console.log err
 
@@ -40,10 +49,8 @@ Polymer 'yo-tracks',
         first.shadowRoot.querySelector('.item-name').classList.add 'selected'
         @player.track first.name, first.artist
       catch err
-        console.log err
 
   skipNext: ->
-    debugger
     currentTrack = @currentPlaying()
     @resetCurrentPlaying()
     next = document.querySelector('yo-tracks').shadowRoot.querySelectorAll('yo-track')[currentTrack.number+1]
@@ -85,7 +92,10 @@ Polymer 'yo-tracks',
         }
       }
     @items.push item
-    @setPlaying()
+    @isPlaylist = false
+    setTimeout =>
+      @setPlaying()
+    ,500
 
   close:() ->
     @active = false

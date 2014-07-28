@@ -12,7 +12,6 @@ Polymer 'yo-login',
       @activePlaylists = false
     , 1000
 
-
   ready: ->
     @url = ''
     @active = false

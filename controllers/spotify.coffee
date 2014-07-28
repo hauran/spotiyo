@@ -100,12 +100,18 @@ exports.setup = (app) ->
     switch type
       when 'artist'
         options =
-          url: "http://developer.echonest.com/api/v4/song/search?api_key=#{echo_nest_key}&format=json&results=25&artist=#{q}&bucket=id:spotify&bucket=tracks&limit=true"
+          url: "http://developer.echonest.com/api/v4/playlist/static?api_key=#{echo_nest_key}&artist=#{q}&format=json&results=1&type=artist&variety=0&bucket=id:spotify&bucket=tracks&limit=true"
           json: true
         request.get options, (error, response, body) ->
-          i = _.random 0,body.response.songs.length
-          console.log body.response.songs[i]
-          res.send {song:body.response.songs[i]}
+          res.send {song:body.response.songs[0]}
+      when 'album'
+        options =
+          url: "https://api.spotify.com/v1/search?q=#{q}&type=album"
+          json: true
+
+        request.get options, (error, response, body) ->
+          console.log body
+          res.send 200
 
 
 

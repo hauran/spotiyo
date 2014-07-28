@@ -53,9 +53,7 @@
 			<h2>What should I play?</h2>
 			<button on-click="{{refresh}}">refresh</button>
 
-			<button on-click="{{playArtist}}">PLAY artist radiohead</button>
-
-			<button on-click="{{playAlbum}}">PLAY album Blank Sands</button>
+			<button on-click="{{playArtist}}">PLAY artist</button>
 
 			<button on-click="{{playTrack}}">PLAY Poke</button>
 
@@ -136,6 +134,9 @@
                       case "artist":
                         return this.searchArtist(action2);
 
+                      case "artists":
+                        return this.searchArtist(action2);
+
                       case "album":
                         if (original[2] === "by") {
                             return this.searchAlbumByArtist(action2);
@@ -172,9 +173,12 @@
                 }
             },
             searchArtist: function(q) {
+                if (q.trim() === "") {
+                    return;
+                }
                 return $.get("/search/artist?q=" + q, function(_this) {
                     return function(res) {
-                        _this.tracks.play(res.song.tracks[0].foreign_id, true);
+                        _this.tracks.queue(res.song.tracks[0].foreign_id);
                         _this.tracks.addTrack(res.song.title, res.song.artist_name, res.song.tracks[0].foreign_id);
                         _this.playlist.close();
                         _this.tracks.open();
@@ -262,7 +266,10 @@
                 return window.location.reload();
             },
             playArtist: function() {
-                return this.searchArtist("Frightened Rabbit");
+                var artists;
+                artists = [ "Frightened Rabbit", "radiohead", "kishi bashi", "air", "tycho" ];
+                this.searchArtist(artists[this.test]);
+                return this.test++;
             },
             playAlbum: function() {
                 return this.searchAlbum("Blank Sands");
@@ -274,6 +281,7 @@
                 return this.search("Elephant Gun");
             },
             ready: function() {
+                this.test = 0;
                 this.command = "";
                 this.cancel = false;
                 this.tryAgain = false;

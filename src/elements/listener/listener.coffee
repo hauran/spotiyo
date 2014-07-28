@@ -27,6 +27,7 @@ Polymer 'yo-listener',
       when "play"
         switch original[1]
           when "artist" then @searchArtist action2
+          when "artists" then @searchArtist action2
           when "album"
             if original[2] is "by"
               @searchAlbumByArtist action2
@@ -43,8 +44,9 @@ Polymer 'yo-listener',
       else @command = "Huh?"
 
   searchArtist:(q) ->
+    return if q.trim() is ''
     $.get "/search/artist?q=#{q}", (res) =>
-      @tracks.play res.song.tracks[0].foreign_id, true
+      @tracks.queue res.song.tracks[0].foreign_id
       @tracks.addTrack res.song.title, res.song.artist_name, res.song.tracks[0].foreign_id
       @playlist.close()
       @tracks.open()
@@ -107,7 +109,9 @@ Polymer 'yo-listener',
 
 
   playArtist: ->
-    @searchArtist "Frightened Rabbit"
+    artists = ["Frightened Rabbit", "radiohead", 'kishi bashi', 'air', 'tycho']
+    @searchArtist artists[@test]
+    @test++
 
   playAlbum: ->
     @searchAlbum "Blank Sands"
@@ -119,6 +123,7 @@ Polymer 'yo-listener',
     @search "Elephant Gun"
 
   ready: () ->
+    @test = 0
     @command = ''
     @cancel = false
     @tryAgain = false
