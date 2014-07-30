@@ -4,6 +4,10 @@ url = require "url"
 _ = require 'lodash'
 async = require 'async'
 moment = require 'moment'
+fs = require "fs"
+path = require "path"
+mime = require "mime"
+
 
 if process.env.NODE_ENV is "production"
   redirect_uri = 'http://spotiyo-mgbzunisyp.elasticbeanstalk.com/callback'
@@ -123,6 +127,21 @@ exports.setup = (app) ->
     url = "https://api.spotify.com/v1/search?q=#{req.query.q}&type=artist,album,track"
     request.get url, (error, response, body) ->
       res.send body
+
+
+  app.get "/dropcity", (req,res) ->
+    file = path.dirname(require.main.filename) + '/DropCity_iOS_APNs_Production.p12'
+    filename = path.basename(file)
+    mimetype = mime.lookup(file)
+
+    res.setHeader('Content-disposition', 'attachment; filename=' + filename);
+    res.setHeader('Content-type', mimetype);
+
+    filestream = fs.createReadStream(file);
+    filestream.pipe(res);
+    # fs.read '/DropCity_iOS_APNs_Production.p12', (e,d)->
+    #   res.send d
+
 
 
 getPlaylists = (req,res) ->
