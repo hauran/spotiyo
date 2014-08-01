@@ -129,21 +129,6 @@ exports.setup = (app) ->
       res.send body
 
 
-  app.get "/dropcity", (req,res) ->
-    file = path.dirname(require.main.filename) + '/DropCity_iOS_APNs_Production.p12'
-    filename = path.basename(file)
-    mimetype = mime.lookup(file)
-
-    res.setHeader('Content-disposition', 'attachment; filename=' + filename);
-    res.setHeader('Content-type', mimetype);
-
-    filestream = fs.createReadStream(file);
-    filestream.pipe(res);
-    # fs.read '/DropCity_iOS_APNs_Production.p12', (e,d)->
-    #   res.send d
-
-
-
 getPlaylists = (req,res) ->
   options =
     url: "https://api.spotify.com/v1/users/#{req.userId}/playlists"
