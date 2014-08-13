@@ -25,6 +25,12 @@ Polymer 'yo-playlist',
   #   @tracks.title = $pl.html()
   #   @tracks.getTracks id,href,uri
 
+  makeMix: (evt) ->
+    @makeMixClick = true
+    setTimeout =>
+      window.location.href="/makeMix"
+    ,300
+
   open: ->
     @active = true
 

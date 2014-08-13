@@ -7,7 +7,7 @@
 	<div id='container' class='overlay container {{ {active:active, noHeight:noHeight} | tokenList}}'>
 		<div class='content' style='color:white;'>
 				<div class='mix'>
-					One is on the way
+					<a class='fliplink {{ {active:makeMixClick} | tokenList}}' on-click="{{makeMix}}">One is on the way</a>
 				</div>
 			 <!-- <ul id='list' class="{{ {playerShow:playerShow} | tokenList}}">
 				 <template repeat="{{playlist in playlists}}">

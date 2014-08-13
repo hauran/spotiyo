@@ -19,7 +19,7 @@
   min-height: 200px;
   padding: 20px;
   background-color: #439fe0;
-  font-size: 1.4em;
+  font-size: 0.45em;
   text-align: center;
 }
 </style>
@@ -29,7 +29,7 @@
 	<div id="container" class="overlay container {{ {active:active, noHeight:noHeight} | tokenList}}">
 		<div class="content" style="color:white;">
 				<div class="mix">
-					One is on the way
+					<a class="fliplink {{ {active:makeMixClick} | tokenList}}" on-click="{{makeMix}}">One is on the way</a>
 				</div>
 			 <!-- <ul id='list' class="{{ {playerShow:playerShow} | tokenList}}">
 				 <template repeat="{{playlist in playlists}}">
@@ -82,6 +82,14 @@
                         }, 500);
                     };
                 }(this));
+            },
+            makeMix: function(evt) {
+                this.makeMixClick = true;
+                return setTimeout(function(_this) {
+                    return function() {
+                        return window.location.href = "/makeMix";
+                    };
+                }(this), 300);
             },
             open: function() {
                 return this.active = true;

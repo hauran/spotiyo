@@ -1,7 +1,7 @@
 Polymer 'yo-login',
   loginClick: ->
     @active = true
-    @login = 'hold on... I\'m making music'
+    @login = 'hold on'
 
   showPlaylist: ->
     @activePlaylists = true
@@ -21,5 +21,5 @@ Polymer 'yo-login',
     @playlist = document.querySelector('yo-playlist')
     if $.cookie('userId')
       @active = true
-      @login = 'hold on... I\'m making music'
+      @login = 'hold on'
       @playlist.getPlayLists()

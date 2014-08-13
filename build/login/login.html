@@ -48,7 +48,7 @@
         Polymer("yo-login", {
             loginClick: function() {
                 this.active = true;
-                return this.login = "hold on... I'm making music";
+                return this.login = "hold on";
             },
             showPlaylist: function() {
                 this.activePlaylists = true;
@@ -72,7 +72,7 @@
                 this.playlist = document.querySelector("yo-playlist");
                 if ($.cookie("userId")) {
                     this.active = true;
-                    this.login = "hold on... I'm making music";
+                    this.login = "hold on";
                     return this.playlist.getPlayLists();
                 }
             }
