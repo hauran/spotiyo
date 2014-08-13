@@ -42,13 +42,14 @@ exports.setup = (app) ->
     mixTracks = []
 
     client.hget 'user_playlists', req.userId, (err, val) ->
+      done = false #kind of a hack
       return false if err
       playlists = JSON.parse val
       _playlists = playlists.slice(0)  #clone
-
       (getTracks = ->
         playlist = _playlists.splice(0,1)[0] # get the first record of pl and reduce coll by one
         client.hget 'playlist_tracks', playlist.id, (err, tracks) ->
+
           try
             tracks = JSON.parse tracks
             _tracks = tracks.slice(0)
@@ -71,18 +72,14 @@ exports.setup = (app) ->
                       client.hset 'get_track_info_error',  track.track.uri, 1, (err,val) ->
                       client.rpush 'get_track_info_job', "http://developer.echonest.com/api/v4/song/profile?api_key=#{echo_nest_key}&track_id=#{track.track.uri}&bucket=tracks&bucket=audio_summary&bucket=artist_discovery_rank&bucket=artist_hotttnesss_rank&bucket=song_type&bucket=song_hotttnesss_rank&&bucket=song_currency_rank&bucket=id:spotify"
 
-                if _playlists.length is 0 and _tracks.length is 0
-                  if mixTracks.length is 1254
-                    console.log '1', mixTracks.length
-                    final = shuffle(mixTracks)
-                    final = final.splice(0,10)
-                    returnMix = '\n'
-                    console.log ('....................')
-
-                    _.each final, (t) ->
-                      returnMix += t.track_info.artist_name + ' - ' + t.track_info.title + '<br/>'
-                    res.send 200, returnMix
-
+                if _playlists.length is 0 and _tracks.length is 0 and !done
+                  done = true
+                  final = shuffle(mixTracks)
+                  final = final.splice(0,10)
+                  returnMix = []
+                  _.each final, (t) ->
+                    returnMix.push t.track_info.artist_name + ' - ' + t.track_info.title
+                  res.send 200, returnMix.join('<br/>')
                 else
                   setTimeout getTrackInfo, 0
             )()
