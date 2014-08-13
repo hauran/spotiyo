@@ -71,9 +71,16 @@
                 this.loggedIn = false;
                 this.playlist = document.querySelector("yo-playlist");
                 if ($.cookie("userId")) {
-                    this.active = true;
-                    this.login = "hold on";
-                    return this.playlist.getPlayLists();
+                    if ($.cookie("userId") === "undefined") {
+                        $.removeCookie("access_token");
+                        $.removeCookie("expires_on");
+                        $.removeCookie("refresh_token");
+                        return $.removeCookie("userId");
+                    } else {
+                        this.active = true;
+                        this.login = "hold on";
+                        return this.playlist.getPlayLists();
+                    }
                 }
             }
         });
