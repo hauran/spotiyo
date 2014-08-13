@@ -9,21 +9,21 @@ Polymer 'yo-playlist',
 
   getPlayLists: ->
     $.get '/playlists', (res) =>
-      @playlists = res.items
+      # @playlists = res.items
       @active = true
       setTimeout =>
         @home.loggedIn = true
       ,500
-
-  selectPlaylist: (evt) ->
-    $pl = $(evt.toElement)
-    id = $pl.attr 'id'
-    @selected = id
-    href = $pl.attr 'tracks-href'
-    uri = $pl.attr 'uri'
-    @active = false
-    @tracks.title = $pl.html()
-    @tracks.getTracks id,href,uri
+  #
+  # selectPlaylist: (evt) ->
+  #   $pl = $(evt.toElement)
+  #   id = $pl.attr 'id'
+  #   @selected = id
+  #   href = $pl.attr 'tracks-href'
+  #   uri = $pl.attr 'uri'
+  #   @active = false
+  #   @tracks.title = $pl.html()
+  #   @tracks.getTracks id,href,uri
 
   open: ->
     @active = true

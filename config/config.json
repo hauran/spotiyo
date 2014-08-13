@@ -1,0 +1,13 @@
+{
+  "redis": {
+    "port": 6379,
+    "host": "hoursongs.psmcjc.0001.use1.cache.amazonaws.com"
+  },
+  "spotify": {
+    "client_id": "5bc5d8c7b3f74d089b4cb08fee835e03",
+    "client_secret": "4e7d3cea5c43431e8413fe298041c63d"
+  },
+  "echo_nest": {
+    "key":"N7LTFGGV7RXYPBW1T"
+  }
+}

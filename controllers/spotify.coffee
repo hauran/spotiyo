@@ -7,21 +7,28 @@ moment = require 'moment'
 fs = require "fs"
 path = require "path"
 mime = require "mime"
+nconf = require "nconf"
+redis = require 'redis'
 
+nconf.file 'file': './config/config.json'
 
 if process.env.NODE_ENV is "production"
   redirect_uri = 'http://spotiyo-mgbzunisyp.elasticbeanstalk.com/callback'
+  port = nconf.get('redis:port')
+  host = nconf.get('redis:host')
+  client = redis.createClient(port, host)
 else
   redirect_uri = 'http://localhost:8080/callback'
+  client = redis.createClient()
 
-client_id = '5bc5d8c7b3f74d089b4cb08fee835e03'
-client_secret = '4e7d3cea5c43431e8413fe298041c63d'
-echo_nest_key = 'N7LTFGGV7RXYPBW1T'
+client_id = nconf.get('spotify:client_id')
+client_secret = nconf.get('spotify:client_secret')
+echo_nest_key = nconf.get('echo_nest:key')
 
 exports.setup = (app) ->
   app.get "/login", (req, res) ->
     # your application requests authorization
-    scope = "user-read-private user-read-email playlist-read-private playlist-modify playlist-modify-private"
+    scope = "user-read-private user-read-email playlist-read-private playlist-modify playlist-modify-private user-library-read user-library-modify  "
     res.redirect "https://accounts.spotify.com/authorize?" + querystring.stringify(
       response_type: "code"
       client_id: client_id
@@ -79,91 +86,93 @@ exports.setup = (app) ->
       refreshTokens req, res, () ->
         getPlaylists req,res
 
-  app.post "/playlists", (req, res) ->
-    if req.cookies.expires_on > moment().unix()
-      newPlaylist req,res
-    else
-      refreshTokens req, res, () ->
-        newPlaylist req,res
+getYourTracks = (req, res, pos) ->
+  offset = pos * 50
+  options =
+    url: "https://api.spotify.com/v1/me/tracks?limit=50&offset=#{offset}"
+    headers:
+      Authorization: "Bearer #{req.access_token}"
+    json: true
 
-  app.get "/playlists/:id/tracks", (req,res) ->
-    if req.cookies.expires_on > moment().unix()
-      getTracks req,res
-    else
-      refreshTokens req, res, () ->
-        getTracks req,res
+  request.get options, (error, response, body) ->
+    client.hset 'user_tracks', req.userId, JSON.stringify(body.items), (err,val) ->
+    #  GET TRACK INFO
+    tracks = [];
+    _.each body.items, (t) ->
+      if t.track.id
+        tracks.push t.track.uri
 
-  app.get "/search/albumByArtist", (req,res) ->
-    console.log "search albumByArtist #{req.query.q}"
-    res.send 200
+    if tracks.length > 0
+      tracksParams = "&track_id=" + tracks.join('&track_id=')
+      url = "http://developer.echonest.com/api/v4/song/profile?api_key=#{echo_nest_key}#{tracksParams}&bucket=tracks&bucket=audio_summary&bucket=artist_discovery_rank&bucket=artist_hotttnesss_rank&bucket=song_type&bucket=song_hotttnesss_rank&bucket=song_discovery_rank&&bucket=song_currency_rank&bucket=id:spotify"
+      client.rpush 'get_track_info_job', url
 
-  app.get "/search/:type", (req,res) ->
-    type = req.params.type
-    q = req.query.q
-
-    switch type
-      when 'artist'
-        options =
-          url: "http://developer.echonest.com/api/v4/playlist/static?api_key=#{echo_nest_key}&artist=#{q}&format=json&results=1&type=artist&variety=0&bucket=id:spotify&bucket=tracks&limit=true"
-          json: true
-        request.get options, (error, response, body) ->
-          res.send {song:body.response.songs[0]}
-      when 'album'
-        options =
-          url: "https://api.spotify.com/v1/search?q=#{q}&type=album"
-          json: true
-
-        request.get options, (error, response, body) ->
-          console.log body
-          res.send 200
-
-
-
-
-
-
-  app.get "/search", (req,res) ->
-    console.log "search ", req
-    url = "https://api.spotify.com/v1/search?q=#{req.query.q}&type=artist,album,track"
-    request.get url, (error, response, body) ->
-      res.send body
-
+    console.log 'getYourTracks', body.items.length, offset, pos
+    if body.items.length is 50
+      getYourTracks req, res, ++pos
 
 getPlaylists = (req,res) ->
+  getYourTracks req,res,0
   options =
     url: "https://api.spotify.com/v1/users/#{req.userId}/playlists"
     headers:
       Authorization: "Bearer #{req.access_token}"
     json: true
-  request.get options, (error, response, body) ->
-    res.send body
-
-newPlaylist = (req,res) ->
-  options =
-    url: "https://api.spotify.com/v1/users/#{req.userId}/playlists"
-    headers:
-      Authorization: "Bearer #{req.access_token}"
-    body:
-      name: req.body.name
-      public: "true"
-    json: true
-
-  request.post options, (error, response, body) ->
-    res.send body
-
-
-getTracks = (req,res) ->
-  options =
-    url: req.query.href
-    headers:
-      Authorization: "Bearer #{req.access_token}"
-    json: true
 
   request.get options, (error, response, body) ->
-    # console.log 'error', error
-    # console.log 'response', response
-    # console.log 'body', body
     res.send body
+    client.hset 'user_playlists', req.userId, JSON.stringify(body.items), (err,val) ->
+    getTracks = []
+    _.each body.items, (p) ->
+      tracksUri = p.tracks.href
+
+      getTracks.push (callback) ->
+        options =
+          url: tracksUri
+          headers:
+            Authorization: "Bearer #{req.access_token}"
+          json: true
+
+        request.get options, (error, response, body) ->
+          client.hset 'playlist_tracks', p.id, JSON.stringify(body.items), (err,val) ->
+
+          #  GET TRACK INFO
+          tracks = [];
+          _.each body.items, (t) ->
+            if t.track.id
+              tracks.push t.track.uri
+
+          if tracks.length > 0
+            tracksParams = "&track_id=" + tracks.join('&track_id=')
+            url = "http://developer.echonest.com/api/v4/song/profile?api_key=#{echo_nest_key}#{tracksParams}&bucket=tracks&bucket=audio_summary&bucket=artist_discovery_rank&bucket=artist_hotttnesss_rank&bucket=song_type&bucket=song_hotttnesss_rank&&bucket=song_currency_rank&bucket=id:spotify"
+            client.rpush 'get_track_info_job', url
+          callback null, p.id
+
+    async.parallelLimit getTracks, 10, (err, results) ->
+      console.log "DONE getTracks"
+
+getTrackInfoJob = () ->
+  client.llen 'get_track_info_job', (err, cnt) ->
+    if cnt
+      console.log 'getTrackInfoJob', cnt
+      client.lpop 'get_track_info_job', (err,val) ->
+        options =
+          url: val
+          json: true
+        # console.log val
+        request.get options, (error, response, body) ->
+          console.log 'getTrackInfoJob ERROR', error if error
+          if body.response.songs
+            songs_idx = 0
+            while songs_idx < body.response.songs.length
+              s = body.response.songs[songs_idx]
+              songs_idx++
+              _s = _.cloneDeep s
+              delete _s.tracks
+              i = 0
+              while i < s.tracks.length
+                client.hset 'track_info', s.tracks[i].foreign_id, JSON.stringify(_s), (err,val) ->
+                i++
 
 refreshTokens = (req,res,callback) ->
   authOptions =
@@ -182,9 +191,12 @@ refreshTokens = (req,res,callback) ->
       expires_in = body.expires_in
       expires_on = moment().add('s', expires_in).unix()
       req.access_token = access_token
-
       res.cookie 'access_token', access_token, {path:'/'}
       res.cookie 'expires_on', expires_on, {path:'/'}
       callback()
     else
+      console.log 'refreshTokens', error
       res.send 500
+
+
+setInterval getTrackInfoJob, 3500

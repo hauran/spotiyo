@@ -5,12 +5,15 @@
 		<i class='fa fa-angle-left back-angle' on-click="{{close}}"></i><h1>Your Playlists</h1>
 	</div>
 	<div id='container' class='overlay container {{ {active:active, noHeight:noHeight} | tokenList}}'>
-		<div class='content'>
-			 <ul id='list' class="{{ {playerShow:playerShow} | tokenList}}">
+		<div class='content' style='color:white;'>
+				<div class='mix'>
+					One is on the way
+				</div>
+			 <!-- <ul id='list' class="{{ {playerShow:playerShow} | tokenList}}">
 				 <template repeat="{{playlist in playlists}}">
 					<li class='item-name {{ {selected:selected==playlist.id} | tokenList}}' on-click="{{selectPlaylist}}" id="{{playlist.id}}" uri="{{playlist.uri}}" tracks-href="{{playlist.tracks.href}}">{{playlist.name}}</li>
 				</template>
-			</ul>
+			</ul> -->
 		</div>
 	</div>
 </template>
