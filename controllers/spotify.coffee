@@ -65,6 +65,7 @@ exports.setup = (app) ->
         # use the access token to access the Spotify Web API
         request.get options, (error, response, body) ->
           userId = body.id
+          client.hset 'user', userId, JSON.stringify(body), (err, val) ->
           options =
             url: "https://api.spotify.com/v1/users/#{userId}/playlists"
             headers:
