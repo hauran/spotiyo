@@ -18,7 +18,6 @@ echo_nest_key = nconf.get('echo_nest:key')
 
 # http://developer.echonest.com/acoustic-attributes.html
 
-
 # insertCollection = (collection, callback) ->
 #   coll = collection.slice(0) # clone collection
 #   (insertOne = ->
@@ -41,14 +40,14 @@ exports.setup = (app) ->
   app.get "/makeMix", (req, res) ->
     mixTracks = []
     client.lrange "#{req.userId}_friends", 0, -1,  (err, friends) ->
+      done = false #kind of a hack
       return false if err
       # console.log friends
       _friends = friends.slice(0)  #clone
       (getFriendsPlaylist = ->
         friend = _friends.splice(0,1)[0] # get the first record of pl and reduce coll by one
-        console.log 'friend', friend
+        # console.log 'friend', friend
         client.hget 'user_playlists', friend, (err, val) ->
-          done = false #kind of a hack
           return false if err
           playlists = JSON.parse val
           _playlists = playlists.slice(0)
@@ -70,7 +69,7 @@ exports.setup = (app) ->
                       track_info = JSON.parse track_info
                       delete track_info.tracks
                       if track_info.artist_hotttnesss_rank < 5500 or track_info.song_hotttnesss_rank < 35000 or track_info.artist_discovery_rank < 12500 or track_info.song_currency_rank < 6000
-                        mixTracks.push {playlist:playlist, track:track.track, track_info:track_info}
+                        mixTracks.push {playlist:playlist, track:track.track, track_info:track_info, friend:friend}
                     catch err
                       # console.log 'err2', track.track.uri
                       client.hexists 'get_track_info_error',  track.track.uri,  (err,val) ->
@@ -84,7 +83,8 @@ exports.setup = (app) ->
                       final = final.splice(0,10)
                       returnMix = []
                       _.each final, (t) ->
-                        returnMix.push t.track_info.artist_name + ' - ' + t.track_info.title
+                        # console.log t
+                        returnMix.push "<a href='#{t.track.preview_url}'>#{t.track_info.artist_name} - #{t.track_info.title}</a> (#{t.friend} <a href='#{t.playlist.href}'>#{t.playlist.name}</a>)"
                       res.send 200, returnMix.join('<br/>')
                     else
                       setTimeout getTrackInfo, 0
@@ -100,36 +100,3 @@ exports.setup = (app) ->
         if _friends.length isnt 0
           setTimeout getFriendsPlaylist, 0
       )()
-
-    # client.hget 'user_playlists', req.userId, (err, val) ->
-    #   return false if err
-    #   playlists = JSON.parse val
-    #   _.each playlists, (p) ->
-    #     client.hget 'playlist_tracks', p.id, (err, tracks) ->
-    #       if err
-    #         console.log 'err playlist_tracks', err
-    #         return false
-    #       try
-    #         tracks = JSON.parse tracks
-    #         # console.log '..........................\n\n'
-    #         # console.log "### #{p.name} ###"
-    #         _.each tracks, (t) ->
-    #           track = t.track
-    #           # console.log track.name, track.uri
-    #           client.hget 'track_info', track.uri, (err, track_info) ->
-    #             if err
-    #               console.log 'err track_info', err
-    #               return false
-    #             try
-    #               track_info = JSON.parse track_info
-    #               delete track_info.tracks
-    #               # console.log track_info
-    #               if track_info.artist_hotttnesss_rank < 5500 or track_info.song_hotttnesss_rank < 35000 or track_info.artist_discovery_rank < 12500 or track_info.song_currency_rank < 6000
-    #                 mixTracks.push {playlist:p, track:track, track_info:track_info}
-    #                 console.log mixTracks.length
-    #             catch err
-    #               console.log 'track_info JSON ERROR', track.uri
-    #       catch err
-    #         console.log 'playlist_tracks JSON ERROR', p.name, p.uri
-
-      # res.send 200
