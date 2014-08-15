@@ -1,298 +1,3 @@
-<polymer-element name="yo-listener">
-<template>
-	<style>:host .container {
-  text-align: center;
-  z-index: 100;
-  width: 100%;
-  height: 100%;
-  background-color: #2ecc71;
-  color: white;
-  position: fixed;
-  top: -100%;
-  left: 0;
-  padding: 2px;
-  font-size: 1.2em;
-  -webkit-transition: all 0.2s ease-out;
-  -moz-transition: all 0.2s ease-out;
-  -o-transition: all 0.2s ease-out;
-  transition: all 0.2s ease-out;
-}
-:host .container a.fliplink {
-  font-size: 2em;
-  margin-top: 50px;
-  padding: 20px 15px 20px 0;
-  font-weight: bold;
-}
-:host .container.active {
-  -webkit-transition: all 0.2s ease-out;
-  -moz-transition: all 0.2s ease-out;
-  -o-transition: all 0.2s ease-out;
-  transition: all 0.2s ease-out;
-  top: 0;
-}
-:host .container h1 {
-  display: inline;
-}
-:host .container .message {
-  padding: 30px;
-}
-:host .container .message > div {
-  text-align: center;
-}
-:host .container i.fa {
-  margin-left: 15px;
-}
-:host .container .fa-quote-left,
-:host .container .fa-quote-right {
-  position: relative;
-  top: -15px;
-}
-</style>
-	<div id="container" class="container {{ {active:listening} | tokenList}}">
-		<div class="message {{ {noHeight:command!=&quot;&quot;} | tokenList}}">
-			<h2>What should I play?</h2>
-			<button on-click="{{refresh}}">refresh</button>
-
-			<button on-click="{{playArtist}}">PLAY artist</button>
-
-			<button on-click="{{playTrack}}">PLAY Poke</button>
-
-			<button on-click="{{play}}">PLAY Elephant Gun</button>
-		</div>
-
-		<div class="message {{ {noHeight:command==&quot;&quot;} | tokenList}}">
-			<i class="fa fa-quote-left"></i><h1>{{command}}</h1><i class="fa fa-quote-right"></i>
-			<div>
-				<a href="javascript:void(0)" on-click="{{tryAgainListening}}" class="fliplink {{ {active:tryAgain} | tokenList}}">
-					<i class="fa fa-undo"></i>Try Again
-				</a>
-			</div>
-		</div>
-
-		<div class="message">
-			<div style="margin-top:30px;">
-				<a href="javascript:void(0)" on-click="{{cancelListening}}" class="fliplink {{ {active:cancel} | tokenList}}">
-					<i class="fa fa-times"></i>Cancel
-				</a>
-			</div>
-		</div>
-	</div>
-</template>
-
-<script built="/Users/rmai/gitrepo/yoplay/src/elements/listener/listener.coffee">(function e(t, n, r) {
-    function s(o, u) {
-        if (!n[o]) {
-            if (!t[o]) {
-                var a = typeof require == "function" && require;
-                if (!u && a) return a(o, !0);
-                if (i) return i(o, !0);
-                throw new Error("Cannot find module '" + o + "'");
-            }
-            var f = n[o] = {
-                exports: {}
-            };
-            t[o][0].call(f.exports, function(e) {
-                var n = t[o][1][e];
-                return s(n ? n : e);
-            }, f, f.exports, e, t, n, r);
-        }
-        return n[o].exports;
-    }
-    var i = typeof require == "function" && require;
-    for (var o = 0; o < r.length; o++) s(r[o]);
-    return s;
-})({
-    1: [ function(require, module, exports) {
-        Polymer("yo-listener", {
-            player: document.querySelector("yo-player"),
-            playlist: document.querySelector("yo-playlist"),
-            tracks: document.querySelector("yo-tracks"),
-            clear: function() {
-                clearTimeout(this.clearTO);
-                this.clearTO = setTimeout(function(_this) {
-                    return function() {
-                        _this.listening = false;
-                        _this.cancel = false;
-                        _this.tryAgain = false;
-                        return _this.command = "";
-                    };
-                }(this), 300);
-            },
-            processCmd: function(cmd) {
-                var action, action2, command, original, words;
-                this.listening = true;
-                this.command = cmd;
-                words = cmd.toLowerCase().split(" ");
-                original = _.clone(words);
-                command = words.splice(0, 1)[0];
-                action = words.join(" ").trim();
-                words.splice(0, 1);
-                action2 = words.join(" ").trim();
-                switch (command) {
-                  case "play":
-                    switch (original[1]) {
-                      case "artist":
-                        return this.searchArtist(action2);
-
-                      case "artists":
-                        return this.searchArtist(action2);
-
-                      case "album":
-                        if (original[2] === "by") {
-                            return this.searchAlbumByArtist(action2);
-                        } else {
-                            return this.searchAlbum(action2);
-                        }
-                        break;
-
-                      case "track":
-                        return this.searchTrack(action2);
-
-                      case "playlist":
-                        return this.searchPlaylist(action2);
-
-                      default:
-                        return this.search(action);
-                    }
-                    break;
-
-                  case "new":
-                    if (original[1] === "playlist") {
-                        return this.newPlaylist(action2);
-                    }
-                    break;
-
-                  case "add":
-                    return go(relax);
-
-                  case "playlist":
-                    return this.searchPlaylist(action);
-
-                  default:
-                    return this.command = "Huh?";
-                }
-            },
-            searchArtist: function(q) {
-                if (q.trim() === "") {
-                    return;
-                }
-                return $.get("/search/artist?q=" + q, function(_this) {
-                    return function(res) {
-                        _this.tracks.queue(res.song.tracks[0].foreign_id);
-                        _this.tracks.addTrack(res.song.title, res.song.artist_name, res.song.tracks[0].foreign_id);
-                        _this.playlist.close();
-                        _this.tracks.open();
-                        return _this.listening = false;
-                    };
-                }(this));
-            },
-            searchAlbumByArtist: function(q) {
-                return $.get("/search/albumByArtist?q=" + q, function(_this) {
-                    return function(res) {
-                        return console.log(res);
-                    };
-                }(this));
-            },
-            searchTrack: function(q) {
-                return $.get("/search/track?q=" + q, function(_this) {
-                    return function(res) {
-                        return console.log(res);
-                    };
-                }(this));
-            },
-            searchAlbum: function(q) {
-                return $.get("/search/album?q=" + q, function(_this) {
-                    return function(res) {
-                        return console.log(res);
-                    };
-                }(this));
-            },
-            searchPlaylist: function(q) {
-                return $.get("/search/playlist?q=" + q, function(_this) {
-                    return function(res) {
-                        return console.log(res);
-                    };
-                }(this));
-            },
-            search: function(q) {
-                return $.get("/search?q=" + q, function(_this) {
-                    return function(res) {
-                        return console.log(res);
-                    };
-                }(this));
-            },
-            newPlaylist: function(name) {
-                return $.post("/playlists", {
-                    name: name
-                }, function(_this) {
-                    return function(res) {
-                        console.log(res);
-                        _this.playlist.getPlayLists();
-                        return _this.tracks.close();
-                    };
-                }(this));
-            },
-            stopListening: function() {
-                this.command = "";
-                this.listening = false;
-                this.cancel = false;
-                return this.tryAgain = false;
-            },
-            isListening: function() {
-                this.command = "";
-                this.listening = true;
-                this.cancel = false;
-                return this.tryAgain = false;
-            },
-            tryAgainListening: function() {
-                this.tryAgain = true;
-                return setTimeout(function(_this) {
-                    return function() {
-                        _this.isListening();
-                        return Android.speak();
-                    };
-                }(this), 500);
-            },
-            cancelListening: function() {
-                this.cancel = true;
-                return setTimeout(function(_this) {
-                    return function() {
-                        _this.listening = false;
-                        return _this.clearTO = void 0;
-                    };
-                }(this), 500);
-            },
-            refresh: function() {
-                return window.location.reload();
-            },
-            playArtist: function() {
-                var artists;
-                artists = [ "Frightened Rabbit", "radiohead", "kishi bashi", "air", "tycho" ];
-                this.searchArtist(artists[this.test]);
-                return this.test++;
-            },
-            playAlbum: function() {
-                return this.searchAlbum("Blank Sands");
-            },
-            playTrack: function() {
-                return this.searchTrack("Poke");
-            },
-            play: function() {
-                return this.search("Elephant Gun");
-            },
-            ready: function() {
-                this.test = 0;
-                this.command = "";
-                this.cancel = false;
-                this.tryAgain = false;
-                this.listening = false;
-                return this.clearTO = void 0;
-            }
-        });
-    }, {} ]
-}, {}, [ 1 ]);</script>
-</polymer-element>
-
 <polymer-element name="yo-player">
 <template>
   <style>:host .container {
@@ -437,22 +142,76 @@
   background: #34495e;
   z-index: 1;
 }
-:host .container .content .mix {
-  min-height: 200px;
-  padding: 20px;
-  background-color: #439fe0;
-  font-size: 0.45em;
+:host .container .content ul {
+  overflow: visible;
+}
+:host .container .content ul li:nth-of-type(2n) {
+  background-color: #16a085;
+}
+:host .container .content ul li:nth-of-type(3n) {
+  background-color: #2980b9;
+}
+:host .container .content ul li:nth-of-type(4n) {
+  background-color: #9b59b6;
+}
+:host .container .content ul li:nth-of-type(5n) {
+  background-color: #e74c3c;
+}
+:host .container .content ul li:nth-of-type(6n) {
+  background-color: #16a085;
+}
+:host .container .content ul li.mix {
+  position: relative;
+  min-height: 150px;
+  padding: 20px 20px 10px 20px;
+  color: white;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+:host .container .content ul li.mix h4 {
+  margin-top: 15px;
+  flex: 1;
+  width: 100%;
+}
+:host .container .content ul li.mix .details {
+  bottom: 5px;
+  font-size: 0.5em;
+  width: 100%;
+}
+:host .container .content ul li.mix .details p {
+  margin: 5px;
+  float: right;
+}
+:host .container .content ul li.mix .fa-star,
+:host .container .content ul li.mix .fa-star-o {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+:host .container .content ul li.mix .fa-star {
+  color: #f1c40f;
+}
+:host .container .content ul.playerShow {
+  padding-bottom: 71px;
 }
 </style>
-	<div id="titlebar" class="overlay-title {{ {active:active, noHeight:noHeight} | tokenList}}">
-		<i class="fa fa-angle-left back-angle" on-click="{{close}}"></i><h1>Your Playlists</h1>
-	</div>
 	<div id="container" class="overlay container {{ {active:active, noHeight:noHeight} | tokenList}}">
 		<div class="content" style="color:white;">
-				<div class="mix">
-					<a class="fliplink {{ {active:makeMixClick} | tokenList}}" on-click="{{makeMix}}">One is on the way</a>
-				</div>
+				<ul>
+					<template repeat="{{playlist in playlists}}">
+						<li class="mix item-name {{ {selected:selected==playlist.id} | tokenList}}">
+							<i class="fa {{ {&quot;fa-star-o&quot;:!playlist.starred, &quot;fa-star&quot;:playlist.starred } | tokenList}}"></i>
+							<h4>
+								{{playlist.name}}
+							</h4>
+							<div class="details">
+									<p class="date">{{playlist.date}}</p>
+									<p class="tracks">{{playlist.tracks}} tracks</p>
+							</div>
+						</li>
+					</template>
+				</ul>
 			 <!-- <ul id='list' class="{{ {playerShow:playerShow} | tokenList}}">
 				 <template repeat="{{playlist in playlists}}">
 					<li class='item-name {{ {selected:selected==playlist.id} | tokenList}}' on-click="{{selectPlaylist}}" id="{{playlist.id}}" uri="{{playlist.uri}}" tracks-href="{{playlist.tracks.href}}">{{playlist.name}}</li>
@@ -496,14 +255,51 @@
                 return this.home = document.querySelector("yo-login");
             },
             getPlayLists: function() {
-                return $.get("/playlists", function(_this) {
-                    return function(res) {
-                        _this.active = true;
-                        return setTimeout(function() {
-                            return _this.home.loggedIn = true;
-                        }, 500);
-                    };
+                $.get("/spotify/playlists", function(_this) {
+                    return function(res) {};
                 }(this));
+                this.playlists = [ {
+                    name: "Very Labor Steam Remain Better",
+                    date: "August 12 2014",
+                    tracks: 12,
+                    starred: false
+                }, {
+                    name: "Trick Sitting Dream Tobacco",
+                    date: "August 11 2014",
+                    tracks: 11,
+                    starred: true
+                }, {
+                    name: "Short No Second",
+                    date: "August 10 2014",
+                    tracks: 9,
+                    starred: true
+                }, {
+                    name: "Darkness During Unusual Death Cutting",
+                    date: "August 9 2014",
+                    tracks: 14,
+                    starred: false
+                }, {
+                    name: "Doing Rhythm Tube",
+                    date: "August 8 2014",
+                    tracks: 13,
+                    starred: false
+                }, {
+                    name: "Upper Four Tropical Chose",
+                    date: "August 7 2014",
+                    tracks: 8,
+                    starred: true
+                }, {
+                    name: "Amount Herself Wool",
+                    date: "August 6 2014",
+                    tracks: 10,
+                    starred: true
+                } ];
+                this.active = true;
+                return setTimeout(function(_this) {
+                    return function() {
+                        return _this.home.loggedIn = true;
+                    };
+                }(this), 500);
             },
             makeMix: function(evt) {
                 this.makeMixClick = true;

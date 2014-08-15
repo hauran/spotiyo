@@ -64,8 +64,10 @@ exports.setup = (app) ->
 
         # use the access token to access the Spotify Web API
         request.get options, (error, response, body) ->
+          console.log body
           userId = body.id
           client.hset 'user', userId, JSON.stringify(body), (err, val) ->
+          client.hset 'email_user', body.email, userId, (err, val) ->
           options =
             url: "https://api.spotify.com/v1/users/#{userId}/playlists"
             headers:
@@ -80,7 +82,7 @@ exports.setup = (app) ->
       return
     return
 
-  app.get "/playlists", (req, res) ->
+  app.get "/spotify/playlists", (req, res) ->
     if req.cookies.expires_on > moment().unix()
       getPlaylists req,res
     else

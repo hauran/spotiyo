@@ -8,12 +8,59 @@ Polymer 'yo-playlist',
     @home = document.querySelector('yo-login')
 
   getPlayLists: ->
-    $.get '/playlists', (res) =>
+    $.get '/spotify/playlists', (res) =>
+    # $.get '/playlists', (res) =>
       # @playlists = res.items
-      @active = true
-      setTimeout =>
-        @home.loggedIn = true
-      ,500
+    @playlists = [
+      {
+        name:'Very Labor Steam Remain Better'
+        date:'August 12 2014'
+        tracks: 12
+        starred:false
+      }
+      {
+        name:'Trick Sitting Dream Tobacco'
+        date:'August 11 2014'
+        tracks: 11
+        starred:true
+      }
+      {
+        name: 'Short No Second'
+        date:'August 10 2014'
+        tracks: 9
+        starred:true
+      }
+      {
+        name:'Darkness During Unusual Death Cutting'
+        date:'August 9 2014'
+        tracks: 14
+        starred:false
+      }
+      {
+        name:'Doing Rhythm Tube'
+        date:'August 8 2014'
+        tracks: 13
+        starred:false
+      }
+      {
+        name:'Upper Four Tropical Chose'
+        date:'August 7 2014'
+        tracks: 8
+        starred:true
+      }
+      {
+        name:'Amount Herself Wool'
+        date:'August 6 2014'
+        tracks: 10
+        starred:true
+      }
+    ]
+    @active = true
+    setTimeout =>
+      @home.loggedIn = true
+    ,500
+
+
   #
   # selectPlaylist: (evt) ->
   #   $pl = $(evt.toElement)

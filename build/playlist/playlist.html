@@ -15,22 +15,76 @@
   background: #34495e;
   z-index: 1;
 }
-:host .container .content .mix {
-  min-height: 200px;
-  padding: 20px;
-  background-color: #439fe0;
-  font-size: 0.45em;
+:host .container .content ul {
+  overflow: visible;
+}
+:host .container .content ul li:nth-of-type(2n) {
+  background-color: #16a085;
+}
+:host .container .content ul li:nth-of-type(3n) {
+  background-color: #2980b9;
+}
+:host .container .content ul li:nth-of-type(4n) {
+  background-color: #9b59b6;
+}
+:host .container .content ul li:nth-of-type(5n) {
+  background-color: #e74c3c;
+}
+:host .container .content ul li:nth-of-type(6n) {
+  background-color: #16a085;
+}
+:host .container .content ul li.mix {
+  position: relative;
+  min-height: 150px;
+  padding: 20px 20px 10px 20px;
+  color: white;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+:host .container .content ul li.mix h4 {
+  margin-top: 15px;
+  flex: 1;
+  width: 100%;
+}
+:host .container .content ul li.mix .details {
+  bottom: 5px;
+  font-size: 0.5em;
+  width: 100%;
+}
+:host .container .content ul li.mix .details p {
+  margin: 5px;
+  float: right;
+}
+:host .container .content ul li.mix .fa-star,
+:host .container .content ul li.mix .fa-star-o {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+:host .container .content ul li.mix .fa-star {
+  color: #f1c40f;
+}
+:host .container .content ul.playerShow {
+  padding-bottom: 71px;
 }
 </style>
-	<div id="titlebar" class="overlay-title {{ {active:active, noHeight:noHeight} | tokenList}}">
-		<i class="fa fa-angle-left back-angle" on-click="{{close}}"></i><h1>Your Playlists</h1>
-	</div>
 	<div id="container" class="overlay container {{ {active:active, noHeight:noHeight} | tokenList}}">
 		<div class="content" style="color:white;">
-				<div class="mix">
-					<a class="fliplink {{ {active:makeMixClick} | tokenList}}" on-click="{{makeMix}}">One is on the way</a>
-				</div>
+				<ul>
+					<template repeat="{{playlist in playlists}}">
+						<li class="mix item-name {{ {selected:selected==playlist.id} | tokenList}}">
+							<i class="fa {{ {&quot;fa-star-o&quot;:!playlist.starred, &quot;fa-star&quot;:playlist.starred } | tokenList}}"></i>
+							<h4>
+								{{playlist.name}}
+							</h4>
+							<div class="details">
+									<p class="date">{{playlist.date}}</p>
+									<p class="tracks">{{playlist.tracks}} tracks</p>
+							</div>
+						</li>
+					</template>
+				</ul>
 			 <!-- <ul id='list' class="{{ {playerShow:playerShow} | tokenList}}">
 				 <template repeat="{{playlist in playlists}}">
 					<li class='item-name {{ {selected:selected==playlist.id} | tokenList}}' on-click="{{selectPlaylist}}" id="{{playlist.id}}" uri="{{playlist.uri}}" tracks-href="{{playlist.tracks.href}}">{{playlist.name}}</li>
@@ -74,14 +128,51 @@
                 return this.home = document.querySelector("yo-login");
             },
             getPlayLists: function() {
-                return $.get("/playlists", function(_this) {
-                    return function(res) {
-                        _this.active = true;
-                        return setTimeout(function() {
-                            return _this.home.loggedIn = true;
-                        }, 500);
-                    };
+                $.get("/spotify/playlists", function(_this) {
+                    return function(res) {};
                 }(this));
+                this.playlists = [ {
+                    name: "Very Labor Steam Remain Better",
+                    date: "August 12 2014",
+                    tracks: 12,
+                    starred: false
+                }, {
+                    name: "Trick Sitting Dream Tobacco",
+                    date: "August 11 2014",
+                    tracks: 11,
+                    starred: true
+                }, {
+                    name: "Short No Second",
+                    date: "August 10 2014",
+                    tracks: 9,
+                    starred: true
+                }, {
+                    name: "Darkness During Unusual Death Cutting",
+                    date: "August 9 2014",
+                    tracks: 14,
+                    starred: false
+                }, {
+                    name: "Doing Rhythm Tube",
+                    date: "August 8 2014",
+                    tracks: 13,
+                    starred: false
+                }, {
+                    name: "Upper Four Tropical Chose",
+                    date: "August 7 2014",
+                    tracks: 8,
+                    starred: true
+                }, {
+                    name: "Amount Herself Wool",
+                    date: "August 6 2014",
+                    tracks: 10,
+                    starred: true
+                } ];
+                this.active = true;
+                return setTimeout(function(_this) {
+                    return function() {
+                        return _this.home.loggedIn = true;
+                    };
+                }(this), 500);
             },
             makeMix: function(evt) {
                 this.makeMixClick = true;

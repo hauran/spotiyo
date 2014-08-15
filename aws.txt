@@ -1,0 +1,8 @@
+AWS
+
+hoursongsAWS
+
+tail -f /var/log/nodejs/nodejs.log
+
+./redis-stable/src/redis-cli -h hoursongs.psmcjc.0001.use1.cache.amazonaws.com -p 6379
+hkeys user_playlists

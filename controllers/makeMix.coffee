@@ -4,6 +4,7 @@ async = require 'async'
 moment = require 'moment'
 nconf = require "nconf"
 redis = require 'redis'
+randomWords = require 'random-words'
 shuffle = require('knuth-shuffle').knuthShuffle
 
 nconf.file 'file': './config/config.json'
@@ -82,10 +83,13 @@ exports.setup = (app) ->
                       final = shuffle(mixTracks)
                       final = final.splice(0,10)
                       returnMix = []
+                      title = randomWords({ min:2, max:5, join:' '})
+                      title = title.replace(/\w\S*/g, (txt) ->
+                        txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+                      )
                       _.each final, (t) ->
-                        # console.log t
-                        returnMix.push "<a href='#{t.track.preview_url}'>#{t.track_info.artist_name} - #{t.track_info.title}</a> (#{t.friend} <a href='#{t.playlist.href}'>#{t.playlist.name}</a>)"
-                      res.send 200, returnMix.join('<br/>')
+                        returnMix.push "<a href='#{t.track.preview_url}'>#{t.track_info.artist_name} - #{t.track_info.title}</a> (#{t.friend} #{t.playlist.name})"
+                      res.send 200, title + '<br/><br/>' + returnMix.join('<br/>')
                     else
                       setTimeout getTrackInfo, 0
                 )()
