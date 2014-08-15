@@ -47,10 +47,11 @@ exports.setup = (app) ->
       _friends = friends.slice(0)  #clone
       (getFriendsPlaylist = ->
         friend = _friends.splice(0,1)[0] # get the first record of pl and reduce coll by one
-        # console.log 'friend', friend
+        console.log 'friend', friend
         client.hget 'user_playlists', friend, (err, val) ->
           return false if err
           playlists = JSON.parse val
+          return false if !playlists
           _playlists = playlists.slice(0)
           (getTracks = ->
             playlist = _playlists.splice(0,1)[0]
