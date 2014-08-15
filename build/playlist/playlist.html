@@ -75,7 +75,7 @@
 					<template repeat="{{playlist in playlists}}">
 						<li class="mix item-name {{ {selected:selected==playlist.id} | tokenList}}">
 							<i class="fa {{ {&quot;fa-star-o&quot;:!playlist.starred, &quot;fa-star&quot;:playlist.starred } | tokenList}}"></i>
-							<h4>
+							<h4 on-click="{{makemix}}">
 								{{playlist.name}}
 							</h4>
 							<div class="details">
@@ -174,13 +174,8 @@
                     };
                 }(this), 500);
             },
-            makeMix: function(evt) {
-                this.makeMixClick = true;
-                return setTimeout(function(_this) {
-                    return function() {
-                        return window.location.href = "/makeMix";
-                    };
-                }(this), 300);
+            makemix: function(evt) {
+                return window.location.href = "/makeMix";
             },
             open: function() {
                 return this.active = true;
