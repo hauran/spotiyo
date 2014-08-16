@@ -62,6 +62,18 @@ Polymer 'yo-tracks',
     currentPlaying = document.querySelector('yo-tracks').shadowRoot.querySelector('[playing=true]')
     currentPlaying
 
+  makeMix: ->
+    @items = []
+    @loading = true
+    @active = true
+    $(window).scrollTop(0)
+    $.get "/makeMix", {}, (res) =>
+      @loading = false
+      @items = res.tracks
+      @title = res.title
+      @play @items[0].track.uri
+      @player.play()
+
   getTracks: (id,href,uri) ->
     @player.pause()
     @resetCurrentPlaying()

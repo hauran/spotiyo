@@ -22,8 +22,8 @@
   z-index: 1;
 }
 :host .container .tracks {
-  margin-bottom: 70px;
-  padding-bottom: 71px;
+  margin-top: 52px;
+  margin-bottom: 54px;
 }
 </style>
 	<div class="overlay-title {{ {active:active, noHeight:noHeight} | tokenList}}">
@@ -148,6 +148,21 @@
                 var currentPlaying;
                 currentPlaying = document.querySelector("yo-tracks").shadowRoot.querySelector("[playing=true]");
                 return currentPlaying;
+            },
+            makeMix: function() {
+                this.items = [];
+                this.loading = true;
+                this.active = true;
+                $(window).scrollTop(0);
+                return $.get("/makeMix", {}, function(_this) {
+                    return function(res) {
+                        _this.loading = false;
+                        _this.items = res.tracks;
+                        _this.title = res.title;
+                        _this.play(_this.items[0].track.uri);
+                        return _this.player.play();
+                    };
+                }(this));
             },
             getTracks: function(id, href, uri) {
                 this.player.pause();

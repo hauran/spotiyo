@@ -7,6 +7,14 @@ redis = require 'redis'
 randomWords = require 'random-words'
 shuffle = require('knuth-shuffle').knuthShuffle
 
+access_token = "hello"
+access_token
+spotify = {
+  token:'hello'
+  expires_on:'8/14/2014'
+
+}
+
 nconf.file 'file': './config/config.json'
 if process.env.NODE_ENV is "production"
   port = nconf.get('redis:port')
@@ -19,25 +27,52 @@ echo_nest_key = nconf.get('echo_nest:key')
 
 # http://developer.echonest.com/acoustic-attributes.html
 
-# insertCollection = (collection, callback) ->
-#   coll = collection.slice(0) # clone collection
-#   (insertOne = ->
-#     record = coll.splice(0, 1)[0] # get the first record of coll and reduce coll by one
-#     db.insert record, (err) ->
-#       if err
-#         callback err
-#         return
-#       if coll.length is 0
-#         callback()
-#       else
-#         setTimeout insertOne, 0
-#       return
-#
-#     return
-#   )()
-#   return
+newPlaylist = (req,res) ->
+  options =
+    url: "https://api.spotify.com/v1/users/everyonesmixtape/playlists"
+    headers:
+      Authorization: "Bearer #{access_token}"
+    body:
+      name: 'test'
+      public: "true"
+    json: true
+
+  request.post options, (error, response, body) ->
+    res.send body
+
+refreshTokens = (req,res,callback) ->
+  authOptions =
+    url: 'https://accounts.spotify.com/api/token'
+    headers:
+      'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+    form:
+      grant_type: 'refresh_token'
+      refresh_token: req.cookies.refresh_token
+    json: true
+
+  request.post authOptions, (error, response, body) ->
+    console.log 'refreshed'
+    if !error and response.statusCode is 200
+      access_token = body.access_token
+      expires_in = body.expires_in
+      expires_on = moment().add('s', expires_in).unix()
+      req.access_token = access_token
+      res.cookie 'access_token', access_token, {path:'/'}
+      res.cookie 'expires_on', expires_on, {path:'/'}
+      callback()
+    else
+      console.log 'refreshTokens', error
+      res.send 500
+
 
 exports.setup = (app) ->
+  app.get "/makeamix", (req, res) ->
+    if req.cookies.expires_on > moment().unix()
+      newPlaylist req,res
+    else
+      refreshTokens req, res, () ->
+        newPlaylist req,res
+
   app.get "/makeMix", (req, res) ->
     mixTracks = []
     client.lrange "#{req.userId}_friends", 0, -1,  (err, friends) ->
@@ -83,14 +118,11 @@ exports.setup = (app) ->
                       done = true
                       final = shuffle(mixTracks)
                       final = final.splice(0,10)
-                      returnMix = []
                       title = randomWords({ min:2, max:5, join:' '})
                       title = title.replace(/\w\S*/g, (txt) ->
                         txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
                       )
-                      _.each final, (t) ->
-                        returnMix.push "<a href='#{t.track.preview_url}'>#{t.track_info.artist_name} - #{t.track_info.title}</a> (#{t.friend} #{t.playlist.name})"
-                      res.send 200, title + '<br/><br/>' + returnMix.join('<br/>')
+                      res.send 200, {title:title,tracks:final}
                     else
                       setTimeout getTrackInfo, 0
                 )()

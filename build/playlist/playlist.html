@@ -18,6 +18,9 @@
 :host .container .content ul {
   overflow: visible;
 }
+:host .container .content ul li {
+  background-color: #34495e;
+}
 :host .container .content ul li:nth-of-type(2n) {
   background-color: #16a085;
 }
@@ -46,10 +49,11 @@
   margin-top: 15px;
   flex: 1;
   width: 100%;
+  font-size: 1.6em;
 }
 :host .container .content ul li.mix .details {
   bottom: 5px;
-  font-size: 0.5em;
+  font-size: 0.8em;
   width: 100%;
 }
 :host .container .content ul li.mix .details p {
@@ -61,21 +65,22 @@
   position: absolute;
   top: 5px;
   left: 5px;
+  font-size: 1.4em;
 }
 :host .container .content ul li.mix .fa-star {
   color: #f1c40f;
 }
 :host .container .content ul.playerShow {
-  padding-bottom: 71px;
+  padding-bottom: 54px;
 }
 </style>
 	<div id="container" class="overlay container {{ {active:active, noHeight:noHeight} | tokenList}}">
 		<div class="content" style="color:white;">
-				<ul>
+				<ul class="{{ {playerShow:playerShow} | tokenList}}">
 					<template repeat="{{playlist in playlists}}">
-						<li class="mix item-name {{ {selected:selected==playlist.id} | tokenList}}">
-							<i class="fa {{ {&quot;fa-star-o&quot;:!playlist.starred, &quot;fa-star&quot;:playlist.starred } | tokenList}}"></i>
-							<h4 on-click="{{makemix}}">
+						<li id="mix" class="mix" on-click="{{selectPlaylist}}">
+							<i class="fa {{ {&quot;fa-star-o&quot;:!playlist.starred, &quot;fa-star&quot;:playlist.starred } | tokenList}}" on-click="{{star}}"></i>
+							<h4>
 								{{playlist.name}}
 							</h4>
 							<div class="details">
@@ -135,12 +140,14 @@
                     name: "Very Labor Steam Remain Better",
                     date: "August 12 2014",
                     tracks: 12,
-                    starred: false
+                    starred: false,
+                    img: "https://i.scdn.co/image/9c96397a44a01c2e1c2d6d136f859f5270e1ddfc"
                 }, {
                     name: "Trick Sitting Dream Tobacco",
                     date: "August 11 2014",
                     tracks: 11,
-                    starred: true
+                    starred: true,
+                    img: "https://i.scdn.co/image/00a21204f96a62839b0f2adc338533bd35429b7a"
                 }, {
                     name: "Short No Second",
                     date: "August 10 2014",
@@ -166,16 +173,29 @@
                     date: "August 6 2014",
                     tracks: 10,
                     starred: true
+                }, {
+                    name: "Thrown Appropriate Divide",
+                    date: "August 5 2014",
+                    tracks: 11,
+                    starred: false
                 } ];
                 this.active = true;
                 return setTimeout(function(_this) {
                     return function() {
-                        return _this.home.loggedIn = true;
+                        _this.home.loggedIn = true;
+                        return _this.home.active = false;
                     };
                 }(this), 500);
             },
-            makemix: function(evt) {
-                return window.location.href = "/makeMix";
+            selectPlaylist: function(evt) {
+                this.active = false;
+                return this.tracks.makeMix();
+            },
+            star: function(evt) {
+                var $pl;
+                $pl = $(evt.toElement);
+                $pl.toggleClass("fa-star").toggleClass("fa-star-o");
+                return evt.stopPropagation();
             },
             open: function() {
                 return this.active = true;

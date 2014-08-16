@@ -3,11 +3,11 @@
 	<link rel="stylesheet" type="text/css" href="./playlist.less">
 	<div id='container' class='overlay container {{ {active:active, noHeight:noHeight} | tokenList}}'>
 		<div class='content' style='color:white;'>
-				<ul>
+				<ul class="{{ {playerShow:playerShow} | tokenList}}">
 					<template repeat="{{playlist in playlists}}">
-						<li class='mix item-name {{ {selected:selected==playlist.id} | tokenList}}'>
-							<i class='fa {{ {"fa-star-o":!playlist.starred, "fa-star":playlist.starred } | tokenList}}'></i>
-							<h4 on-click="{{makemix}}">
+						<li id='mix' class='mix' on-click="{{selectPlaylist}}">
+							<i class='fa {{ {"fa-star-o":!playlist.starred, "fa-star":playlist.starred } | tokenList}}'  on-click="{{star}}"></i>
+							<h4>
 								{{playlist.name}}
 							</h4>
 							<div  class='details'>

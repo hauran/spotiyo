@@ -8,9 +8,24 @@
 }
 :host .item-name {
   overflow: auto;
+  padding: 5px 5px;
+  font-size: 1.1em;
+  color: white;
+  background: #34495e;
+  border-bottom: 1px solid rgba(44, 62, 80, 0.8);
+}
+:host .item-name.selected {
+  background-color: #2c3e50;
+  color: #2ecc71;
+  border-top: 1px solid rgba(255, 255, 255, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
 }
 :host .item-name .artist {
-  font-size: 0.6em;
+  font-size: 0.7em;
 }
 :host .item-name .track-name {
   overflow: hidden;
@@ -62,43 +77,13 @@
                 return this.player = document.querySelector("yo-player");
             },
             playTrack: function() {
-                var current, err, number, skip;
-                current = this.tracks.currentPlaying().number;
-                number = this.number;
-                skip = Math.abs(number - current);
-                this.player.track(this.name, this.artist);
+                var err;
                 try {
-                    if (this.tracks.isPlaylist) {
-                        if (number > current) {
-                            return Android.skipForward(skip);
-                        } else {
-                            return Android.skipBack(skip);
-                        }
-                    } else {
-                        Android.play(this.uri);
-                        return this.queueNext();
-                    }
+                    return Android.play(this.uri);
                 } catch (_error) {
                     err = _error;
                     return console.log(err);
                 }
-            },
-            queueNext: function() {
-                var allTracks, found, i, _results;
-                found = false;
-                allTracks = document.querySelector("yo-tracks").shadowRoot.querySelectorAll("yo-track");
-                i = 0;
-                _results = [];
-                while (i < allTracks.length) {
-                    if (found) {
-                        this.tracks.queue(allTracks[i].uri);
-                    }
-                    if (allTracks[i].uri === this.uri) {
-                        found = true;
-                    }
-                    _results.push(i++);
-                }
-                return _results;
             }
         });
     }, {} ]
