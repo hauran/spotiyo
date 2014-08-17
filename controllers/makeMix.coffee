@@ -7,14 +7,6 @@ redis = require 'redis'
 randomWords = require 'random-words'
 shuffle = require('knuth-shuffle').knuthShuffle
 
-access_token = "hello"
-access_token
-spotify = {
-  token:'hello'
-  expires_on:'8/14/2014'
-
-}
-
 nconf.file 'file': './config/config.json'
 if process.env.NODE_ENV is "production"
   port = nconf.get('redis:port')
@@ -24,55 +16,9 @@ else
   client = redis.createClient()
 
 echo_nest_key = nconf.get('echo_nest:key')
-
 # http://developer.echonest.com/acoustic-attributes.html
 
-newPlaylist = (req,res) ->
-  options =
-    url: "https://api.spotify.com/v1/users/everyonesmixtape/playlists"
-    headers:
-      Authorization: "Bearer #{access_token}"
-    body:
-      name: 'test'
-      public: "true"
-    json: true
-
-  request.post options, (error, response, body) ->
-    res.send body
-
-refreshTokens = (req,res,callback) ->
-  authOptions =
-    url: 'https://accounts.spotify.com/api/token'
-    headers:
-      'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
-    form:
-      grant_type: 'refresh_token'
-      refresh_token: req.cookies.refresh_token
-    json: true
-
-  request.post authOptions, (error, response, body) ->
-    console.log 'refreshed'
-    if !error and response.statusCode is 200
-      access_token = body.access_token
-      expires_in = body.expires_in
-      expires_on = moment().add('s', expires_in).unix()
-      req.access_token = access_token
-      res.cookie 'access_token', access_token, {path:'/'}
-      res.cookie 'expires_on', expires_on, {path:'/'}
-      callback()
-    else
-      console.log 'refreshTokens', error
-      res.send 500
-
-
 exports.setup = (app) ->
-  app.get "/makeamix", (req, res) ->
-    if req.cookies.expires_on > moment().unix()
-      newPlaylist req,res
-    else
-      refreshTokens req, res, () ->
-        newPlaylist req,res
-
   app.get "/makeMix", (req, res) ->
     mixTracks = []
     client.lrange "#{req.userId}_friends", 0, -1,  (err, friends) ->

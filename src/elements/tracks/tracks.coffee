@@ -8,6 +8,7 @@ Polymer 'yo-tracks',
     @playing = null
     @items = []
     @isPlaylist = true
+    @currentTrackDuration = 0
 
   play: (uri) ->
     @resetCurrentPlaying()
@@ -59,10 +60,10 @@ Polymer 'yo-tracks',
     @player.track next.name, next.artist
 
   currentPlaying: ->
-    currentPlaying = document.querySelector('yo-tracks').shadowRoot.querySelector('[playing=true]')
-    currentPlaying
+    document.querySelector('yo-tracks').shadowRoot.querySelector('[playing=true]')
 
   makeMix: ->
+    @currentTrack = 0
     @items = []
     @loading = true
     @active = true
@@ -71,43 +72,29 @@ Polymer 'yo-tracks',
       @loading = false
       @items = res.tracks
       @title = res.title
-      @play @items[0].track.uri
+      @playCurrentTrack()
       @player.play()
 
-  getTracks: (id,href,uri) ->
-    @player.pause()
-    @resetCurrentPlaying()
-    @items = []
-    @loading = true
-    @active = true
-    $(window).scrollTop(0)
+  playCurrentTrack: ->
+    @currentTrackDuration = @items[@currentTrack].track.duration_ms - 3000
+    @player.track @items[@currentTrack].track.name, @items[@currentTrack].track.artists[0].name
+    @play @items[@currentTrack].track.uri
+    @checkTrackEnded()
 
-    $.get "/playlists/#{id}/tracks", {href:href}, (res) =>
-      @loading = false
-      @items = res.items
-      @play uri
-      @player.play()
+  checkTrackEnded: ->
+    try
+      currentPosition = Android.currentPosition()
+      console.log currentPosition, @currentTrackDuration, currentPosition >= @currentTrackDuration
+      if currentPosition >= @currentTrackDuration
+        console.log 'NEXT NEXT'
+        @playCurrentTrack(++@currentTrack)
+      else
+        setTimeout =>
+           @checkTrackEnded()
+        , 500
+    catch err
+      console.log err
 
-  addTrack: (name, artist, uri) ->
-    @loading = false
-    number = @items.length
-    item =
-      number: number
-      track: {
-        artists:[
-          {name:artist}
-        ]
-        name:name
-        uri:uri
-        album: {
-          images:[]
-        }
-      }
-    @items.push item
-    @isPlaylist = false
-    setTimeout =>
-      @setPlaying()
-    ,500
 
   close:() ->
     @active = false
