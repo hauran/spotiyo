@@ -602,7 +602,6 @@
                 var currentPosition, err;
                 try {
                     currentPosition = Android.currentPosition();
-                    console.log(currentPosition, this.currentTrackDuration, currentPosition >= this.currentTrackDuration);
                     if (currentPosition >= this.currentTrackDuration) {
                         console.log("NEXT NEXT");
                         return this.playCurrentTrack(++this.currentTrack);

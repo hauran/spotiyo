@@ -84,7 +84,7 @@ Polymer 'yo-tracks',
   checkTrackEnded: ->
     try
       currentPosition = Android.currentPosition()
-      console.log currentPosition, @currentTrackDuration, currentPosition >= @currentTrackDuration
+      # console.log currentPosition, @currentTrackDuration, currentPosition >= @currentTrackDuration
       if currentPosition >= @currentTrackDuration
         console.log 'NEXT NEXT'
         @playCurrentTrack(++@currentTrack)
