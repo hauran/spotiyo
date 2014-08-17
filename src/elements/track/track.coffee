@@ -7,23 +7,8 @@ Polymer 'yo-track',
     @tracks = document.querySelector('yo-tracks')
     @player = document.querySelector('yo-player')
 
+  domReady: ->
+    @tracks.setCurrentTrackPlaying()
+
   playTrack: ->
-    try
-      Android.play @uri
-    catch err
-      console.log err
-    # current = @tracks.currentPlaying().number
-    # number = @number
-    # skip = Math.abs(number - current)
-    # @player.track @name, @artist
-    #
-    # try
-    #   if(@tracks.isPlaylist)
-    #     if number > current
-    #       Android.skipForward skip
-    #     else
-    #       Android.skipBack skip
-    #   else
-    #     Android.play @uri
-    # catch err
-    #   console.log err
+    @tracks.playTrackNumber @number

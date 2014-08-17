@@ -7,12 +7,12 @@ listening = ->
 cancelListening = ->
   listener.stopListening()
   return
-setPlaying = ->
-  tracks.setPlaying()
-  return
-skipNext = ->
-  tracks.skipNext()
-  return
+# setPlaying = ->
+#   tracks.setPlaying()
+#   return
+# skipNext = ->
+#   tracks.skipNext()
+#   return
 back = () ->
   if listener.listening
     listener.listening = false

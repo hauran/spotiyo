@@ -76,14 +76,11 @@
                 this.tracks = document.querySelector("yo-tracks");
                 return this.player = document.querySelector("yo-player");
             },
+            domReady: function() {
+                return this.tracks.setCurrentTrackPlaying();
+            },
             playTrack: function() {
-                var err;
-                try {
-                    return Android.play(this.uri);
-                } catch (_error) {
-                    err = _error;
-                    return console.log(err);
-                }
+                return this.tracks.playTrackNumber(this.number);
             }
         });
     }, {} ]

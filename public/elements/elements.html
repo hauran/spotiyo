@@ -83,6 +83,7 @@
     1: [ function(require, module, exports) {
         Polymer("yo-player", {
             ready: function() {
+                this.tracks = document.querySelector("yo-tracks");
                 return this.state = "play";
             },
             play: function() {
@@ -106,14 +107,8 @@
                 }
             },
             next: function() {
-                var err;
                 this.state = "play";
-                try {
-                    return Android.playerNext();
-                } catch (_error) {
-                    err = _error;
-                    return console.log(err);
-                }
+                return this.tracks.skipNext();
             },
             track: function(name, artist) {
                 this.name = name;
@@ -412,14 +407,11 @@
                 this.tracks = document.querySelector("yo-tracks");
                 return this.player = document.querySelector("yo-player");
             },
+            domReady: function() {
+                return this.tracks.setCurrentTrackPlaying();
+            },
             playTrack: function() {
-                var err;
-                try {
-                    return Android.play(this.uri);
-                } catch (_error) {
-                    err = _error;
-                    return console.log(err);
-                }
+                return this.tracks.playTrackNumber(this.number);
             }
         });
     }, {} ]
@@ -522,26 +514,6 @@
                     return console.log(err);
                 }
             },
-            queue: function(uri) {
-                var err;
-                setTimeout(function(_this) {
-                    return function() {
-                        document.querySelector("yo-player").shadowRoot.querySelector(".controls").classList.add("showControls");
-                        return _this.playlist.playerShow = true;
-                    };
-                }(this), 350);
-                try {
-                    console.log("add", uri);
-                    if (this.items.length === 0) {
-                        return Android.play(uri);
-                    } else {
-                        return Android.add(uri);
-                    }
-                } catch (_error) {
-                    err = _error;
-                    return console.log(err);
-                }
-            },
             resetCurrentPlaying: function() {
                 var currentPlaying;
                 currentPlaying = this.currentPlaying();
@@ -550,28 +522,13 @@
                     return currentPlaying.removeAttribute("playing");
                 }
             },
-            setPlaying: function() {
-                var currentPlaying, err, first;
-                currentPlaying = this.currentPlaying();
-                if (!currentPlaying) {
-                    try {
-                        first = document.querySelector("yo-tracks").shadowRoot.querySelector("yo-track");
-                        first.setAttribute("playing", "true");
-                        first.shadowRoot.querySelector(".item-name").classList.add("selected");
-                        return this.player.track(first.name, first.artist);
-                    } catch (_error) {
-                        err = _error;
-                    }
-                }
-            },
             skipNext: function() {
-                var currentTrack, next;
-                currentTrack = this.currentPlaying();
-                this.resetCurrentPlaying();
-                next = document.querySelector("yo-tracks").shadowRoot.querySelectorAll("yo-track")[currentTrack.number + 1];
-                next.setAttribute("playing", "true");
-                next.shadowRoot.querySelector(".item-name").classList.add("selected");
-                return this.player.track(next.name, next.artist);
+                this.currentTrack++;
+                return this.playCurrentTrack();
+            },
+            playTrackNumber: function(number) {
+                this.currentTrack = number;
+                return this.playCurrentTrack();
             },
             currentPlaying: function() {
                 return document.querySelector("yo-tracks").shadowRoot.querySelector("[playing=true]");
@@ -593,10 +550,25 @@
                 }(this));
             },
             playCurrentTrack: function() {
-                this.currentTrackDuration = this.items[this.currentTrack].track.duration_ms - 3e3;
+                this.resetCurrentPlaying();
+                this.currentTrackDuration = this.items[this.currentTrack].track.duration_ms - 3500;
                 this.player.track(this.items[this.currentTrack].track.name, this.items[this.currentTrack].track.artists[0].name);
                 this.play(this.items[this.currentTrack].track.uri);
-                return this.checkTrackEnded();
+                this.setCurrentTrackPlaying();
+                return setTimeout(function(_this) {
+                    return function() {
+                        return _this.checkTrackEnded();
+                    };
+                }(this), 1e3);
+            },
+            setCurrentTrackPlaying: function() {
+                var current;
+                current = document.querySelector("yo-tracks").shadowRoot.querySelectorAll("yo-track")[this.currentTrack];
+                if (!current) {
+                    return;
+                }
+                current.setAttribute("playing", "true");
+                return current.shadowRoot.querySelector(".item-name").classList.add("selected");
             },
             checkTrackEnded: function() {
                 var currentPosition, err;
@@ -722,7 +694,7 @@
 }, {}, [ 1 ]);</script>
 </polymer-element>
 
-<script>var back, cancelListening, listener, listening, playlist, setPlaying, skipNext, spoken, tracks;
+<script>var back, cancelListening, listener, listening, playlist, spoken, tracks;
 
 spoken = function(words) {
   listener.processCmd(words);
@@ -734,14 +706,6 @@ listening = function() {
 
 cancelListening = function() {
   listener.stopListening();
-};
-
-setPlaying = function() {
-  tracks.setPlaying();
-};
-
-skipNext = function() {
-  tracks.skipNext();
 };
 
 back = function() {

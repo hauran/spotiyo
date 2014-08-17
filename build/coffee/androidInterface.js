@@ -1,4 +1,4 @@
-<script>var back, cancelListening, listener, listening, playlist, setPlaying, skipNext, spoken, tracks;
+<script>var back, cancelListening, listener, listening, playlist, spoken, tracks;
 
 spoken = function(words) {
   listener.processCmd(words);
@@ -10,14 +10,6 @@ listening = function() {
 
 cancelListening = function() {
   listener.stopListening();
-};
-
-setPlaying = function() {
-  tracks.setPlaying();
-};
-
-skipNext = function() {
-  tracks.skipNext();
 };
 
 back = function() {
