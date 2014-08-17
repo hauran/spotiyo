@@ -31,6 +31,7 @@ exports.setup = (app) ->
         console.log 'friend', friend
         client.hget 'user_playlists', friend, (err, val) ->
           return false if err
+          return false if !val
           try
             playlists = JSON.parse val
             return false if !playlists
@@ -38,7 +39,8 @@ exports.setup = (app) ->
             (getTracks = ->
               playlist = _playlists.splice(0,1)[0]
               client.hget 'playlist_tracks', playlist.id, (err, tracks) ->
-
+                return false if err
+                return false if !tracks
                 try
                   tracks = JSON.parse tracks
                   _tracks = tracks.slice(0)
@@ -49,6 +51,8 @@ exports.setup = (app) ->
                     return if track.track.uri is 'spotify:track:null'
 
                     client.hget 'track_info', track.track.uri, (err, track_info) ->
+                      return false if err
+                      return false if !track_info
                       try
                         track_info = JSON.parse track_info
                         delete track_info.tracks
@@ -81,7 +85,7 @@ exports.setup = (app) ->
               )()
 
           catch err
-            console.log "ERR PARSE PLATLIST", val
+            console.log "ERR PARSE PLAYLIST", val
 
           # console.log 'err1'
         if _friends.length isnt 0
