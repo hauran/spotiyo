@@ -1,102 +1,102 @@
-<polymer-element name="yo-playlist">
+<polymer-element name="yo-playlist" attributes="playlist playing" class="{{ {playing:playing} | tokenList}}">
 <template>
-	<style>:host .overlay-title h1 {
-  height: 47px;
+  <style>:host {
+  z-index: -1;
 }
-:host .container,
-:host .overlay-title {
-  display: none;
-}
-:host .container.active,
-:host .overlay-title.active {
-  display: inline;
-}
-:host .container {
-  background: #34495e;
-  z-index: 1;
-}
-:host .container .content ul {
-  overflow: visible;
-}
-:host .container .content ul li {
-  background-color: #34495e;
-}
-:host .container .content ul li:nth-of-type(2n) {
-  background-color: #16a085;
-}
-:host .container .content ul li:nth-of-type(3n) {
-  background-color: #2980b9;
-}
-:host .container .content ul li:nth-of-type(4n) {
-  background-color: #9b59b6;
-}
-:host .container .content ul li:nth-of-type(5n) {
-  background-color: #e74c3c;
-}
-:host .container .content ul li:nth-of-type(6n) {
-  background-color: #16a085;
-}
-:host .container .content ul li.mix {
-  position: relative;
+:host .mix {
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
   min-height: 150px;
-  padding: 20px 20px 10px 20px;
+  margin: 20px;
   color: white;
   text-align: center;
   display: flex;
   flex-direction: column;
 }
-:host .container .content ul li.mix h4 {
-  margin-top: 15px;
-  flex: 1;
-  width: 100%;
-  font-size: 1.6em;
-}
-:host .container .content ul li.mix .details {
-  bottom: 5px;
-  font-size: 0.8em;
-  width: 100%;
-}
-:host .container .content ul li.mix .details p {
-  margin: 5px;
-  float: right;
-}
-:host .container .content ul li.mix .fa-star,
-:host .container .content ul li.mix .fa-star-o {
+:host .mix.playing {
+  z-index: 100;
   position: absolute;
-  top: 5px;
-  left: 5px;
+  left: -20px;
+  right: -20px;
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+:host .mix .mixInfo {
+  padding: 10px 20px;
+  flex: 1;
+  position: relative;
+}
+:host .mix .mixInfo h4 {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  width: 100%;
   font-size: 1.4em;
 }
-:host .container .content ul li.mix .fa-star {
-  color: #f1c40f;
+:host .mix .mixInfo .details {
+  font-size: 0.6em;
+  width: 100%;
+  margin-bottom: 30px;
 }
-:host .container .content ul.playerShow {
-  padding-bottom: 54px;
+:host .mix .mixInfo .details .fa-circle {
+  margin-left: 5px;
+  margin-right: 5px;
+  font-size: 0.5em;
+  position: relative;
+  top: -2px;
+}
+:host .mix footer {
+  background: rgba(0, 0, 0, 0.1);
+  height: 50px;
+}
+:host .mix footer .play-button {
+  position: relative;
+  top: -25px;
+  background: white;
+  height: 50px;
+  width: 50px;
+  border-radius: 25px;
+  margin-left: 10px;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-box-pack: center;
+  align-items: center;
+  justify-content: center;
+}
+:host .mix footer .play-button .fa-play {
+  color: #3498db;
+  font-size: 1.2em;
+  margin-right: 0;
+  margin-top: 2px;
+  margin-left: 5px;
+}
+:host .mix footer .tracks {
+  margin-top: 25px;
 }
 </style>
-	<div id="container" class="overlay container {{ {active:active, noHeight:noHeight} | tokenList}}">
-		<div class="content" style="color:white;">
-				<ul class="{{ {playerShow:playerShow} | tokenList}}">
-					<template repeat="{{playlist in playlists}}">
-						<li id="mix" class="mix" on-click="{{selectPlaylist}}">
-							<i class="fa {{ {&quot;fa-star-o&quot;:!playlist.starred, &quot;fa-star&quot;:playlist.starred } | tokenList}}" on-click="{{star}}"></i>
-							<h4>
-								{{playlist.name}}
-							</h4>
-							<div class="details">
-									<p class="date">{{playlist.date}}</p>
-									<p class="tracks">{{playlist.tracks}} tracks</p>
-							</div>
-						</li>
-					</template>
-				</ul>
-			 <!-- <ul id='list' class="{{ {playerShow:playerShow} | tokenList}}">
-				 <template repeat="{{playlist in playlists}}">
-					<li class='item-name {{ {selected:selected==playlist.id} | tokenList}}' on-click="{{selectPlaylist}}" id="{{playlist.id}}" uri="{{playlist.uri}}" tracks-href="{{playlist.tracks.href}}">{{playlist.name}}</li>
-				</template>
-			</ul> -->
-		</div>
-	</div>
+  <div class="mix {{ {playing:playing} | tokenList}}" on-click="{{selectPlaylist}}">
+    <div class="mixInfoContainer">
+      <div class="mixInfo">
+        <h4>
+          {{playlist.name}}
+        </h4>
+        <div class="details">
+            {{playlist.date}} <i class="fa fa-circle"></i> {{playlist.tracks}} tracks <i class="fa fa-circle"></i> {{playlist.friends}} friends
+        </div>
+      </div>
+      <footer>
+        <div class="play-button">
+          <i class="fa fa-play"></i>
+        </div>
+      </footer>
+    </div>
+    <div class="tracks {{ {hide:!playing} | tokenList}}">
+      <yo-tracks></yo-tracks>
+    </div>
+  </div>
 </template>
 
 <script built="/Users/rmai/gitrepo/yoplay/src/elements/playlist/playlist.coffee">(function e(t, n, r) {
@@ -125,83 +125,85 @@
     1: [ function(require, module, exports) {
         Polymer("yo-playlist", {
             ready: function() {
-                this.active = false;
-                this.playlists = [];
-                this.playerShow = false;
-                this.selected = null;
-                this.tracks = document.querySelector("yo-tracks");
-                return this.home = document.querySelector("yo-login");
-            },
-            getPlayLists: function() {
-                $.get("/spotify/playlists", function(_this) {
-                    return function(res) {};
-                }(this));
-                this.playlists = [ {
-                    name: "Very Labor Steam Remain Better",
-                    date: "August 12 2014",
-                    tracks: 12,
-                    starred: false,
-                    img: "https://i.scdn.co/image/9c96397a44a01c2e1c2d6d136f859f5270e1ddfc"
-                }, {
-                    name: "Trick Sitting Dream Tobacco",
-                    date: "August 11 2014",
-                    tracks: 11,
-                    starred: true,
-                    img: "https://i.scdn.co/image/00a21204f96a62839b0f2adc338533bd35429b7a"
-                }, {
-                    name: "Short No Second",
-                    date: "August 10 2014",
-                    tracks: 9,
-                    starred: true
-                }, {
-                    name: "Darkness During Unusual Death Cutting",
-                    date: "August 9 2014",
-                    tracks: 14,
-                    starred: false
-                }, {
-                    name: "Doing Rhythm Tube",
-                    date: "August 8 2014",
-                    tracks: 13,
-                    starred: false
-                }, {
-                    name: "Upper Four Tropical Chose",
-                    date: "August 7 2014",
-                    tracks: 8,
-                    starred: true
-                }, {
-                    name: "Amount Herself Wool",
-                    date: "August 6 2014",
-                    tracks: 10,
-                    starred: true
-                }, {
-                    name: "Thrown Appropriate Divide",
-                    date: "August 5 2014",
-                    tracks: 11,
-                    starred: false
-                } ];
-                this.active = true;
-                return setTimeout(function(_this) {
-                    return function() {
-                        _this.home.loggedIn = true;
-                        return _this.home.active = false;
+                this.playlists = document.querySelector("yo-playlists");
+                this.tracks = this.shadowRoot.querySelector("yo-tracks");
+                this.loading = true;
+                this.justClosed = false;
+                return this.tracks.addEventListener("trackclicked", function(_this) {
+                    return function(e) {
+                        return _this.tracks.playTrackNumber(e.detail.track);
                     };
-                }(this), 500);
+                }(this));
+            },
+            domReady: function() {
+                this.offset = this.offsetTop + 20;
+                return this.shadowRoot.querySelector(".mix").style.backgroundColor = this.playlist.color;
+            },
+            closePlaylist: function() {
+                this.playlists.showAll();
+                this.shadowRoot.querySelector(".mix").style.webkitTransform = null;
+                this.playing = false;
+                this.removeEventListener("down", false);
+                this.addEventListener("track", false);
+                this.addEventListener("up", false);
+                return this.shadowRoot.querySelector(".mix .mixInfoContainer").removeAttribute("touch-action");
             },
             selectPlaylist: function(evt) {
-                this.active = false;
-                return this.tracks.makeMix();
+                if (!this.playing && !this.justClosed) {
+                    this.playlists.resetPlaying();
+                    this.playlists.playing(this);
+                    this.playing = true;
+                    this.shadowRoot.querySelector(".mix").style.webkitTransform = "translateY(-" + this.offset + "px)";
+                    this.shadowRoot.querySelector(".mix .mixInfoContainer").setAttribute("touch-action", "none");
+                    $(window).scrollTop(0);
+                    this.playlists.hideNotPlaying();
+                    this.makeMix();
+                    return this.listenForCloseSwipe();
+                }
             },
-            star: function(evt) {
-                var $pl;
-                $pl = $(evt.toElement);
-                $pl.toggleClass("fa-star").toggleClass("fa-star-o");
-                return evt.stopPropagation();
+            listenForCloseSwipe: function() {
+                this.addEventListener("down", function(_this) {
+                    return function(e) {
+                        return _this.point = new xPoint(e.clientY);
+                    };
+                }(this));
+                this.addEventListener("track", function(_this) {
+                    return function(e) {
+                        var p;
+                        p = _this.point;
+                        if (p) {
+                            return p.update(e.clientY);
+                        }
+                    };
+                }(this));
+                return this.addEventListener("up", function(_this) {
+                    return function(e) {
+                        var p;
+                        p = _this.point;
+                        if (!p) {
+                            return;
+                        }
+                        if (_this.playing && p && p.isFlickDown()) {
+                            _this.closePlaylist();
+                            _this.justClosed = true;
+                            setTimeout(function() {
+                                return _this.justClosed = false;
+                            }, 500);
+                        }
+                        _this.point = null;
+                        return false;
+                    };
+                }(this));
             },
-            open: function() {
-                return this.active = true;
-            },
-            close: function() {
-                return this.active = false;
+            makeMix: function() {
+                this.tracks.currentTrack = 0;
+                this.tracks.items = [];
+                this.tracks.loading = true;
+                return this.tracks.makeMix(function(_this) {
+                    return function() {
+                        return _this.loading = false;
+                    };
+                }(this));
             }
         });
     }, {} ]

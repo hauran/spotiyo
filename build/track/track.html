@@ -4,34 +4,30 @@
   display: block;
   clear: both;
   overflow: hidden;
-  background: #34495e;
+  background: white;
 }
 :host .item-name {
   overflow: auto;
-  padding: 5px 5px;
+  padding: 15px 15px;
   font-size: 1.1em;
-  color: white;
-  background: #34495e;
-  border-bottom: 1px solid rgba(44, 62, 80, 0.8);
-}
-:host .item-name.selected {
-  background-color: #2c3e50;
-  color: #2ecc71;
-  border-top: 1px solid rgba(255, 255, 255, 0.8);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.8);
-  -webkit-transition: all 0.2s ease-out;
-  -moz-transition: all 0.2s ease-out;
-  -o-transition: all 0.2s ease-out;
-  transition: all 0.2s ease-out;
+  color: #333;
+  border-top: 1px solid #bdc3c7;
+  text-align: left;
+  margin-top: 10px;
+  font-family: 'Open Sans';
+  font-weight: lighter;
 }
 :host .item-name .artist {
   font-size: 0.7em;
+  color: #666;
 }
 :host .item-name .track-name {
+  padding-left: 10px;
   overflow: hidden;
 }
 :host .item-name img {
   margin-right: 5px;
+  width: 50%;
 }
 </style>
 	<div class="item-name {{ {playing:number==0} | tokenList}}" track="{{number}}" artist="{{artist}}" on-click="{{playTrack}}">
@@ -73,14 +69,14 @@
             imgsrc: "",
             uri: "",
             ready: function() {
-                this.tracks = document.querySelector("yo-tracks");
-                return this.player = document.querySelector("yo-player");
+                return this.tracks = document.querySelector("yo-tracks");
             },
-            domReady: function() {
-                return this.tracks.setCurrentTrackPlaying();
-            },
-            playTrack: function() {
-                return this.tracks.playTrackNumber(this.number);
+            playTrack: function(evt) {
+                this.fire("trackclicked", {
+                    track: this.number
+                });
+                evt.preventDefault();
+                return evt.stopPropagation();
             }
         });
     }, {} ]

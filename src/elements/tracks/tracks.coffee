@@ -1,6 +1,6 @@
 Polymer 'yo-tracks',
   ready: ->
-    @playlist = document.querySelector('yo-playlist')
+    @playlists = document.querySelector('yo-playlists')
     @player = document.querySelector('yo-player')
     @title = ''
     @active = false
@@ -12,10 +12,10 @@ Polymer 'yo-tracks',
 
   play: (uri) ->
     @resetCurrentPlaying()
-    setTimeout =>
-      document.querySelector('yo-player').shadowRoot.querySelector('.controls').classList.add('showControls')
-      @playlist.playerShow = true
-    ,350
+    # setTimeout =>
+    #   document.querySelector('yo-player').shadowRoot.querySelector('.controls').classList.add('showControls')
+    #   @playlists.playerShow = true
+    # ,350
     try
       Android.play uri
     catch err
@@ -44,9 +44,9 @@ Polymer 'yo-tracks',
     @playCurrentTrack()
 
   currentPlaying: ->
-    document.querySelector('yo-tracks').shadowRoot.querySelector('[playing=true]')
+    @shadowRoot.querySelector('[playing=true]')
 
-  makeMix: ->
+  makeMix: (callback)->
     @currentTrack = 0
     @items = []
     @loading = true
@@ -58,6 +58,7 @@ Polymer 'yo-tracks',
       @title = res.title
       @playCurrentTrack()
       @player.play()
+      callback()
 
   playCurrentTrack: ->
     @resetCurrentPlaying()
@@ -70,7 +71,7 @@ Polymer 'yo-tracks',
     , 1000
 
   setCurrentTrackPlaying: ->
-    current = document.querySelector('yo-tracks').shadowRoot.querySelectorAll('yo-track')[@currentTrack]
+    current = @shadowRoot.querySelectorAll('yo-track')[@currentTrack]
     return if !current
     current.setAttribute "playing", "true"
     current.shadowRoot.querySelector('.item-name').classList.add 'selected'
@@ -92,7 +93,7 @@ Polymer 'yo-tracks',
 
   close:() ->
     @active = false
-    @playlist.open()
+    @playlists.open()
 
   open: ->
     @active = true

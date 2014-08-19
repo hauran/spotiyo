@@ -1,0 +1,45 @@
+@import "../../less/mixins";
+
+:host{
+  .overlay-title {
+    h1 {
+      height:47px;
+    }
+  }
+
+  // .container, .overlay-title {
+  //   display: none;
+  //   &.active {
+  //     display: inline;
+  //   }
+  // }
+
+
+  .container {
+    background: white;
+    z-index:1;
+    .header {
+      padding:20px;
+      color:#2c3e50;
+      background-color: white;
+      text-align: center;
+      font-size:1.7em;
+      font-weight: bold;
+    }
+
+    .content {
+      ul {
+        overflow:visible;
+        background-color: white;
+        li{
+          background-color: white;
+        }
+      }
+      ul.playerShow {
+        padding-bottom: 54px;
+      }
+    }
+  }
+
+
+}

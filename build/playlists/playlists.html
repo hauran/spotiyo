@@ -1,0 +1,184 @@
+<polymer-element name="yo-playlists">
+<template>
+	<style>:host .overlay-title h1 {
+  height: 47px;
+}
+:host .container {
+  background: white;
+  z-index: 1;
+}
+:host .container .header {
+  padding: 20px;
+  color: #2c3e50;
+  background-color: white;
+  text-align: center;
+  font-size: 1.7em;
+  font-weight: bold;
+}
+:host .container .content ul {
+  overflow: visible;
+  background-color: white;
+}
+:host .container .content ul li {
+  background-color: white;
+}
+:host .container .content ul.playerShow {
+  padding-bottom: 54px;
+}
+</style>
+	<div id="container" class="overlay container {{ {active:active, noHeight:noHeight} | tokenList}}">
+		<div class="content" style="color:white;">
+				<div class="header">
+					HI {{user.name}}
+				</div>
+				<ul class="{{ {playerShow:playerShow} | tokenList}}">
+					<template repeat="{{playlist in playlists}}">
+						<li>
+							<yo-playlist playlist="{{playlist}}"></yo-playlist>
+						</li>
+					</template>
+				</ul>
+		</div>
+	</div>
+</template>
+
+<script built="/Users/rmai/gitrepo/yoplay/src/elements/playlists/playlists.coffee">(function e(t, n, r) {
+    function s(o, u) {
+        if (!n[o]) {
+            if (!t[o]) {
+                var a = typeof require == "function" && require;
+                if (!u && a) return a(o, !0);
+                if (i) return i(o, !0);
+                throw new Error("Cannot find module '" + o + "'");
+            }
+            var f = n[o] = {
+                exports: {}
+            };
+            t[o][0].call(f.exports, function(e) {
+                var n = t[o][1][e];
+                return s(n ? n : e);
+            }, f, f.exports, e, t, n, r);
+        }
+        return n[o].exports;
+    }
+    var i = typeof require == "function" && require;
+    for (var o = 0; o < r.length; o++) s(r[o]);
+    return s;
+})({
+    1: [ function(require, module, exports) {
+        Polymer("yo-playlists", {
+            ready: function() {
+                this.active = false;
+                this.playlists = [];
+                this.playerShow = false;
+                this.home = document.querySelector("yo-login");
+                return this.currentlyPlaying = null;
+            },
+            resetPlaying: function() {
+                if (this.currentlyPlaying) {
+                    return this.currentlyPlaying.removeAttribute("playing");
+                }
+            },
+            hideNotPlaying: function() {
+                var notPlaying;
+                if (this.currentlyPlaying) {
+                    notPlaying = this.shadowRoot.querySelectorAll("yo-playlist:not([playing])");
+                    return $.each(notPlaying, function() {
+                        return $(this).css("visibility", "hidden");
+                    });
+                }
+            },
+            showAll: function() {
+                var all;
+                all = this.shadowRoot.querySelectorAll("yo-playlist");
+                return $.each(all, function() {
+                    return $(this).css("visibility", "visible");
+                });
+            },
+            getPlayLists: function() {
+                $.get("/spotify/playlists", function(_this) {
+                    return function(res) {};
+                }(this));
+                return $.get("/mixes", function(_this) {
+                    return function(res) {
+                        _this.user = res.user;
+                        _this.playlists = [ {
+                            name: "Very Labor Steam Remain Better",
+                            date: "August 12 2014",
+                            tracks: 12,
+                            starred: false,
+                            friends: 10,
+                            color: "#3498db"
+                        }, {
+                            name: "Trick Sitting Dream Tobacco",
+                            date: "August 11 2014",
+                            tracks: 11,
+                            starred: true,
+                            friends: 15,
+                            color: "#f1c40f"
+                        }, {
+                            name: "Short No Second",
+                            date: "August 10 2014",
+                            tracks: 9,
+                            starred: true,
+                            friends: 12,
+                            color: "#e74c3c"
+                        }, {
+                            name: "Darkness During Unusual Death Cutting",
+                            date: "August 9 2014",
+                            tracks: 14,
+                            starred: false,
+                            friends: 10,
+                            color: "#34495e"
+                        }, {
+                            name: "Doing Rhythm Tube",
+                            date: "August 8 2014",
+                            tracks: 13,
+                            starred: false,
+                            friends: 11,
+                            color: "#e67e22"
+                        }, {
+                            name: "Upper Four Tropical Chose",
+                            date: "August 7 2014",
+                            tracks: 8,
+                            starred: true,
+                            friends: 12,
+                            color: "#3498db"
+                        }, {
+                            name: "Amount Herself Wool",
+                            date: "August 6 2014",
+                            tracks: 10,
+                            starred: true,
+                            friends: 14,
+                            color: "#f1c40f"
+                        }, {
+                            name: "Thrown Appropriate Divide",
+                            date: "August 5 2014",
+                            tracks: 11,
+                            starred: false,
+                            friends: 13,
+                            color: "#e74c3c"
+                        } ];
+                        _this.active = true;
+                        return setTimeout(function() {
+                            _this.home.loggedIn = true;
+                            return _this.home.active = false;
+                        }, 500);
+                    };
+                }(this));
+            },
+            playing: function(pl) {
+                console.log(pl);
+                this.currentlyPlaying = pl;
+                return pl.setAttribute("playing", "true");
+            },
+            open: function() {
+                return this.active = true;
+            },
+            close: function() {
+                return this.active = false;
+            }
+        });
+    }, {} ]
+}, {}, [ 1 ]);</script>
+</polymer-element>

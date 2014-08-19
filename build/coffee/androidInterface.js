@@ -1,16 +1,4 @@
-<script>var back, cancelListening, listener, listening, playlist, spoken, tracks;
-
-spoken = function(words) {
-  listener.processCmd(words);
-};
-
-listening = function() {
-  listener.isListening();
-};
-
-cancelListening = function() {
-  listener.stopListening();
-};
+<script>var back, playlists;
 
 back = function() {
   var err;
@@ -31,9 +19,5 @@ back = function() {
   }
 };
 
-listener = document.querySelector("yo-listener");
-
-tracks = document.querySelector("yo-tracks");
-
-playlist = document.querySelector("yo-playlist");
+playlists = document.querySelector("yo-playlists");
 </script>

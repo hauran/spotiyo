@@ -69,7 +69,7 @@
                 this.activePlaylists = false;
                 this.login = "log in";
                 this.loggedIn = false;
-                this.playlist = document.querySelector("yo-playlist");
+                this.playlists = document.querySelector("yo-playlists");
                 if ($.cookie("userId")) {
                     if ($.cookie("userId") === "undefined") {
                         $.removeCookie("access_token");
@@ -79,7 +79,7 @@
                     } else {
                         this.active = true;
                         this.login = "hold on";
-                        return this.playlist.getPlayLists();
+                        return this.playlists.getPlayLists();
                     }
                 }
             }

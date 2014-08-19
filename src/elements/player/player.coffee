@@ -1,6 +1,6 @@
 Polymer 'yo-player',
   ready: ->
-    @tracks = document.querySelector('yo-tracks')
+    # @tracks = document.querySelector('yo-tracks')
     @state = 'play'
 
   play: ->
@@ -19,7 +19,7 @@ Polymer 'yo-player',
 
   next: ->
     @state = 'play'
-    @tracks.skipNext()
+    # @tracks.skipNext()
     # try
     #   Android.playerNext()
     # catch err

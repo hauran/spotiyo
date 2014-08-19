@@ -19,6 +19,11 @@ echo_nest_key = nconf.get('echo_nest:key')
 # http://developer.echonest.com/acoustic-attributes.html
 
 exports.setup = (app) ->
+  app.get "/mixes", (req, res) ->
+    res.send 200, {user:
+      {name:req.userId.toUpperCase()}
+    }
+
   app.get "/makeMix", (req, res) ->
     mixTracks = []
     client.lrange "#{req.userId}_friends", 0, -1,  (err, friends) ->

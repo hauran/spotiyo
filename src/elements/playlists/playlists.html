@@ -1,0 +1,21 @@
+<polymer-element name='yo-playlists'>
+<template>
+	<link rel="stylesheet" type="text/css" href="./playlists.less">
+	<div id='container' class='overlay container {{ {active:active, noHeight:noHeight} | tokenList}}'>
+		<div class='content' style='color:white;'>
+				<div class='header'>
+					HI {{user.name}}
+				</div>
+				<ul class="{{ {playerShow:playerShow} | tokenList}}">
+					<template repeat="{{playlist in playlists}}">
+						<li>
+							<yo-playlist playlist='{{playlist}}'></yo-playlist>
+						</li>
+					</template>
+				</ul>
+		</div>
+	</div>
+</template>
+
+<script src="./playlists.coffee"></script>
+</polymer-element>

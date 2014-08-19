@@ -18,7 +18,7 @@ Polymer 'yo-login',
     @activePlaylists = false
     @login = 'log in'
     @loggedIn = false
-    @playlist = document.querySelector('yo-playlist')
+    @playlists = document.querySelector('yo-playlists')
     if $.cookie('userId')
       if $.cookie('userId') is 'undefined'
         $.removeCookie('access_token')
@@ -28,4 +28,4 @@ Polymer 'yo-login',
       else
         @active = true
         @login = 'hold on'
-        @playlist.getPlayLists()
+        @playlists.getPlayLists()

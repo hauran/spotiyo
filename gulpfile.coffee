@@ -40,6 +40,7 @@ gulp.task 'elements', shell.task [
 concatBuilt = () ->
   gulp.src [
     'build/player/*.html',
+    'build/playlists/*.html',
     'build/playlist/*.html',
     'build/track/*.html',
     'build/tracks/*.html',

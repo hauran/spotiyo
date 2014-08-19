@@ -4,30 +4,35 @@
   display:block;
   clear:both;
   overflow: hidden;
-  background: #34495e;
-
+  background: white;
   .item-name {
     overflow:auto;
-    padding:5px 5px;
+    padding:15px 15px;
     font-size: 1.1em;
-    color: white;
-    background: #34495e;
-    border-bottom: 1px solid rgba(44,62,80,.8);
-    &.selected{
-      background-color:#2c3e50;
-      color:#2ecc71;
-      border-top:1px solid rgba(255, 255, 255,0.8);
-      border-bottom:1px solid rgba(255, 255, 255,0.8);
-      .transition();
-    }
+    color: #333;
+    border-top: 1px solid #bdc3c7;
+    text-align: left;
+    margin-top:10px;
+    font-family: 'Open Sans';
+    font-weight:lighter;
+    // &.selected{
+    //   background-color:#2c3e50;
+    //   color:#2ecc71;
+    //   border-top:1px solid rgba(255, 255, 255,0.8);
+    //   border-bottom:1px solid rgba(255, 255, 255,0.8);
+    //   .transition();
+    // }
     .artist {
       font-size:0.7em;
+      color:#666;
     }
     .track-name {
+      padding-left: 10px;
       overflow:hidden;
     }
     img {
       margin-right:5px;
+      width: 50%;
     }
   }
 }

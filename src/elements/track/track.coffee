@@ -5,10 +5,14 @@ Polymer 'yo-track',
   uri:''
   ready: ->
     @tracks = document.querySelector('yo-tracks')
-    @player = document.querySelector('yo-player')
+    # @player = document.querySelector('yo-player')
+  #
+  # domReady: ->
+  #   @tracks.setCurrentTrackPlaying()
+  #
+  playTrack: (evt) ->
+    @fire 'trackclicked', {track:@number}
 
-  domReady: ->
-    @tracks.setCurrentTrackPlaying()
-
-  playTrack: ->
-    @tracks.playTrackNumber @number
+    # @tracks.playTrackNumber @number
+    evt.preventDefault()
+    evt.stopPropagation()

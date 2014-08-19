@@ -83,7 +83,6 @@
     1: [ function(require, module, exports) {
         Polymer("yo-player", {
             ready: function() {
-                this.tracks = document.querySelector("yo-tracks");
                 return this.state = "play";
             },
             play: function() {
@@ -107,8 +106,7 @@
                 }
             },
             next: function() {
-                this.state = "play";
-                return this.tracks.skipNext();
+                return this.state = "play";
             },
             track: function(name, artist) {
                 this.name = name;

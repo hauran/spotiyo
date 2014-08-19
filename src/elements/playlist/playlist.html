@@ -1,29 +1,26 @@
-<polymer-element name='yo-playlist'>
+<polymer-element name='yo-playlist' attributes='playlist playing' class='{{ {playing:playing} | tokenList}}'>
 <template>
-	<link rel="stylesheet" type="text/css" href="./playlist.less">
-	<div id='container' class='overlay container {{ {active:active, noHeight:noHeight} | tokenList}}'>
-		<div class='content' style='color:white;'>
-				<ul class="{{ {playerShow:playerShow} | tokenList}}">
-					<template repeat="{{playlist in playlists}}">
-						<li id='mix' class='mix' on-click="{{selectPlaylist}}">
-							<i class='fa {{ {"fa-star-o":!playlist.starred, "fa-star":playlist.starred } | tokenList}}'  on-click="{{star}}"></i>
-							<h4>
-								{{playlist.name}}
-							</h4>
-							<div  class='details'>
-									<p class='date'>{{playlist.date}}</p>
-									<p class='tracks'>{{playlist.tracks}} tracks</p>
-							</div>
-						</li>
-					</template>
-				</ul>
-			 <!-- <ul id='list' class="{{ {playerShow:playerShow} | tokenList}}">
-				 <template repeat="{{playlist in playlists}}">
-					<li class='item-name {{ {selected:selected==playlist.id} | tokenList}}' on-click="{{selectPlaylist}}" id="{{playlist.id}}" uri="{{playlist.uri}}" tracks-href="{{playlist.tracks.href}}">{{playlist.name}}</li>
-				</template>
-			</ul> -->
-		</div>
-	</div>
+  <link rel="stylesheet" type="text/css" href="./playlist.less">
+  <div class='mix {{ {playing:playing} | tokenList}}' on-click="{{selectPlaylist}}">
+    <div class='mixInfoContainer'>
+      <div class='mixInfo'>
+        <h4>
+          {{playlist.name}}
+        </h4>
+        <div  class='details'>
+            {{playlist.date}} <i class='fa fa-circle'></i> {{playlist.tracks}} tracks <i class='fa fa-circle'></i> {{playlist.friends}} friends
+        </div>
+      </div>
+      <footer>
+        <div class='play-button'>
+          <i class='fa fa-play'></i>
+        </div>
+      </footer>
+    </div>
+    <div class='tracks {{ {hide:!playing} | tokenList}}'>
+      <yo-tracks></yo-tracks>
+    </div>
+  </div>
 </template>
 
 <script src="./playlist.coffee"></script>

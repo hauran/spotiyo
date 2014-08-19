@@ -1,41 +1,12 @@
 <polymer-element name="yo-tracks">
 <template>
-	<style>:host .overlay-title .back-angle {
-  margin-top: 6px;
-}
-:host .overlay-title h1 {
-  font-size: 1.3em;
-  position: relative;
-  top: 10px;
-  height: 31px;
-}
-:host .container,
-:host .overlay-title {
-  display: none;
-}
-:host .container.active,
-:host .overlay-title.active {
-  display: inline;
-}
-:host .container {
-  background: #34495e;
-  z-index: 1;
-}
-:host .container .tracks {
-  margin-top: 52px;
-  margin-bottom: 54px;
-  padding-bottom: 54px;
-}
-</style>
-	<div class="overlay-title {{ {active:active, noHeight:noHeight} | tokenList}}">
-		<i class="fa fa-angle-left back-angle" on-click="{{close}}"></i><h1>{{title}}</h1>
-	</div>
-	<div id="container" class="overlay container {{ {active:active, noHeight:noHeight} | tokenList}}">
+	<style></style>
+	<div id="container" class="overlay container">
 		<div class="content">
 			<div class="loading {{ {hide:!loading} | tokenList}}">loading...</div>
 			<div class="tracks">
 				<template repeat="{{item, i in items }}">
-				 	<yo-track number="{{i}}" artist="{{item.track.artists[0].name}}" name="{{item.track.name}}" imgsrc="{{item.track.album.images[2].url}}" uri="{{item.track.uri}}" duration="{{item.track.duration_ms}}"></yo-track>
+				 	<yo-track number="{{i}}" artist="{{item.track.artists[0].name}}" name="{{item.track.name}}" imgsrc="{{item.track.album.images[1].url}}" uri="{{item.track.uri}}" duration="{{item.track.duration_ms}}"></yo-track>
 				</template>
 			</div>
 		</div>
@@ -68,7 +39,7 @@
     1: [ function(require, module, exports) {
         Polymer("yo-tracks", {
             ready: function() {
-                this.playlist = document.querySelector("yo-playlist");
+                this.playlists = document.querySelector("yo-playlists");
                 this.player = document.querySelector("yo-player");
                 this.title = "";
                 this.active = false;
@@ -81,12 +52,6 @@
             play: function(uri) {
                 var err;
                 this.resetCurrentPlaying();
-                setTimeout(function(_this) {
-                    return function() {
-                        document.querySelector("yo-player").shadowRoot.querySelector(".controls").classList.add("showControls");
-                        return _this.playlist.playerShow = true;
-                    };
-                }(this), 350);
                 try {
                     return Android.play(uri);
                 } catch (_error) {
@@ -111,9 +76,9 @@
                 return this.playCurrentTrack();
             },
             currentPlaying: function() {
-                return document.querySelector("yo-tracks").shadowRoot.querySelector("[playing=true]");
+                return this.shadowRoot.querySelector("[playing=true]");
             },
-            makeMix: function() {
+            makeMix: function(callback) {
                 this.currentTrack = 0;
                 this.items = [];
                 this.loading = true;
@@ -125,7 +90,8 @@
                         _this.items = res.tracks;
                         _this.title = res.title;
                         _this.playCurrentTrack();
-                        return _this.player.play();
+                        _this.player.play();
+                        return callback();
                     };
                 }(this));
             },
@@ -143,7 +109,7 @@
             },
             setCurrentTrackPlaying: function() {
                 var current;
-                current = document.querySelector("yo-tracks").shadowRoot.querySelectorAll("yo-track")[this.currentTrack];
+                current = this.shadowRoot.querySelectorAll("yo-track")[this.currentTrack];
                 if (!current) {
                     return;
                 }
@@ -171,7 +137,7 @@
             },
             close: function() {
                 this.active = false;
-                return this.playlist.open();
+                return this.playlists.open();
             },
             open: function() {
                 this.active = true;
