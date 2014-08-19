@@ -26,6 +26,22 @@
       font-size:1.7em;
       font-weight: bold;
     }
+    .header.mini{
+      height:45px;
+      width:100%;
+      z-index:100;
+      position:fixed;
+      top:-100px;
+      left:0;
+      padding: 15px 10px 5px 10px;
+      font-size:1.3em;
+      border-bottom:1px solid rgba(0,0,0,0.3);
+      .transition();
+      &.show {
+        top:0;
+        .transition();
+      }
+    }
 
     .content {
       ul {

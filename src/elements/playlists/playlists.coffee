@@ -25,6 +25,12 @@ Polymer 'yo-playlists',
       $(@.shadowRoot.querySelector(".mix")).removeClass 'invisible'
 
   getPlayLists: ->
+    window.addEventListener 'scroll', (e) =>
+      if window.scrollY > 100
+        @showMini = true
+      else
+        @showMini = false
+
     $.get '/spotify/playlists', (res) =>
     $.get '/mixes', (res) =>
       # @playlists = res.items

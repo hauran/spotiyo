@@ -134,6 +134,28 @@
   font-size: 1.7em;
   font-weight: bold;
 }
+:host .container .header.mini {
+  height: 45px;
+  width: 100%;
+  z-index: 100;
+  position: fixed;
+  top: -100px;
+  left: 0;
+  padding: 15px 10px 5px 10px;
+  font-size: 1.3em;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+:host .container .header.mini.show {
+  top: 0;
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
 :host .container .content ul {
   overflow: visible;
   background-color: white;
@@ -148,6 +170,9 @@
 	<div id="container" class="overlay container {{ {active:active, noHeight:noHeight} | tokenList}}">
 		<div class="content" style="color:white;">
 				<div class="header">
+					HI {{user.name}}
+				</div>
+				<div class="header mini {{ {show:showMini} | tokenList}}">
 					HI {{user.name}}
 				</div>
 				<ul class="{{ {playerShow:playerShow} | tokenList}}">
@@ -217,6 +242,15 @@
                 });
             },
             getPlayLists: function() {
+                window.addEventListener("scroll", function(_this) {
+                    return function(e) {
+                        if (window.scrollY > 100) {
+                            return _this.showMini = true;
+                        } else {
+                            return _this.showMini = false;
+                        }
+                    };
+                }(this));
                 $.get("/spotify/playlists", function(_this) {
                     return function(res) {};
                 }(this));

@@ -6,6 +6,9 @@
 				<div class='header'>
 					HI {{user.name}}
 				</div>
+				<div class='header mini {{ {show:showMini} | tokenList}}'>
+					HI {{user.name}}
+				</div>
 				<ul class="{{ {playerShow:playerShow} | tokenList}}">
 					<template repeat="{{playlist in playlists}}">
 						<li>
