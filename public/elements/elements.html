@@ -365,7 +365,10 @@
   background: rgba(0, 0, 0, 0.1);
   height: 50px;
 }
-:host .mix footer .play-button {
+:host .mix footer .tracks {
+  margin-top: 25px;
+}
+:host .play-button {
   position: relative;
   top: -25px;
   background: white;
@@ -379,15 +382,45 @@
   align-items: center;
   justify-content: center;
 }
-:host .mix footer .play-button .fa-play {
+:host .play-button .fa-play {
   color: #3498db;
   font-size: 1.2em;
   margin-right: 0;
   margin-top: 2px;
   margin-left: 5px;
 }
-:host .mix footer .tracks {
-  margin-top: 25px;
+:host .play-button.small {
+  height: 30px;
+  width: 30px;
+  border-radius: 15px;
+  top: -4px;
+  float: left;
+  margin-right: 10px;
+}
+:host .play-button.small .fa-play {
+  font-size: 0.9em;
+  margin-left: 4px;
+}
+:host .smallHeader {
+  height: 45px;
+  width: 100%;
+  z-index: 100;
+  position: fixed;
+  top: -100px;
+  left: 0;
+  padding-top: 20px;
+  padding-left: 10px;
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+:host .smallHeader.show {
+  top: 0;
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
 }
 </style>
   <div class="mix {{ {playing:playing} | tokenList}}" on-click="{{selectPlaylist}}">
@@ -409,6 +442,12 @@
     <div class="tracks {{ {hide:!playing} | tokenList}}">
       <yo-tracks></yo-tracks>
     </div>
+  </div>
+  <div class="smallHeader {{ {show:showLittleHeader &amp;&amp; playing} | tokenList}}">
+    <div class="play-button small">
+      <i class="fa fa-play"></i>
+    </div>
+      {{playlist.name}}
   </div>
 </template>
 
@@ -450,16 +489,19 @@
             },
             domReady: function() {
                 this.offset = this.offsetTop + 20;
-                return this.shadowRoot.querySelector(".mix").style.backgroundColor = this.playlist.color;
+                this.shadowRoot.querySelector(".mix").style.backgroundColor = this.playlist.color;
+                return this.shadowRoot.querySelector(".smallHeader").style.backgroundColor = this.playlist.color;
             },
             closePlaylist: function() {
                 this.playlists.showAll();
                 this.shadowRoot.querySelector(".mix").style.webkitTransform = null;
                 window.scrollTo(0, this.scrollY);
                 this.playing = false;
+                this.showLittleHeader = false;
                 this.removeEventListener("down", false);
-                this.addEventListener("track", false);
-                this.addEventListener("up", false);
+                this.removeEventListener("track", false);
+                this.removeEventListener("up", false);
+                window.removeEventListener("scroll", false);
                 return this.shadowRoot.querySelector(".mix .mixInfoContainer").removeAttribute("touch-action");
             },
             selectPlaylist: function(evt) {
@@ -481,6 +523,15 @@
                 }
             },
             listenForCloseSwipe: function() {
+                window.addEventListener("scroll", function(_this) {
+                    return function(e) {
+                        if (window.scrollY > 160) {
+                            return _this.showLittleHeader = true;
+                        } else {
+                            return _this.showLittleHeader = false;
+                        }
+                    };
+                }(this));
                 this.addEventListener("down", function(_this) {
                     return function(e) {
                         return _this.point = new xPoint(e.clientY);

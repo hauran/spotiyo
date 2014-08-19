@@ -48,30 +48,57 @@
     footer {
       background:rgba(0,0,0,0.1);
       height:50px;
-      .play-button{
-        position: relative;
-        top: -25px;
-        background: white;
-        height: 50px;
-        width: 50px;
-        border-radius: 25px;
-        margin-left: 10px;
-        display: flex;
-        -webkit-box-align: center;
-        -webkit-box-pack: center;
-        align-items: center;
-        justify-content: center;
-        .fa-play{
-          color:#3498db;
-          font-size: 1.2em;
-          margin-right: 0;
-          margin-top: 2px;
-          margin-left: 5px;
-        }
-      }
       .tracks {
         margin-top:25px;
       }
+    }
+  }
+  .play-button{
+    position: relative;
+    top: -25px;
+    background: white;
+    height: 50px;
+    width: 50px;
+    border-radius: 25px;
+    margin-left: 10px;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-box-pack: center;
+    align-items: center;
+    justify-content: center;
+    .fa-play{
+      color:#3498db;
+      font-size: 1.2em;
+      margin-right: 0;
+      margin-top: 2px;
+      margin-left: 5px;
+    }
+    &.small {
+      height: 30px;
+      width: 30px;
+      border-radius: 15px;
+      top: -4px;
+      float: left;
+      margin-right:10px;
+      .fa-play{
+        font-size:0.9em;
+        margin-left:4px;
+      }
+    }
+  }
+  .smallHeader {
+    height:45px;
+    width:100%;
+    z-index:100;
+    position:fixed;
+    top:-100px;
+    left:0;
+    padding-top:20px;
+    padding-left:10px;
+    .transition();
+    &.show {
+      top:0;
+      .transition();
     }
   }
 }

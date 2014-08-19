@@ -5,23 +5,27 @@ Polymer 'yo-playlist',
     @loading = true
     @justClosed = false
 
-
     @tracks.addEventListener 'trackclicked', (e) =>
       @tracks.playTrackNumber e.detail.track
+
+
 
   domReady: ->
     @offset = @offsetTop + 20
     # hack - android browser doesnt render inline style
     @shadowRoot.querySelector('.mix').style.backgroundColor = @playlist.color
+    @shadowRoot.querySelector('.smallHeader').style.backgroundColor = @playlist.color
 
   closePlaylist: ->
     @playlists.showAll()
     @shadowRoot.querySelector('.mix').style.webkitTransform = null
     window.scrollTo 0,@scrollY
     @playing = false
+    @showLittleHeader = false
     @removeEventListener 'down',false
-    @addEventListener 'track', false
-    @addEventListener 'up', false
+    @removeEventListener 'track', false
+    @removeEventListener 'up', false
+    window.removeEventListener 'scroll', false
     @shadowRoot.querySelector('.mix .mixInfoContainer').removeAttribute 'touch-action'
 
   selectPlaylist: (evt) ->
@@ -40,6 +44,12 @@ Polymer 'yo-playlist',
       ,400
 
   listenForCloseSwipe: ->
+      window.addEventListener 'scroll', (e) =>
+        if window.scrollY > 160
+          @showLittleHeader = true
+        else
+          @showLittleHeader = false
+
       @addEventListener 'down', (e) =>
         @point = new xPoint(e.clientY)
 
@@ -66,14 +76,3 @@ Polymer 'yo-playlist',
     @tracks.loading = true
     @tracks.makeMix () =>
       @loading = false
-    # $.get "/makeMix", {}, (res) =>
-    #   @loading = false
-    #   @tracks.loading = false
-    #   @tracks.items = res.tracks
-    #   @tracks.title = res.title
-
-      # @playCurrentTrack()
-      # @player.play()
-
-    # console.log $pl
-    # @tracks.makeMix()

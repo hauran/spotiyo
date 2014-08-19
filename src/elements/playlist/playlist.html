@@ -21,6 +21,12 @@
       <yo-tracks></yo-tracks>
     </div>
   </div>
+  <div class='smallHeader {{ {show:showLittleHeader && playing} | tokenList}}'>
+    <div class='play-button small'>
+      <i class='fa fa-play'></i>
+    </div>
+      {{playlist.name}}
+  </div>
 </template>
 
 <script src="./playlist.coffee"></script>
