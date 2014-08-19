@@ -4,6 +4,10 @@
   z-index:-1;
   .mix {
     .transition();
+    &.invisible {
+      opacity:0;
+      .transition();
+    }
     &.playing {
       .transition();
       z-index: 100;

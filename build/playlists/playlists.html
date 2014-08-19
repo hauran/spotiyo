@@ -83,16 +83,18 @@
                 var notPlaying;
                 if (this.currentlyPlaying) {
                     notPlaying = this.shadowRoot.querySelectorAll("yo-playlist:not([playing])");
-                    return $.each(notPlaying, function() {
-                        return $(this).css("visibility", "hidden");
+                    $.each(notPlaying, function() {
+                        return $(this.shadowRoot.querySelector(".mix")).addClass("invisible");
                     });
+                    return this.shadowRoot.querySelector(".header").style.visibility = "hidden";
                 }
             },
             showAll: function() {
                 var all;
+                this.shadowRoot.querySelector(".header").style.visibility = null;
                 all = this.shadowRoot.querySelectorAll("yo-playlist");
                 return $.each(all, function() {
-                    return $(this).css("visibility", "visible");
+                    return $(this.shadowRoot.querySelector(".mix")).removeClass("invisible");
                 });
             },
             getPlayLists: function() {

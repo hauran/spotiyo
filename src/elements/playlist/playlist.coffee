@@ -5,6 +5,7 @@ Polymer 'yo-playlist',
     @loading = true
     @justClosed = false
 
+
     @tracks.addEventListener 'trackclicked', (e) =>
       @tracks.playTrackNumber e.detail.track
 
@@ -16,6 +17,7 @@ Polymer 'yo-playlist',
   closePlaylist: ->
     @playlists.showAll()
     @shadowRoot.querySelector('.mix').style.webkitTransform = null
+    window.scrollTo 0,@scrollY
     @playing = false
     @removeEventListener 'down',false
     @addEventListener 'track', false
@@ -26,15 +28,16 @@ Polymer 'yo-playlist',
     if !@playing and !@justClosed
       @playlists.resetPlaying()
       @playlists.playing @
-      @playing = true
-
-      @shadowRoot.querySelector('.mix').style.webkitTransform = "translateY(-#{@offset}px)"
-      @shadowRoot.querySelector('.mix .mixInfoContainer').setAttribute 'touch-action','none'
-
-      $(window).scrollTop(0)
       @playlists.hideNotPlaying()
-      @makeMix()
-      @listenForCloseSwipe()
+      @scrollY = window.scrollY
+      setTimeout =>
+        window.scrollTo 0,0
+        @playing = true
+        @shadowRoot.querySelector('.mix').style.webkitTransform = "translateY(-#{@offset}px)"
+        @shadowRoot.querySelector('.mix .mixInfoContainer').setAttribute 'touch-action','none'
+        @makeMix()
+        @listenForCloseSwipe()
+      ,400
 
   listenForCloseSwipe: ->
       @addEventListener 'down', (e) =>

@@ -202,16 +202,18 @@
                 var notPlaying;
                 if (this.currentlyPlaying) {
                     notPlaying = this.shadowRoot.querySelectorAll("yo-playlist:not([playing])");
-                    return $.each(notPlaying, function() {
-                        return $(this).css("visibility", "hidden");
+                    $.each(notPlaying, function() {
+                        return $(this.shadowRoot.querySelector(".mix")).addClass("invisible");
                     });
+                    return this.shadowRoot.querySelector(".header").style.visibility = "hidden";
                 }
             },
             showAll: function() {
                 var all;
+                this.shadowRoot.querySelector(".header").style.visibility = null;
                 all = this.shadowRoot.querySelectorAll("yo-playlist");
                 return $.each(all, function() {
-                    return $(this).css("visibility", "visible");
+                    return $(this.shadowRoot.querySelector(".mix")).removeClass("invisible");
                 });
             },
             getPlayLists: function() {
@@ -318,6 +320,13 @@
   text-align: center;
   display: flex;
   flex-direction: column;
+}
+:host .mix.invisible {
+  opacity: 0;
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  -o-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
 }
 :host .mix.playing {
   z-index: 100;
@@ -446,6 +455,7 @@
             closePlaylist: function() {
                 this.playlists.showAll();
                 this.shadowRoot.querySelector(".mix").style.webkitTransform = null;
+                window.scrollTo(0, this.scrollY);
                 this.playing = false;
                 this.removeEventListener("down", false);
                 this.addEventListener("track", false);
@@ -456,13 +466,18 @@
                 if (!this.playing && !this.justClosed) {
                     this.playlists.resetPlaying();
                     this.playlists.playing(this);
-                    this.playing = true;
-                    this.shadowRoot.querySelector(".mix").style.webkitTransform = "translateY(-" + this.offset + "px)";
-                    this.shadowRoot.querySelector(".mix .mixInfoContainer").setAttribute("touch-action", "none");
-                    $(window).scrollTop(0);
                     this.playlists.hideNotPlaying();
-                    this.makeMix();
-                    return this.listenForCloseSwipe();
+                    this.scrollY = window.scrollY;
+                    return setTimeout(function(_this) {
+                        return function() {
+                            window.scrollTo(0, 0);
+                            _this.playing = true;
+                            _this.shadowRoot.querySelector(".mix").style.webkitTransform = "translateY(-" + _this.offset + "px)";
+                            _this.shadowRoot.querySelector(".mix .mixInfoContainer").setAttribute("touch-action", "none");
+                            _this.makeMix();
+                            return _this.listenForCloseSwipe();
+                        };
+                    }(this), 400);
                 }
             },
             listenForCloseSwipe: function() {
