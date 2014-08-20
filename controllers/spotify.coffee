@@ -64,8 +64,14 @@ exports.setup = (app) ->
 
         # use the access token to access the Spotify Web API
         request.get options, (error, response, body) ->
-          console.log body
           userId = body.id
+          client.hexists 'user', userId, (err,exists) ->
+            if !exists
+              client.hkeys 'user', (err, users) ->
+                _.each users, (user) ->
+                  client.rpush "#{userId}_friends", user, (err, val) ->
+                  client.rpush "#{user}_friend", userId, (err, val) ->
+
           client.hset 'user', userId, JSON.stringify(body), (err, val) ->
           client.hset 'email_user', body.email, userId, (err, val) ->
           options =
