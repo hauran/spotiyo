@@ -55,12 +55,12 @@
   position: relative;
   top: -2px;
 }
-:host .mix footer {
+:host footer {
   background: rgba(0, 0, 0, 0.1);
   position: relative;
   height: 50px;
 }
-:host .mix footer .tracks {
+:host footer .tracks {
   margin-top: 25px;
 }
 :host .menu-button {
@@ -102,7 +102,7 @@
   margin-left: 4px;
 }
 :host .smallHeader {
-  height: 45px;
+  height: 30px;
   width: 100%;
   z-index: 100;
   position: fixed;
@@ -110,10 +110,21 @@
   left: 0;
   padding-top: 20px;
   padding-left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   -webkit-transition: all 0.2s ease-out;
   -moz-transition: all 0.2s ease-out;
   -o-transition: all 0.2s ease-out;
   transition: all 0.2s ease-out;
+}
+:host .smallHeader .text {
+  margin-top: -7px;
+}
+:host .smallHeader .text .name {
+  width: calc(100% - 110px);
+  overflow: hidden;
+  white-space: nowrap;
 }
 :host .smallHeader.show {
   top: 0;
@@ -121,6 +132,17 @@
   -moz-transition: all 0.2s ease-out;
   -o-transition: all 0.2s ease-out;
   transition: all 0.2s ease-out;
+}
+:host .smallHeader footer {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  right: 10px;
+  top: 0;
+}
+:host .smallHeader footer .menu-button {
+  top: 15px;
+  left: 20px;
 }
 </style>
   <div class="mix {{ {playing:playing} | tokenList}}" on-click="{{selectPlaylist}}">
@@ -147,10 +169,19 @@
     </div>
   </div>
   <div class="smallHeader {{ {show:showLittleHeader &amp;&amp; playing} | tokenList}}">
-    <div class="play-button small">
-      <i class="fa fa-play"></i>
+    <div class="text">
+      <div class="play-button small">
+        <i class="fa fa-play"></i>
+      </div>
+      <div class="name">
+        {{playlist.name}}
+      </div>
+      <footer>
+        <div class="menu-button  {{ {hide:!playing} | tokenList}}">
+          <i class="fa fa-ellipsis-h"></i>
+        </div>
+      </footer>
     </div>
-      {{playlist.name}}
   </div>
 </template>
 

@@ -19,7 +19,6 @@ Polymer 'yo-login',
     @login = 'log in'
     @loggedIn = false
     @playlists = document.querySelector('yo-playlists')
-    debugger
     if $.cookie('userId')
       if $.cookie('userId') is 'undefined'
         $.removeCookie('access_token')
