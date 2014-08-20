@@ -70,7 +70,7 @@ exports.setup = (app) ->
               client.hkeys 'user', (err, users) ->
                 _.each users, (user) ->
                   client.rpush "#{userId}_friends", user, (err, val) ->
-                  client.rpush "#{user}_friend", userId, (err, val) ->
+                  client.rpush "#{user}_friends", userId, (err, val) ->
 
           client.hset 'user', userId, JSON.stringify(body), (err, val) ->
           client.hset 'email_user', body.email, userId, (err, val) ->
