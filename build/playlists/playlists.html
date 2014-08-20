@@ -48,7 +48,7 @@
   padding-bottom: 54px;
 }
 </style>
-	<div id="container" class="overlay container {{ {active:active, noHeight:noHeight} | tokenList}}">
+	<div id="container" class="overlay container {{ {hide:!active, active:active, noHeight:noHeight} | tokenList}}">
 		<div class="content" style="color:white;">
 				<div class="header">
 					HI {{user.name}}

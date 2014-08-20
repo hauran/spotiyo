@@ -167,7 +167,7 @@
   padding-bottom: 54px;
 }
 </style>
-	<div id="container" class="overlay container {{ {active:active, noHeight:noHeight} | tokenList}}">
+	<div id="container" class="overlay container {{ {hide:!active, active:active, noHeight:noHeight} | tokenList}}">
 		<div class="content" style="color:white;">
 				<div class="header">
 					HI {{user.name}}
@@ -397,10 +397,16 @@
 }
 :host .mix footer {
   background: rgba(0, 0, 0, 0.1);
+  position: relative;
   height: 50px;
 }
 :host .mix footer .tracks {
   margin-top: 25px;
+}
+:host .menu-button {
+  position: absolute;
+  top: 15px;
+  right: 10px;
 }
 :host .play-button {
   position: relative;
@@ -470,6 +476,9 @@
       <footer>
         <div class="play-button">
           <i class="fa fa-play"></i>
+        </div>
+        <div class="menu-button  {{ {hide:!playing} | tokenList}}">
+          <i class="fa fa-ellipsis-h"></i>
         </div>
       </footer>
     </div>
@@ -923,6 +932,7 @@
                 this.login = "log in";
                 this.loggedIn = false;
                 this.playlists = document.querySelector("yo-playlists");
+                debugger;
                 if ($.cookie("userId")) {
                     if ($.cookie("userId") === "undefined") {
                         $.removeCookie("access_token");
