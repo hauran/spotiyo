@@ -22,7 +22,7 @@
   -o-transition: all 0.2s ease-out;
   transition: all 0.2s ease-out;
 }
-:host .mix.playing {
+:host .mix.expanded {
   z-index: 100;
   position: absolute;
   left: -20px;
@@ -82,12 +82,16 @@
   align-items: center;
   justify-content: center;
 }
-:host .play-button .fa-play {
+:host .play-button .fa-play,
+:host .play-button .fa-pause {
   color: #3498db;
   font-size: 1.2em;
   margin-right: 0;
   margin-top: 2px;
   margin-left: 5px;
+}
+:host .play-button .fa-pause {
+  margin-left: 0;
 }
 :host .play-button.small {
   height: 30px;
@@ -97,9 +101,12 @@
   float: left;
   margin-right: 10px;
 }
-:host .play-button.small .fa-play {
+:host .play-button.small .fa {
   font-size: 0.9em;
   margin-left: 4px;
+}
+:host .play-button.small .fa-pause {
+  margin-left: 0;
 }
 :host .smallHeader {
   height: 30px;
@@ -145,7 +152,7 @@
   left: 20px;
 }
 </style>
-  <div class="mix {{ {playing:playing} | tokenList}}" on-click="{{selectPlaylist}}">
+  <div class="mix {{ {expanded:expanded} | tokenList}}" on-click="{{selectPlaylist}}">
     <div class="mixInfoContainer">
       <div class="mixInfo">
         <h4>
@@ -157,27 +164,29 @@
       </div>
       <footer>
         <div class="play-button">
-          <i class="fa fa-play"></i>
+          <i class="fa fa-play  {{ {hide:playing} | tokenList}}" on-click="{{play}}"></i>
+          <i class="fa fa-pause  {{ {hide:!playing} | tokenList}}" on-click="{{pause}}"></i>
         </div>
-        <div class="menu-button  {{ {hide:!playing} | tokenList}}">
+        <div class="menu-button  {{ {hide:!expanded} | tokenList}}">
           <i class="fa fa-ellipsis-h"></i>
         </div>
       </footer>
     </div>
-    <div class="tracks {{ {hide:!playing} | tokenList}}">
+    <div class="tracks {{ {hide:!expanded} | tokenList}}">
       <yo-tracks></yo-tracks>
     </div>
   </div>
-  <div class="smallHeader {{ {show:showLittleHeader &amp;&amp; playing} | tokenList}}">
+  <div class="smallHeader {{ {show:showLittleHeader &amp;&amp; expanded} | tokenList}}">
     <div class="text">
       <div class="play-button small">
-        <i class="fa fa-play"></i>
+        <i class="fa fa-play  {{ {hide:playing} | tokenList}}" on-click="{{play}}"></i>
+        <i class="fa fa-pause  {{ {hide:!playing} | tokenList}}" on-click="{{pause}}"></i>
       </div>
       <div class="name">
         {{playlist.name}}
       </div>
       <footer>
-        <div class="menu-button  {{ {hide:!playing} | tokenList}}">
+        <div class="menu-button  {{ {hide:!expanded} | tokenList}}">
           <i class="fa fa-ellipsis-h"></i>
         </div>
       </footer>
@@ -213,13 +222,24 @@
             ready: function() {
                 this.playlists = document.querySelector("yo-playlists");
                 this.tracks = this.shadowRoot.querySelector("yo-tracks");
+                this.player = document.querySelector("yo-player");
                 this.loading = true;
                 this.justClosed = false;
+                this.playing = false;
+                this.expanded = false;
                 return this.tracks.addEventListener("trackclicked", function(_this) {
                     return function(e) {
                         return _this.tracks.playTrackNumber(e.detail.track);
                     };
                 }(this));
+            },
+            play: function() {
+                this.player.play();
+                return this.playing = true;
+            },
+            pause: function() {
+                this.player.pause();
+                return this.playing = false;
             },
             domReady: function() {
                 this.offset = this.offsetTop + 20;
@@ -230,7 +250,7 @@
                 this.playlists.showAll();
                 this.shadowRoot.querySelector(".mix").style.webkitTransform = null;
                 window.scrollTo(0, this.scrollY);
-                this.playing = false;
+                this.expanded = false;
                 this.showLittleHeader = false;
                 this.removeEventListener("down", false);
                 this.removeEventListener("track", false);
@@ -239,7 +259,7 @@
                 return this.shadowRoot.querySelector(".mix .mixInfoContainer").removeAttribute("touch-action");
             },
             selectPlaylist: function(evt) {
-                if (!this.playing && !this.justClosed) {
+                if (!this.expanded && !this.justClosed) {
                     this.playlists.resetPlaying();
                     this.playlists.playing(this);
                     this.playlists.hideNotPlaying();
@@ -247,7 +267,7 @@
                     return setTimeout(function(_this) {
                         return function() {
                             window.scrollTo(0, 0);
-                            _this.playing = true;
+                            _this.expanded = true;
                             _this.shadowRoot.querySelector(".mix").style.webkitTransform = "translateY(-" + _this.offset + "px)";
                             _this.shadowRoot.querySelector(".mix .mixInfoContainer").setAttribute("touch-action", "none");
                             _this.makeMix();
@@ -287,7 +307,7 @@
                         if (!p) {
                             return;
                         }
-                        if (_this.playing && p && p.isFlickDown()) {
+                        if (_this.expanded && p && p.isFlickDown()) {
                             _this.closePlaylist();
                             _this.justClosed = true;
                             setTimeout(function() {

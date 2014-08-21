@@ -1,7 +1,7 @@
 <polymer-element name='yo-playlist' attributes='playlist playing' class='{{ {playing:playing} | tokenList}}'>
 <template>
   <link rel="stylesheet" type="text/css" href="./playlist.less">
-  <div class='mix {{ {playing:playing} | tokenList}}' on-click="{{selectPlaylist}}">
+  <div class='mix {{ {expanded:expanded} | tokenList}}' on-click="{{selectPlaylist}}">
     <div class='mixInfoContainer'>
       <div class='mixInfo'>
         <h4>
@@ -13,27 +13,29 @@
       </div>
       <footer>
         <div class='play-button'>
-          <i class='fa fa-play'></i>
+          <i class='fa fa-play  {{ {hide:playing} | tokenList}}' on-click="{{play}}"></i>
+          <i class='fa fa-pause  {{ {hide:!playing} | tokenList}}' on-click="{{pause}}"></i>
         </div>
-        <div class='menu-button  {{ {hide:!playing} | tokenList}}' >
+        <div class='menu-button  {{ {hide:!expanded} | tokenList}}' >
           <i class='fa fa-ellipsis-h'></i>
         </div>
       </footer>
     </div>
-    <div class='tracks {{ {hide:!playing} | tokenList}}'>
+    <div class='tracks {{ {hide:!expanded} | tokenList}}'>
       <yo-tracks></yo-tracks>
     </div>
   </div>
-  <div class='smallHeader {{ {show:showLittleHeader && playing} | tokenList}}'>
+  <div class='smallHeader {{ {show:showLittleHeader && expanded} | tokenList}}'>
     <div class='text'>
       <div class='play-button small'>
-        <i class='fa fa-play'></i>
+        <i class='fa fa-play  {{ {hide:playing} | tokenList}}'  on-click="{{play}}"></i>
+        <i class='fa fa-pause  {{ {hide:!playing} | tokenList}}' on-click="{{pause}}"></i>
       </div>
       <div class='name'>
         {{playlist.name}}
       </div>
       <footer>
-        <div class='menu-button  {{ {hide:!playing} | tokenList}}' >
+        <div class='menu-button  {{ {hide:!expanded} | tokenList}}' >
           <i class='fa fa-ellipsis-h'></i>
         </div>
       </footer>

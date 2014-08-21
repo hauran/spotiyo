@@ -2,13 +2,22 @@ Polymer 'yo-playlist',
   ready: ->
     @playlists = document.querySelector('yo-playlists')
     @tracks = @shadowRoot.querySelector('yo-tracks')
+    @player = document.querySelector('yo-player')
     @loading = true
     @justClosed = false
+    @playing = false
+    @expanded = false
 
     @tracks.addEventListener 'trackclicked', (e) =>
       @tracks.playTrackNumber e.detail.track
 
+  play: ->
+    @player.play()
+    @playing = true
 
+  pause: ->
+    @player.pause()
+    @playing = false
 
   domReady: ->
     @offset = @offsetTop + 20
@@ -20,7 +29,7 @@ Polymer 'yo-playlist',
     @playlists.showAll()
     @shadowRoot.querySelector('.mix').style.webkitTransform = null
     window.scrollTo 0,@scrollY
-    @playing = false
+    @expanded = false
     @showLittleHeader = false
     @removeEventListener 'down',false
     @removeEventListener 'track', false
@@ -29,14 +38,14 @@ Polymer 'yo-playlist',
     @shadowRoot.querySelector('.mix .mixInfoContainer').removeAttribute 'touch-action'
 
   selectPlaylist: (evt) ->
-    if !@playing and !@justClosed
+    if !@expanded and !@justClosed
       @playlists.resetPlaying()
       @playlists.playing @
       @playlists.hideNotPlaying()
       @scrollY = window.scrollY
       setTimeout =>
         window.scrollTo 0,0
-        @playing = true
+        @expanded = true
         @shadowRoot.querySelector('.mix').style.webkitTransform = "translateY(-#{@offset}px)"
         @shadowRoot.querySelector('.mix .mixInfoContainer').setAttribute 'touch-action','none'
         @makeMix()
@@ -61,7 +70,7 @@ Polymer 'yo-playlist',
       @addEventListener 'up', (e) =>
         p = @point
         return if !p
-        if @playing and p and p.isFlickDown()
+        if @expanded and p and p.isFlickDown()
           @closePlaylist()
           @justClosed = true
           setTimeout =>
