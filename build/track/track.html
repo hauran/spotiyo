@@ -1,4 +1,4 @@
-<polymer-element name="yo-track" attributes="track">
+<polymer-element name="yo-track" attributes="artist name imgsrc uri number duration playlist playlistowner">
 <template>
 	<style>:host {
   display: block;
@@ -49,7 +49,7 @@
 			<div class="playlist-name">
 				{{playlist}}
 			</div>
-			{{playlistUser}}
+			{{playlistowner}}
 		</div>
 	</div>
 </template>
@@ -84,14 +84,7 @@
             imgsrc: "",
             uri: "",
             ready: function() {
-                this.tracks = document.querySelector("yo-tracks");
-                this.artist = this.track.track.artists[0].name;
-                this.name = this.track.track.name;
-                this.imgsrc = this.track.track.album.images[1].url;
-                this.uri = this.track.track.uri;
-                this.duration = this.track.track.duration_ms;
-                this.playlistUser = this.track.friend;
-                return this.playlist = this.track.playlist.name;
+                return this.tracks = document.querySelector("yo-tracks");
             },
             playTrack: function(evt) {
                 this.fire("trackclicked", {

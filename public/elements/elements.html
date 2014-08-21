@@ -675,7 +675,7 @@
 }, {}, [ 1 ]);</script>
 </polymer-element>
 
-<polymer-element name="yo-track" attributes="track">
+<polymer-element name="yo-track" attributes="artist name imgsrc uri number duration playlist playlistowner">
 <template>
 	<style>:host {
   display: block;
@@ -726,7 +726,7 @@
 			<div class="playlist-name">
 				{{playlist}}
 			</div>
-			{{playlistUser}}
+			{{playlistowner}}
 		</div>
 	</div>
 </template>
@@ -761,14 +761,7 @@
             imgsrc: "",
             uri: "",
             ready: function() {
-                this.tracks = document.querySelector("yo-tracks");
-                this.artist = this.track.track.artists[0].name;
-                this.name = this.track.track.name;
-                this.imgsrc = this.track.track.album.images[1].url;
-                this.uri = this.track.track.uri;
-                this.duration = this.track.track.duration_ms;
-                this.playlistUser = this.track.friend;
-                return this.playlist = this.track.playlist.name;
+                return this.tracks = document.querySelector("yo-tracks");
             },
             playTrack: function(evt) {
                 this.fire("trackclicked", {
@@ -790,7 +783,7 @@
 			<div class="loading {{ {hide:!loading} | tokenList}}">loading...</div>
 			<div class="tracks">
 				<template repeat="{{item, i in items }}">
-				 	<yo-track number="{{i}}" track="{{item}}"></yo-track>
+					<yo-track number="{{i}}" artist="{{item.track.artists[0].name}}" name="{{item.track.name}}" imgsrc="{{item.track.album.images[1].url}}" uri="{{item.track.uri}}" duration="{{item.track.duration_ms}}" playlist="{{item.playlist.name}}" playlistowner="{{item.friend}}"></yo-track>
 				</template>
 			</div>
 		</div>
