@@ -324,8 +324,9 @@
                 this.tracks.items = [];
                 this.tracks.loading = true;
                 return this.tracks.makeMix(function(_this) {
-                    return function() {
-                        return _this.loading = false;
+                    return function(res) {
+                        _this.loading = false;
+                        return _this.playlist.name = res.title;
                     };
                 }(this));
             }

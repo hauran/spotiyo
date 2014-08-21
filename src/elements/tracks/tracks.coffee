@@ -58,7 +58,7 @@ Polymer 'yo-tracks',
       @title = res.title
       @playCurrentTrack()
       @player.play()
-      callback()
+      callback(res)
 
   playCurrentTrack: ->
     @resetCurrentPlaying()

@@ -1,4 +1,4 @@
-<polymer-element name="yo-track" attributes="artist name imgsrc uri number duration">
+<polymer-element name="yo-track" attributes="track">
 <template>
 	<style>:host {
   display: block;
@@ -16,6 +16,7 @@
   margin-top: 10px;
   font-family: 'Open Sans';
   font-weight: lighter;
+  position: relative;
 }
 :host .item-name .artist {
   font-size: 0.7em;
@@ -29,12 +30,26 @@
   margin-right: 5px;
   width: 50%;
 }
+:host .item-name .playlist-info {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  text-align: right;
+  font-size: 0.6em;
+  color: #a0a0a0;
+}
 </style>
 	<div class="item-name {{ {playing:number==0} | tokenList}}" track="{{number}}" artist="{{artist}}" on-click="{{playTrack}}">
 		<img src="{{imgsrc}}" class="pull-left">
 		<div class="track-name">
 			{{name}}
 			<div class="artist">{{artist}}</div>
+		</div>
+		<div class="playlist-info">
+			<div class="playlist-name">
+				{{playlist}}
+			</div>
+			{{playlistUser}}
 		</div>
 	</div>
 </template>
@@ -69,7 +84,14 @@
             imgsrc: "",
             uri: "",
             ready: function() {
-                return this.tracks = document.querySelector("yo-tracks");
+                this.tracks = document.querySelector("yo-tracks");
+                this.artist = this.track.track.artists[0].name;
+                this.name = this.track.track.name;
+                this.imgsrc = this.track.track.album.images[1].url;
+                this.uri = this.track.track.uri;
+                this.duration = this.track.track.duration_ms;
+                this.playlistUser = this.track.friend;
+                return this.playlist = this.track.playlist.name;
             },
             playTrack: function(evt) {
                 this.fire("trackclicked", {

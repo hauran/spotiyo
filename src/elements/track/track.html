@@ -1,4 +1,4 @@
-<polymer-element name='yo-track' attributes='artist name imgsrc uri number duration'>
+<polymer-element name='yo-track' attributes='track'>
 <template>
 	<link rel="stylesheet" type="text/css" href="./track.less">
 	<div class='item-name {{ {playing:number==0} | tokenList}}' track="{{number}}" artist="{{artist}}" on-click="{{playTrack}}">
@@ -6,6 +6,12 @@
 		<div class='track-name'>
 			{{name}}
 			<div class='artist'>{{artist}}</div>
+		</div>
+		<div class='playlist-info'>
+			<div class='playlist-name'>
+				{{playlist}}
+			</div>
+			{{playlistUser}}
 		</div>
 	</div>
 </template>

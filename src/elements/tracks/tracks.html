@@ -6,7 +6,7 @@
 			<div class='loading {{ {hide:!loading} | tokenList}}' >loading...</div>
 			<div class='tracks'>
 				<template repeat="{{item, i in items }}">
-				 	<yo-track number="{{i}}" artist='{{item.track.artists[0].name}}' name='{{item.track.name}}' imgsrc='{{item.track.album.images[1].url}}' uri='{{item.track.uri}}' duration='{{item.track.duration_ms}}'></yo-track>
+				 	<yo-track number="{{i}}" track='{{item}}'></yo-track>
 				</template>
 			</div>
 		</div>

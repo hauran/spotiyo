@@ -83,5 +83,7 @@ Polymer 'yo-playlist',
     @tracks.currentTrack = 0
     @tracks.items = []
     @tracks.loading = true
-    @tracks.makeMix () =>
+    @tracks.makeMix (res) =>
       @loading = false
+      @playlist.name = res.title
+      # @playlist.name =
