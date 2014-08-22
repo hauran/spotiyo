@@ -43,14 +43,14 @@ Polymer 'yo-playlist',
       @playlists.playing @
       @playlists.hideNotPlaying()
       @scrollY = window.scrollY
+      @makeMix()
       setTimeout =>
         window.scrollTo 0,0
         @expanded = true
-        @shadowRoot.querySelector('.mix').style.webkitTransform = "translateY(-#{@offset}px)"
+        @shadowRoot.querySelector('.mix').style.webkitTransform = "translate3d(0,-#{@offset}px,0)"
         @shadowRoot.querySelector('.mix .mixInfoContainer').setAttribute 'touch-action','none'
-        @makeMix()
         @listenForCloseSwipe()
-      ,400
+      ,500
 
   listenForCloseSwipe: ->
       window.addEventListener 'scroll', (e) =>

@@ -16,13 +16,16 @@ Polymer 'yo-playlists',
       notPlaying = @shadowRoot.querySelectorAll('yo-playlist:not([playing])')
       $.each notPlaying, ()->
         $(@.shadowRoot.querySelector(".mix")).addClass 'invisible'
+        setTimeout () =>
+          $(@.shadowRoot.querySelector(".mix")).css('visibility','hidden')
+        ,300
       @shadowRoot.querySelector('.header').style.visibility = 'hidden'
 
   showAll: ->
     @shadowRoot.querySelector('.header').style.visibility = null
     all = @shadowRoot.querySelectorAll('yo-playlist')
     $.each all, ()->
-      $(@.shadowRoot.querySelector(".mix")).removeClass 'invisible'
+      $(@.shadowRoot.querySelector(".mix")).removeClass('invisible').css('visibility','visible')
 
   getPlayLists: ->
     window.addEventListener 'scroll', (e) =>

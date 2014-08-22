@@ -3,13 +3,13 @@
 :host{
   z-index:-1;
   .mix {
+    -webkit-backface-visibility: hidden;
     .transition();
     &.invisible {
       opacity:0;
       .transition();
     }
     &.expanded {
-      .transition();
       z-index: 100;
       position: absolute;
       left: -20px;
@@ -107,6 +107,7 @@
     left:0;
     padding-top:20px;
     padding-left:10px;
+    -webkit-backface-visibility: hidden;
     display:flex;
     align-items: center;
     justify-content: center;
@@ -124,7 +125,7 @@
       // width:calc(100% - 60px);
     }
     &.show {
-      top:0;
+      .transform(translate3d(0,100px,0));
       .transition();
     }
     footer {

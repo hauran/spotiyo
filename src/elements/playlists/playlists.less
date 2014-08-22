@@ -36,9 +36,10 @@
       padding: 15px 10px 5px 10px;
       font-size:1.3em;
       border-bottom:1px solid rgba(0,0,0,0.3);
+      -webkit-backface-visibility: hidden;
       .transition();
       &.show {
-        top:0;
+        .transform(translate3d(0,100px,0));
         .transition();
       }
     }
