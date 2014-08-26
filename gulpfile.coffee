@@ -23,7 +23,7 @@ handle = (stream)->
     stream.end()
 
 gulp.task 'vendor', ->
-  gulp.src ['node_modules/polymer/platform.js',
+  gulp.src ['bower_components/platform/platform.js',
     'bower_components/jquery/dist/jquery.min.js',
     'bower_components/jquery-cookie/jquery.cookie.js',
     'bower_components/lodash/dist/lodash.min.js',

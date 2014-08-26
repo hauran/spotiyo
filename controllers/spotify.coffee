@@ -95,6 +95,38 @@ exports.setup = (app) ->
       refreshTokens req, res, () ->
         getPlaylists req,res
 
+  app.get "/spotify/stats", (req, res) ->
+    stats={}
+    usersCnt = 0
+    playlistsCnt = 0
+    client.hkeys 'user', (err, users) ->
+      _.each users, (user) ->
+        if user isnt 'undefined'
+          console.log user
+          stats[user] = {}
+          usersCnt++
+          client.hget 'user_tracks', user, (err,tracks)->
+            tracks = JSON.parse tracks
+            stats[user].savedTracks = tracks.length
+
+            client.hget 'user_playlists', user, (err,playlists)->
+              usersCnt--
+              playlists = JSON.parse(playlists)
+              stats[user].playlists = playlists.length
+              stats[user].playlistTracks = 0
+              _.each playlists, (playlist) ->
+                playlistsCnt++
+                client.hget 'playlist_tracks', playlist.id, (err,tracks) ->
+                  playlistsCnt--
+                  try
+                    tracks = JSON.parse tracks
+                    stats[user].playlistTracks += tracks.length
+                  catch err
+
+                  if !usersCnt and !playlistsCnt
+                    res.send stats
+
+
 getYourTracks = (req, res, pos) ->
   offset = pos * 50
   options =
@@ -104,24 +136,33 @@ getYourTracks = (req, res, pos) ->
     json: true
 
   request.get options, (error, response, body) ->
-    client.hset 'user_tracks', req.userId, JSON.stringify(body.items), (err,val) ->
-    #  GET TRACK INFO
-    tracks = [];
-    _.each body.items, (t) ->
-      if t.track.id
-        tracks.push t.track.uri
+    console.log body.items.length
+    client.hget 'user_tracks', req.userId, (err, val) ->
+      if val
+        tracks = JSON.parse val
+        unioned = tracks.concat body.items
+        client.hset 'user_tracks', req.userId, JSON.stringify(unioned), (err,val) ->
+      else
+        client.hset 'user_tracks', req.userId, JSON.stringify(body.items), (err,val) ->
 
-    if tracks.length > 0
-      tracksParams = "&track_id=" + tracks.join('&track_id=')
-      url = "http://developer.echonest.com/api/v4/song/profile?api_key=#{echo_nest_key}#{tracksParams}&bucket=tracks&bucket=audio_summary&bucket=artist_discovery_rank&bucket=artist_hotttnesss_rank&bucket=song_type&bucket=song_hotttnesss_rank&bucket=song_discovery_rank&&bucket=song_currency_rank&bucket=id:spotify"
-      client.rpush 'get_track_info_job', url
+      #  GET TRACK INFO
+      tracks = [];
+      _.each body.items, (t) ->
+        if t.track.id
+          tracks.push t.track.uri
 
-    console.log 'getYourTracks', body.items.length, offset, pos
-    if body.items.length is 50
-      getYourTracks req, res, ++pos
+      if tracks.length > 0
+        tracksParams = "&track_id=" + tracks.join('&track_id=')
+        url = "http://developer.echonest.com/api/v4/song/profile?api_key=#{echo_nest_key}#{tracksParams}&bucket=tracks&bucket=audio_summary&bucket=artist_discovery_rank&bucket=artist_hotttnesss_rank&bucket=song_type&bucket=song_hotttnesss_rank&bucket=song_discovery_rank&&bucket=song_currency_rank&bucket=id:spotify"
+        client.rpush 'get_track_info_job', url
+
+      if body.items.length is 50
+        getYourTracks req, res, ++pos
 
 getPlaylists = (req,res) ->
-  getYourTracks req,res,0
+  client.hdel 'user_tracks', req.userId, (err,val) ->
+    getYourTracks req,res,0
+
   options =
     url: "https://api.spotify.com/v1/users/#{req.userId}/playlists"
     headers:
